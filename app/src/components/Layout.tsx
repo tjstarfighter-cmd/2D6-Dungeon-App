@@ -11,6 +11,7 @@ const navItems = [
   { to: "/notes", label: "Notes" },
   { to: "/map", label: "Map" },
   { to: "/search", label: "Search" },
+  { to: "/present", label: "Present" },
 ];
 
 function HeaderSearch() {

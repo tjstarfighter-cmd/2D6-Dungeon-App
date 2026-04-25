@@ -14,6 +14,12 @@ const NotesView = lazy(() => import("@/views/Notes"));
 const SearchView = lazy(() => import("@/views/Search"));
 const MapView = lazy(() => import("@/views/Map"));
 
+// Presenter views render outside Layout — chrome-less, full-bleed for OBS.
+const PresentIndex = lazy(() => import("@/views/present/Index"));
+const PresentMap = lazy(() => import("@/views/present/Map"));
+const PresentCard = lazy(() => import("@/views/present/Card"));
+const PresentTable = lazy(() => import("@/views/present/Table"));
+
 function Loader() {
   return (
     <div className="p-6 text-sm text-zinc-500" role="status" aria-live="polite">
@@ -29,6 +35,12 @@ function Lazy({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      {/* Chrome-less presenter routes for OBS Browser Source. */}
+      <Route path="present" element={<Lazy><PresentIndex /></Lazy>} />
+      <Route path="present/map/:id" element={<Lazy><PresentMap /></Lazy>} />
+      <Route path="present/card/:id" element={<Lazy><PresentCard /></Lazy>} />
+      <Route path="present/table/:id" element={<Lazy><PresentTable /></Lazy>} />
+
       <Route element={<Layout />}>
         <Route index element={<Lazy><SheetView /></Lazy>} />
         <Route path="combat" element={<Lazy><CombatView /></Lazy>} />
@@ -40,8 +52,6 @@ export default function App() {
         <Route path="notes" element={<Lazy><NotesView /></Lazy>} />
         <Route path="search" element={<Lazy><SearchView /></Lazy>} />
         <Route path="map" element={<Lazy><MapView /></Lazy>} />
-        {/* Reserved for the OBS presenter epic. */}
-        <Route path="present/*" element={<Lazy><SheetView /></Lazy>} />
         <Route path="*" element={<Lazy><SheetView /></Lazy>} />
       </Route>
     </Routes>

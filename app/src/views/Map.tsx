@@ -8,11 +8,13 @@ import {
 
 import { useMaps } from "@/hooks/useMaps";
 import { Button, Card, Field, NumberField, TextArea, TextField } from "@/components/ui";
+import { downloadMapPng, downloadMapSvg } from "@/lib/map-export";
 import type {
   ExitSide,
   ExitType,
   MapDoc,
   MapExit,
+  MapNote,
   Room,
 } from "@/types/map";
 
@@ -21,7 +23,9 @@ const MIN_SCALE = 0.4;
 const MAX_SCALE = 2.5;
 const ZOOM_STEP = 1.15;
 
-type Tool = "select" | "room" | "exit" | "erase";
+type Tool = "select" | "room" | "exit" | "note" | "erase";
+
+type Selection = { kind: "room"; id: string } | { kind: "note"; id: string } | null;
 
 // Drag-to-create a new room (used by + Room tool).
 interface CreateDrag {
@@ -147,11 +151,27 @@ function MapEditor({
 }) {
   const [tool, setTool] = useState<Tool>("room");
   const [exitType, setExitType] = useState<ExitType>("door");
-  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const [selection, setSelection] = useState<Selection>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [scale, setScale] = useState(1);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Multi-touch state. Tracks active touch pointers; a 2nd touch enters
+  // pinch mode and cancels any in-progress tool gesture. Tool actions
+  // are suppressed for the rest of the touch session after a pinch.
+  const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchRef = useRef<{
+    distance: number;
+    midpoint: { x: number; y: number };
+    scale: number;
+    scrollLeft: number;
+    scrollTop: number;
+  } | null>(null);
+  const inPinchSessionRef = useRef(false);
+
+  const selectedRoomId = selection?.kind === "room" ? selection.id : null;
+  const selectedNoteId = selection?.kind === "note" ? selection.id : null;
 
   // Ctrl/Cmd + wheel zooms anchored at the cursor; plain wheel scrolls the
   // container as normal. Registered via addEventListener so we can mark it
@@ -204,9 +224,12 @@ function MapEditor({
     setScale(1);
   }
 
-  // Keep selection valid if the underlying room list changes.
+  // Keep selection valid if the underlying lists change.
   const selectedRoom = selectedRoomId
     ? map.rooms.find((r) => r.id === selectedRoomId) ?? null
+    : null;
+  const selectedNote = selectedNoteId
+    ? map.notes.find((n) => n.id === selectedNoteId) ?? null
     : null;
 
   function clientToLocal(e: ReactPointerEvent<SVGSVGElement>): { x: number; y: number } | null {
@@ -251,7 +274,42 @@ function MapEditor({
     return null;
   }
 
+  function findNoteAt(cx: number, cy: number): MapNote | null {
+    // Notes are point markers; one cell holds at most one note.
+    return map.notes.find((n) => n.x === cx && n.y === cy) ?? null;
+  }
+
   function onPointerDown(e: ReactPointerEvent<SVGSVGElement>) {
+    // ---- Multi-touch pinch detection (highest priority) ------------------
+    if (e.pointerType === "touch") {
+      pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointersRef.current.size === 2) {
+        // Cancel any in-progress drag and switch to pinch mode.
+        setDrag(null);
+        inPinchSessionRef.current = true;
+        const pts = [...pointersRef.current.values()];
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const container = containerRef.current;
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          pinchRef.current = {
+            distance: dist,
+            midpoint: {
+              x: (pts[0].x + pts[1].x) / 2 - rect.left,
+              y: (pts[0].y + pts[1].y) / 2 - rect.top,
+            },
+            scale,
+            scrollLeft: container.scrollLeft,
+            scrollTop: container.scrollTop,
+          };
+        }
+        return;
+      }
+      // While in a pinch session, don't initiate tool actions even if
+      // additional fingers go down.
+      if (inPinchSessionRef.current) return;
+    }
+
     if (e.button !== 0 && e.pointerType === "mouse") return;
     const local = clientToLocal(e);
     if (!local) return;
@@ -271,11 +329,11 @@ function MapEditor({
     }
 
     if (tool === "select") {
+      // Try room first (rectangles), then note marker on the same cell.
       const room = findRoomAt(cell.cx, cell.cy);
-      setSelectedRoomId(room?.id ?? null);
+      const note = findNoteAt(cell.cx, cell.cy);
       if (room) {
-        // Set up a potential move drag — actual movement only kicks in on
-        // pointer-move past the first cell boundary.
+        setSelection({ kind: "room", id: room.id });
         e.currentTarget.setPointerCapture(e.pointerId);
         setDrag({
           kind: "move",
@@ -285,6 +343,27 @@ function MapEditor({
           origX: room.x,
           origY: room.y,
         });
+      } else if (note) {
+        setSelection({ kind: "note", id: note.id });
+      } else {
+        setSelection(null);
+      }
+      return;
+    }
+
+    if (tool === "note") {
+      const existing = findNoteAt(cell.cx, cell.cy);
+      if (existing) {
+        setSelection({ kind: "note", id: existing.id });
+      } else {
+        const note: MapNote = {
+          id: makeId("note"),
+          x: cell.cx,
+          y: cell.cy,
+          text: "",
+        };
+        onUpdate({ notes: [...map.notes, note] });
+        setSelection({ kind: "note", id: note.id });
       }
       return;
     }
@@ -293,14 +372,20 @@ function MapEditor({
       const room = findRoomAt(cell.cx, cell.cy);
       if (room) {
         onUpdate({ rooms: map.rooms.filter((r) => r.id !== room.id) });
-        if (selectedRoomId === room.id) setSelectedRoomId(null);
+        if (selectedRoomId === room.id) setSelection(null);
       }
-      // Also erase any exit on the clicked cell's nearest edge.
+      // Also erase any exit on the clicked cell's nearest edge,
+      // and any note marker on the cell.
       const side = closestEdge(local.x, local.y, cell.cx, cell.cy);
       const exit = map.exits.find(
         (x) => x.x === cell.cx && x.y === cell.cy && x.side === side,
       );
       if (exit) onUpdate({ exits: map.exits.filter((x) => x.id !== exit.id) });
+      const note = findNoteAt(cell.cx, cell.cy);
+      if (note) {
+        onUpdate({ notes: map.notes.filter((n) => n.id !== note.id) });
+        if (selectedNoteId === note.id) setSelection(null);
+      }
       return;
     }
 
@@ -327,6 +412,40 @@ function MapEditor({
   }
 
   function onPointerMove(e: ReactPointerEvent<SVGSVGElement>) {
+    // ---- Pinch zoom takes precedence over any tool drag. ----------------
+    if (e.pointerType === "touch" && pointersRef.current.has(e.pointerId)) {
+      pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinchRef.current && pointersRef.current.size === 2) {
+        const pts = [...pointersRef.current.values()];
+        const currentDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const container = containerRef.current;
+        if (!container) return;
+        const rect = container.getBoundingClientRect();
+        const currentMid = {
+          x: (pts[0].x + pts[1].x) / 2 - rect.left,
+          y: (pts[0].y + pts[1].y) / 2 - rect.top,
+        };
+        const baseline = pinchRef.current;
+        const targetScale = clamp(
+          baseline.scale * (currentDist / baseline.distance),
+          MIN_SCALE,
+          MAX_SCALE,
+        );
+        // World-space coord under the original midpoint:
+        const worldX = (baseline.midpoint.x + baseline.scrollLeft) / baseline.scale;
+        const worldY = (baseline.midpoint.y + baseline.scrollTop) / baseline.scale;
+        // Set scroll so that world coord lands under the current midpoint.
+        const newScrollLeft = worldX * targetScale - currentMid.x;
+        const newScrollTop = worldY * targetScale - currentMid.y;
+        setScale(targetScale);
+        requestAnimationFrame(() => {
+          container.scrollLeft = newScrollLeft;
+          container.scrollTop = newScrollTop;
+        });
+        return;
+      }
+    }
+
     if (!drag) return;
     const cell = clientToCell(e);
     if (!cell) return;
@@ -356,8 +475,21 @@ function MapEditor({
   }
 
   function onPointerUp(e: ReactPointerEvent<SVGSVGElement>) {
+    // Tear down pinch tracking for touch pointers.
+    if (e.pointerType === "touch") {
+      pointersRef.current.delete(e.pointerId);
+      if (pointersRef.current.size < 2) pinchRef.current = null;
+      if (pointersRef.current.size === 0) inPinchSessionRef.current = false;
+      // After a pinch, don't finalise any tool drag from the same session.
+      if (inPinchSessionRef.current) return;
+    }
+
     if (!drag) return;
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      // pointer may not have been captured (e.g. cancelled by pinch) — fine.
+    }
     if (drag.kind === "create") {
       const x = Math.min(drag.startCx, drag.endCx);
       const y = Math.min(drag.startCy, drag.endCy);
@@ -365,7 +497,7 @@ function MapEditor({
       const h = Math.abs(drag.endCy - drag.startCy) + 1;
       const room: Room = { id: makeId("rm"), x, y, w, h };
       onUpdate({ rooms: [...map.rooms, room] });
-      setSelectedRoomId(room.id);
+      setSelection({ kind: "room", id: room.id });
     }
     setDrag(null);
   }
@@ -373,8 +505,8 @@ function MapEditor({
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_18rem]">
       <Card>
-        <header className="mb-3 grid gap-2 sm:grid-cols-[1fr_6rem_8rem]">
-          <Field label="Name">
+        <header className="mb-3 flex flex-wrap items-end gap-2">
+          <Field label="Name" className="grow min-w-[10rem]">
             <TextField value={map.name} onChange={(e) => onUpdate({ name: e.target.value })} />
           </Field>
           <Field label="Level">
@@ -383,19 +515,40 @@ function MapEditor({
               max={10}
               value={map.level}
               onChange={(e) => onUpdate({ level: Number(e.target.value) || 1 })}
+              className="w-20"
             />
           </Field>
           <Field label="Ancestry">
             <TextField
               value={map.ancestry}
               onChange={(e) => onUpdate({ ancestry: e.target.value })}
+              className="w-32"
             />
           </Field>
+          <a
+            href={`/present/map/${map.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center gap-1 rounded-md border border-zinc-300 bg-white px-3 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+            title="Open in presenter view (new tab)"
+          >
+            🖥️ Present ↗
+          </a>
         </header>
 
         <div className="flex flex-wrap items-center gap-2">
           <ToolPalette tool={tool} onTool={setTool} exitType={exitType} onExitType={setExitType} />
           <div className="ml-auto flex items-center gap-1">
+            <Button
+              onClick={() => downloadMapPng(map).catch(() => alert("PNG export failed"))}
+              title="Download as PNG"
+            >
+              ⬇ PNG
+            </Button>
+            <Button onClick={() => downloadMapSvg(map)} title="Download as SVG">
+              ⬇ SVG
+            </Button>
+            <span className="mx-1 h-5 w-px bg-zinc-300 dark:bg-zinc-700" />
             <Button onClick={() => zoomBy(1 / ZOOM_STEP)} title="Zoom out">−</Button>
             <button
               type="button"
@@ -453,29 +606,56 @@ function MapEditor({
             {map.exits.map((x) => (
               <ExitShape key={x.id} exit={x} />
             ))}
+
+            {/* Notes — markers on cells */}
+            {map.notes.map((n) => (
+              <NoteShape key={n.id} note={n} selected={n.id === selectedNoteId} />
+            ))}
           </svg>
         </div>
         <p className="mt-2 text-xs text-zinc-500">
           {map.rooms.length} room{map.rooms.length === 1 ? "" : "s"} · {map.exits.length} exit
-          {map.exits.length === 1 ? "" : "s"} · grid {map.width}×{map.height} · zoom{" "}
-          {Math.round(scale * 100)}% · <kbd className="font-mono">Ctrl/⌘ + wheel</kbd> to zoom
+          {map.exits.length === 1 ? "" : "s"} · {map.notes.length} note
+          {map.notes.length === 1 ? "" : "s"} · grid {map.width}×{map.height} · zoom{" "}
+          {Math.round(scale * 100)}% · <kbd className="font-mono">Ctrl/⌘ + wheel</kbd> /
+          two-finger pinch to zoom
         </p>
       </Card>
 
-      <RoomDetailPanel
-        room={selectedRoom}
-        gridWidth={map.width}
-        gridHeight={map.height}
-        onPatch={(patch) => {
-          if (!selectedRoom) return;
-          onUpdate({
-            rooms: map.rooms.map((r) =>
-              r.id === selectedRoom.id ? { ...r, ...patch } : r,
-            ),
-          });
-        }}
-        onDeselect={() => setSelectedRoomId(null)}
-      />
+      {selection?.kind === "note" ? (
+        <NoteDetailPanel
+          note={selectedNote}
+          onPatch={(patch) => {
+            if (!selectedNote) return;
+            onUpdate({
+              notes: map.notes.map((n) =>
+                n.id === selectedNote.id ? { ...n, ...patch } : n,
+              ),
+            });
+          }}
+          onDelete={() => {
+            if (!selectedNote) return;
+            onUpdate({ notes: map.notes.filter((n) => n.id !== selectedNote.id) });
+            setSelection(null);
+          }}
+          onDeselect={() => setSelection(null)}
+        />
+      ) : (
+        <RoomDetailPanel
+          room={selectedRoom}
+          gridWidth={map.width}
+          gridHeight={map.height}
+          onPatch={(patch) => {
+            if (!selectedRoom) return;
+            onUpdate({
+              rooms: map.rooms.map((r) =>
+                r.id === selectedRoom.id ? { ...r, ...patch } : r,
+              ),
+            });
+          }}
+          onDeselect={() => setSelection(null)}
+        />
+      )}
     </div>
   );
 }
@@ -494,10 +674,11 @@ function ToolPalette({
   onExitType: (t: ExitType) => void;
 }) {
   const tools: { id: Tool; label: string; hint: string }[] = [
-    { id: "select", label: "Select", hint: "Click a room to edit it." },
+    { id: "select", label: "Select", hint: "Click a room or note. Drag a room to move it." },
     { id: "room", label: "+ Room", hint: "Click-drag to draw a rectangular room." },
     { id: "exit", label: "+ Exit", hint: "Click a cell edge to add (or toggle off) a door." },
-    { id: "erase", label: "Erase", hint: "Click a room or exit to remove it." },
+    { id: "note", label: "+ Note", hint: "Click a cell to drop a note marker." },
+    { id: "erase", label: "Erase", hint: "Click a room, exit or note to remove it." },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -635,6 +816,37 @@ function ExitShape({ exit }: { exit: MapExit }) {
   );
 }
 
+function NoteShape({ note, selected }: { note: MapNote; selected: boolean }) {
+  const cx = (note.x + 0.5) * CELL;
+  const cy = (note.y + 0.5) * CELL;
+  return (
+    <g>
+      <circle
+        cx={cx}
+        cy={cy}
+        r={CELL * 0.32}
+        className={
+          selected
+            ? "fill-yellow-300 stroke-yellow-700 dark:fill-yellow-500 dark:stroke-yellow-300"
+            : "fill-yellow-200 stroke-yellow-600 dark:fill-yellow-700 dark:stroke-yellow-400"
+        }
+        strokeWidth={selected ? 2.5 : 1.5}
+      />
+      <text
+        x={cx}
+        y={cy}
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="pointer-events-none fill-yellow-900 dark:fill-yellow-50"
+        fontSize={CELL * 0.5}
+        fontWeight={700}
+      >
+        i
+      </text>
+    </g>
+  );
+}
+
 function exitColour(type: ExitType): string {
   switch (type) {
     case "door":
@@ -659,6 +871,7 @@ function cursorFor(tool: Tool): string {
     case "select": return "cursor-pointer";
     case "room": return "cursor-crosshair";
     case "exit": return "cursor-cell";
+    case "note": return "cursor-copy";
     case "erase": return "cursor-not-allowed";
   }
 }
@@ -790,6 +1003,47 @@ function RoomDetailPanel({
 }
 
 // ---------------------------------------------------------------------------
+
+function NoteDetailPanel({
+  note,
+  onPatch,
+  onDelete,
+  onDeselect,
+}: {
+  note: MapNote | null;
+  onPatch: (patch: Partial<MapNote>) => void;
+  onDelete: () => void;
+  onDeselect: () => void;
+}) {
+  if (!note) {
+    return (
+      <Card title="Note">
+        <p className="text-sm text-zinc-500">No note selected.</p>
+      </Card>
+    );
+  }
+  return (
+    <Card
+      title={`Note @ ${note.x},${note.y}`}
+      action={<Button onClick={onDeselect}>✕</Button>}
+    >
+      <Field label="Text">
+        <TextArea
+          autoFocus
+          rows={6}
+          value={note.text}
+          onChange={(e) => onPatch({ text: e.target.value })}
+          placeholder="What happened on this cell?"
+        />
+      </Field>
+      <div className="mt-3">
+        <Button variant="danger" onClick={onDelete}>
+          Delete note
+        </Button>
+      </div>
+    </Card>
+  );
+}
 
 function inBounds(cx: number, cy: number, map: MapDoc): boolean {
   return cx >= 0 && cy >= 0 && cx < map.width && cy < map.height;

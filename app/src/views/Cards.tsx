@@ -269,9 +269,20 @@ function Lightbox({ card, onClose }: { card: CardRecord; onClose: () => void }) 
                 {card.filename}
               </p>
             </div>
-            <Button onClick={onClose} aria-label="Close">
-              ✕
-            </Button>
+            <div className="flex shrink-0 gap-2">
+              <a
+                href={`/present/card/${encodeURIComponent(card.filename)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                title="Open in presenter view (new tab)"
+              >
+                🖥️ Present ↗
+              </a>
+              <Button onClick={onClose} aria-label="Close">
+                ✕
+              </Button>
+            </div>
           </header>
           <div className="grow">
             <NotesPanel

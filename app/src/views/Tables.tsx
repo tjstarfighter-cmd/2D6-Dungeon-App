@@ -138,11 +138,22 @@ function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable 
 
   return (
     <Card>
-      <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-xl font-semibold">{table.title}</h2>
-        <span className="font-mono text-xs text-zinc-500">
-          {tableKey} · {categoryFor(tableKey)} · {kind.toUpperCase()}
-        </span>
+      <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="text-xl font-semibold">{table.title}</h2>
+          <span className="font-mono text-xs text-zinc-500">
+            {tableKey} · {categoryFor(tableKey)} · {kind.toUpperCase()}
+          </span>
+        </div>
+        <a
+          href={`/present/table/${tableKey}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          title="Open in presenter view (new tab)"
+        >
+          🖥️ Present ↗
+        </a>
       </header>
 
       {table.notes && (
