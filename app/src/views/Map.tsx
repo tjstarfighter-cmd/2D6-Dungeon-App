@@ -1,4 +1,10 @@
-import { useId, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 
 import { useMaps } from "@/hooks/useMaps";
 import { Button, Card, Field, NumberField, TextArea, TextField } from "@/components/ui";
@@ -10,15 +16,36 @@ import type {
   Room,
 } from "@/types/map";
 
-const CELL = 24; // pixels per grid cell
+const CELL = 24; // pixels per grid cell at 100% zoom
+const MIN_SCALE = 0.4;
+const MAX_SCALE = 2.5;
+const ZOOM_STEP = 1.15;
 
 type Tool = "select" | "room" | "exit" | "erase";
 
-interface DragState {
+// Drag-to-create a new room (used by + Room tool).
+interface CreateDrag {
+  kind: "create";
   startCx: number;
   startCy: number;
   endCx: number;
   endCy: number;
+}
+
+// Drag a selected room around (used by Select tool).
+interface MoveDrag {
+  kind: "move";
+  roomId: string;
+  startCx: number;
+  startCy: number;
+  origX: number;
+  origY: number;
+}
+
+type Drag = CreateDrag | MoveDrag;
+
+function clamp(n: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, n));
 }
 
 export default function MapView() {
@@ -121,8 +148,61 @@ function MapEditor({
   const [tool, setTool] = useState<Tool>("room");
   const [exitType, setExitType] = useState<ExitType>("door");
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [drag, setDrag] = useState<DragState | null>(null);
+  const [drag, setDrag] = useState<Drag | null>(null);
+  const [scale, setScale] = useState(1);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Ctrl/Cmd + wheel zooms anchored at the cursor; plain wheel scrolls the
+  // container as normal. Registered via addEventListener so we can mark it
+  // non-passive (React's onWheel is passive by default and preventDefault
+  // would be a no-op).
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    function onWheel(e: WheelEvent) {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+      const rect = container!.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      zoomAtCursor(cx, cy, factor);
+    }
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
+    // zoomAtCursor closes over `scale` via the setter callback; intentional.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function zoomAtCursor(cursorX: number, cursorY: number, factor: number) {
+    const container = containerRef.current;
+    if (!container) return;
+    setScale((prev) => {
+      const next = clamp(prev * factor, MIN_SCALE, MAX_SCALE);
+      if (next === prev) return prev;
+      const ratio = next / prev;
+      // Keep the world point under the cursor stationary.
+      const newScrollLeft = (cursorX + container.scrollLeft) * ratio - cursorX;
+      const newScrollTop = (cursorY + container.scrollTop) * ratio - cursorY;
+      requestAnimationFrame(() => {
+        container.scrollLeft = newScrollLeft;
+        container.scrollTop = newScrollTop;
+      });
+      return next;
+    });
+  }
+
+  function zoomBy(factor: number) {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    zoomAtCursor(rect.width / 2, rect.height / 2, factor);
+  }
+
+  function zoomReset() {
+    setScale(1);
+  }
 
   // Keep selection valid if the underlying room list changes.
   const selectedRoom = selectedRoomId
@@ -180,13 +260,32 @@ function MapEditor({
 
     if (tool === "room") {
       e.currentTarget.setPointerCapture(e.pointerId);
-      setDrag({ startCx: cell.cx, startCy: cell.cy, endCx: cell.cx, endCy: cell.cy });
+      setDrag({
+        kind: "create",
+        startCx: cell.cx,
+        startCy: cell.cy,
+        endCx: cell.cx,
+        endCy: cell.cy,
+      });
       return;
     }
 
     if (tool === "select") {
       const room = findRoomAt(cell.cx, cell.cy);
       setSelectedRoomId(room?.id ?? null);
+      if (room) {
+        // Set up a potential move drag — actual movement only kicks in on
+        // pointer-move past the first cell boundary.
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDrag({
+          kind: "move",
+          roomId: room.id,
+          startCx: cell.cx,
+          startCy: cell.cy,
+          origX: room.x,
+          origY: room.y,
+        });
+      }
       return;
     }
 
@@ -230,22 +329,45 @@ function MapEditor({
   function onPointerMove(e: ReactPointerEvent<SVGSVGElement>) {
     if (!drag) return;
     const cell = clientToCell(e);
-    if (!cell || !inBounds(cell.cx, cell.cy, map)) return;
-    if (cell.cx === drag.endCx && cell.cy === drag.endCy) return;
-    setDrag({ ...drag, endCx: cell.cx, endCy: cell.cy });
+    if (!cell) return;
+
+    if (drag.kind === "create") {
+      if (!inBounds(cell.cx, cell.cy, map)) return;
+      if (cell.cx === drag.endCx && cell.cy === drag.endCy) return;
+      setDrag({ ...drag, endCx: cell.cx, endCy: cell.cy });
+      return;
+    }
+
+    if (drag.kind === "move") {
+      const room = map.rooms.find((r) => r.id === drag.roomId);
+      if (!room) return;
+      const dx = cell.cx - drag.startCx;
+      const dy = cell.cy - drag.startCy;
+      if (dx === 0 && dy === 0) return;
+      const newX = clamp(drag.origX + dx, 0, map.width - room.w);
+      const newY = clamp(drag.origY + dy, 0, map.height - room.h);
+      if (newX === room.x && newY === room.y) return;
+      onUpdate({
+        rooms: map.rooms.map((r) =>
+          r.id === drag.roomId ? { ...r, x: newX, y: newY } : r,
+        ),
+      });
+    }
   }
 
   function onPointerUp(e: ReactPointerEvent<SVGSVGElement>) {
     if (!drag) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
-    const x = Math.min(drag.startCx, drag.endCx);
-    const y = Math.min(drag.startCy, drag.endCy);
-    const w = Math.abs(drag.endCx - drag.startCx) + 1;
-    const h = Math.abs(drag.endCy - drag.startCy) + 1;
-    const room: Room = { id: makeId("rm"), x, y, w, h };
-    onUpdate({ rooms: [...map.rooms, room] });
+    if (drag.kind === "create") {
+      const x = Math.min(drag.startCx, drag.endCx);
+      const y = Math.min(drag.startCy, drag.endCy);
+      const w = Math.abs(drag.endCx - drag.startCx) + 1;
+      const h = Math.abs(drag.endCy - drag.startCy) + 1;
+      const room: Room = { id: makeId("rm"), x, y, w, h };
+      onUpdate({ rooms: [...map.rooms, room] });
+      setSelectedRoomId(room.id);
+    }
     setDrag(null);
-    setSelectedRoomId(room.id);
   }
 
   return (
@@ -271,9 +393,26 @@ function MapEditor({
           </Field>
         </header>
 
-        <ToolPalette tool={tool} onTool={setTool} exitType={exitType} onExitType={setExitType} />
+        <div className="flex flex-wrap items-center gap-2">
+          <ToolPalette tool={tool} onTool={setTool} exitType={exitType} onExitType={setExitType} />
+          <div className="ml-auto flex items-center gap-1">
+            <Button onClick={() => zoomBy(1 / ZOOM_STEP)} title="Zoom out">−</Button>
+            <button
+              type="button"
+              onClick={zoomReset}
+              title="Reset zoom"
+              className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm font-mono dark:border-zinc-700 dark:bg-zinc-800"
+            >
+              {Math.round(scale * 100)}%
+            </button>
+            <Button onClick={() => zoomBy(ZOOM_STEP)} title="Zoom in">+</Button>
+          </div>
+        </div>
 
-        <div className="mt-3 max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950">
+        <div
+          ref={containerRef}
+          className="mt-3 max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
+        >
           <svg
             ref={svgRef}
             width={map.width * CELL}
@@ -283,6 +422,7 @@ function MapEditor({
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             className={`block ${cursorFor(tool)} touch-none`}
+            style={{ transform: `scale(${scale})`, transformOrigin: "0 0" }}
           >
             <defs>
               <pattern id="grid" width={CELL} height={CELL} patternUnits="userSpaceOnUse">
@@ -306,8 +446,8 @@ function MapEditor({
               />
             ))}
 
-            {/* Drag preview */}
-            {drag && <DragPreview drag={drag} />}
+            {/* Drag preview while creating a room */}
+            {drag?.kind === "create" && <DragPreview drag={drag} />}
 
             {/* Exits — drawn after rooms so they overlay the room border */}
             {map.exits.map((x) => (
@@ -317,12 +457,15 @@ function MapEditor({
         </div>
         <p className="mt-2 text-xs text-zinc-500">
           {map.rooms.length} room{map.rooms.length === 1 ? "" : "s"} · {map.exits.length} exit
-          {map.exits.length === 1 ? "" : "s"} · grid {map.width}×{map.height}
+          {map.exits.length === 1 ? "" : "s"} · grid {map.width}×{map.height} · zoom{" "}
+          {Math.round(scale * 100)}% · <kbd className="font-mono">Ctrl/⌘ + wheel</kbd> to zoom
         </p>
       </Card>
 
       <RoomDetailPanel
         room={selectedRoom}
+        gridWidth={map.width}
+        gridHeight={map.height}
         onPatch={(patch) => {
           if (!selectedRoom) return;
           onUpdate({
@@ -435,7 +578,7 @@ function RoomShape({ room, selected }: { room: Room; selected: boolean }) {
   );
 }
 
-function DragPreview({ drag }: { drag: DragState }) {
+function DragPreview({ drag }: { drag: CreateDrag }) {
   const x = Math.min(drag.startCx, drag.endCx) * CELL;
   const y = Math.min(drag.startCy, drag.endCy) * CELL;
   const w = (Math.abs(drag.endCx - drag.startCx) + 1) * CELL;
@@ -524,10 +667,14 @@ function cursorFor(tool: Tool): string {
 
 function RoomDetailPanel({
   room,
+  gridWidth,
+  gridHeight,
   onPatch,
   onDeselect,
 }: {
   room: Room | null;
+  gridWidth: number;
+  gridHeight: number;
   onPatch: (patch: Partial<Room>) => void;
   onDeselect: () => void;
 }) {
@@ -535,11 +682,23 @@ function RoomDetailPanel({
     return (
       <Card title="Room">
         <p className="text-sm text-zinc-500">
-          Select a room to edit its label, type, encounter and treasure. Use{" "}
-          <strong>+ Room</strong> to draw new ones.
+          Select a room to edit its label, type, encounter and treasure. In{" "}
+          <strong>Select</strong> mode you can also <em>drag a room</em> to
+          move it. Use <strong>+ Room</strong> to draw new ones.
         </p>
       </Card>
     );
+  }
+  // Patches that respect grid bounds — keeps the room rectangle inside the
+  // map. W/H clamp so the right/bottom edge doesn't fall off; X/Y clamp so
+  // the top-left doesn't either.
+  function patchPosition(field: "x" | "y", value: number) {
+    if (field === "x") onPatch({ x: clamp(value, 0, gridWidth - room!.w) });
+    else onPatch({ y: clamp(value, 0, gridHeight - room!.h) });
+  }
+  function patchSize(field: "w" | "h", value: number) {
+    if (field === "w") onPatch({ w: clamp(value, 1, gridWidth - room!.x) });
+    else onPatch({ h: clamp(value, 1, gridHeight - room!.y) });
   }
   return (
     <Card
@@ -547,6 +706,40 @@ function RoomDetailPanel({
       action={<Button onClick={onDeselect}>✕</Button>}
     >
       <div className="space-y-3">
+        <div className="grid grid-cols-4 gap-2">
+          <Field label="X">
+            <NumberField
+              min={0}
+              max={gridWidth - room.w}
+              value={room.x}
+              onChange={(e) => patchPosition("x", Number(e.target.value) || 0)}
+            />
+          </Field>
+          <Field label="Y">
+            <NumberField
+              min={0}
+              max={gridHeight - room.h}
+              value={room.y}
+              onChange={(e) => patchPosition("y", Number(e.target.value) || 0)}
+            />
+          </Field>
+          <Field label="W">
+            <NumberField
+              min={1}
+              max={gridWidth - room.x}
+              value={room.w}
+              onChange={(e) => patchSize("w", Number(e.target.value) || 1)}
+            />
+          </Field>
+          <Field label="H">
+            <NumberField
+              min={1}
+              max={gridHeight - room.y}
+              value={room.h}
+              onChange={(e) => patchSize("h", Number(e.target.value) || 1)}
+            />
+          </Field>
+        </div>
         <Field label="Label (shown in the room)">
           <TextField
             value={room.label ?? ""}

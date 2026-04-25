@@ -2,6 +2,7 @@ import { Fragment } from "react";
 
 import type { Character } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
+import { useMaps } from "@/hooks/useMaps";
 import { useNotes } from "@/hooks/useNotes";
 import {
   GODS,
@@ -34,6 +35,7 @@ export default function SheetView() {
   const { characters, active, create, update, remove, setActive, replaceAll } =
     useCharacters();
   const { notes, replaceAll: replaceAllNotes } = useNotes();
+  const { maps, replaceAll: replaceAllMaps } = useMaps();
 
   function patchActive(patch: Patch) {
     if (!active) return;
@@ -45,13 +47,15 @@ export default function SheetView() {
       <CharacterSwitcher
         characters={characters}
         notes={notes}
+        maps={maps}
         active={active}
         onSelect={setActive}
         onCreate={() => create()}
         onDelete={remove}
-        onReplaceAll={(nextChars, nextNotes) => {
+        onReplaceAll={(nextChars, nextNotes, nextMaps) => {
           replaceAll(nextChars);
           replaceAllNotes(nextNotes);
+          replaceAllMaps(nextMaps);
         }}
       />
 

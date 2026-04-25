@@ -1,6 +1,7 @@
 import { useId } from "react";
 
 import type { Character } from "@/types/character";
+import type { MapDoc } from "@/types/map";
 import type { Note } from "@/types/notes";
 import { Button } from "@/components/ui";
 import {
@@ -13,16 +14,18 @@ import {
 interface Props {
   characters: Character[];
   notes: Note[];
+  maps: MapDoc[];
   active: Character | null;
   onSelect: (id: string) => void;
   onCreate: () => void;
   onDelete: (id: string) => void;
-  onReplaceAll: (characters: Character[], notes: Note[]) => void;
+  onReplaceAll: (characters: Character[], notes: Note[], maps: MapDoc[]) => void;
 }
 
 export function CharacterSwitcher({
   characters,
   notes,
+  maps,
   active,
   onSelect,
   onCreate,
@@ -37,22 +40,28 @@ export function CharacterSwitcher({
     const result = parseImport(text);
     if (result.errors.length > 0) {
       alert(`Import had problems:\n${result.errors.join("\n")}`);
-      if (result.characters.length === 0 && result.notes.length === 0) return;
+      if (
+        result.characters.length === 0 &&
+        result.notes.length === 0 &&
+        result.maps.length === 0
+      ) {
+        return;
+      }
     }
     if (
-      (characters.length > 0 || notes.length > 0) &&
+      (characters.length > 0 || notes.length > 0 || maps.length > 0) &&
       !confirm(
-        `Replace current data (${characters.length} characters, ${notes.length} notes) ` +
-          `with imported data (${result.characters.length} characters, ${result.notes.length} notes)?`,
+        `Replace current data (${characters.length} characters, ${notes.length} notes, ${maps.length} maps) ` +
+          `with imported data (${result.characters.length} characters, ${result.notes.length} notes, ${result.maps.length} maps)?`,
       )
     ) {
       return;
     }
-    onReplaceAll(result.characters, result.notes);
+    onReplaceAll(result.characters, result.notes, result.maps);
   }
 
   function handleExport() {
-    const text = serialiseBackup(characters, notes);
+    const text = serialiseBackup(characters, notes, maps);
     const stamp = new Date().toISOString().slice(0, 10);
     downloadText(`2d6d-backup-${stamp}.json`, text);
   }
@@ -96,7 +105,10 @@ export function CharacterSwitcher({
         + New
       </Button>
       <Button onClick={handleImport}>Import…</Button>
-      <Button onClick={handleExport} disabled={characters.length === 0 && notes.length === 0}>
+      <Button
+        onClick={handleExport}
+        disabled={characters.length === 0 && notes.length === 0 && maps.length === 0}
+      >
         Export
       </Button>
       <Button variant="danger" onClick={handleDelete} disabled={!active}>
