@@ -12,6 +12,7 @@ const CardsView = lazy(() => import("@/views/Cards"));
 const RulesView = lazy(() => import("@/views/Rules"));
 const NotesView = lazy(() => import("@/views/Notes"));
 const SearchView = lazy(() => import("@/views/Search"));
+const MapView = lazy(() => import("@/views/Map"));
 
 function Loader() {
   return (
@@ -38,9 +39,8 @@ export default function App() {
         <Route path="rules" element={<Lazy><RulesView /></Lazy>} />
         <Route path="notes" element={<Lazy><NotesView /></Lazy>} />
         <Route path="search" element={<Lazy><SearchView /></Lazy>} />
-        {/* Reserved for future epics — render a friendly stub if someone
-            navigates there manually. */}
-        <Route path="map" element={<Lazy><SheetView /></Lazy>} />
+        <Route path="map" element={<Lazy><MapView /></Lazy>} />
+        {/* Reserved for the OBS presenter epic. */}
         <Route path="present/*" element={<Lazy><SheetView /></Lazy>} />
         <Route path="*" element={<Lazy><SheetView /></Lazy>} />
       </Route>
