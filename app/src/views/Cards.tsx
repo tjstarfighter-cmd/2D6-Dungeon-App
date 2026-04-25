@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { cards } from "@/data";
+import { useCardsData } from "@/data/lazy";
 import {
   applyFilter,
   cardImageUrl,
@@ -17,12 +17,13 @@ import { Button, Card } from "@/components/ui";
 import { NotesPanel } from "@/components/NotesPanel";
 import type { CardRecord } from "@/types/cards";
 
-export function CardsView() {
+export default function CardsView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<CardFilter>(DEFAULT_FILTER);
+  const cards = useCardsData();
 
-  const filtered = useMemo(() => applyFilter(cards.cards, filter), [filter]);
+  const filtered = useMemo(() => applyFilter(cards.cards, filter), [cards, filter]);
   const lightboxCard = id ? findCard(cards.cards, id) : null;
 
   // Keyboard / scroll lock for the lightbox.
@@ -78,14 +79,15 @@ function FilterBar({
   totalCount: number;
   matchCount: number;
 }) {
+  const cards = useCardsData();
   const levels = useMemo(() => {
     const set = new Set<number>();
     for (const c of cards.cards) if (c.level !== undefined) set.add(c.level);
     return Array.from(set).sort((a, b) => a - b);
-  }, []);
+  }, [cards]);
   const categories = useMemo(
     () => CATEGORY_ORDER.filter((cat) => cards.cards.some((c) => c.category === cat)),
-    [],
+    [cards],
   );
 
   return (

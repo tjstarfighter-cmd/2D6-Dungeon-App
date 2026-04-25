@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useState, type FormEvent } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
@@ -8,7 +9,32 @@ const navItems = [
   { to: "/cards", label: "Cards" },
   { to: "/rules", label: "Rules" },
   { to: "/notes", label: "Notes" },
+  { to: "/search", label: "Search" },
 ];
+
+function HeaderSearch() {
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    const term = q.trim();
+    if (!term) return;
+    navigate(`/search?q=${encodeURIComponent(term)}`);
+    setQ("");
+  }
+  return (
+    <form onSubmit={onSubmit} role="search" className="hidden grow max-w-md md:block">
+      <input
+        type="search"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Search rules, tables, cards…"
+        aria-label="Search"
+        className="w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+      />
+    </form>
+  );
+}
 
 export function Layout() {
   return (
@@ -39,11 +65,14 @@ export function Layout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-4 py-3 md:justify-end dark:border-zinc-800 dark:bg-zinc-900">
+        <header className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="md:hidden">
             <span className="font-semibold">2D6 Dungeon</span>
           </div>
-          <ThemeToggle />
+          <HeaderSearch />
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </header>
 
         {/* Mobile nav: simple horizontal strip when sidebar is hidden. */}

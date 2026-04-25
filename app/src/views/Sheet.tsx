@@ -30,7 +30,7 @@ interface SectionProps {
   onPatch: (patch: Patch) => void;
 }
 
-export function SheetView() {
+export default function SheetView() {
   const { characters, active, create, update, remove, setActive, replaceAll } =
     useCharacters();
   const { notes, replaceAll: replaceAllNotes } = useNotes();

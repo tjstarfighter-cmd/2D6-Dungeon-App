@@ -5,7 +5,7 @@ import type { Note, NoteTargetKind } from "@/types/notes";
 import { useNotes } from "@/hooks/useNotes";
 import { useCharacters } from "@/hooks/useCharacters";
 import { Button, Card, TextArea } from "@/components/ui";
-import { cards, tables } from "@/data";
+import { useCardsData, useTablesData } from "@/data/lazy";
 
 const KIND_LABEL: Record<NoteTargetKind | "session", string> = {
   table: "Tables",
@@ -26,9 +26,11 @@ const FILTERS: Array<{ key: "all" | NoteTargetKind | "session"; label: string }>
   { key: "creature", label: "Creatures" },
 ];
 
-export function NotesView() {
+export default function NotesView() {
   const { notes, create, update, remove } = useNotes();
   const { characters } = useCharacters();
+  const tables = useTablesData();
+  const cards = useCardsData();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("all");
   const [drafting, setDrafting] = useState(false);
   const [draftBody, setDraftBody] = useState("");
@@ -39,7 +41,7 @@ export function NotesView() {
   );
   const cardById = useMemo(
     () => Object.fromEntries(cards.cards.map((c) => [c.filename, c])),
-    [],
+    [cards],
   );
 
   const visible = useMemo(() => {

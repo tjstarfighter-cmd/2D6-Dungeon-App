@@ -1,0 +1,19 @@
+{
+  "name": "2D6 Dungeon Companion",
+  "short_name": "2D6 Dungeon",
+  "description": "A digital companion for 2D6 Dungeon by Toby Lancaster — character sheet, combat helper, tables, cards, rules.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#18181b",
+  "theme_color": "#18181b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

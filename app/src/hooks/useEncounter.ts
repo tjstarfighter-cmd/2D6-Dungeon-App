@@ -67,7 +67,7 @@ export interface UseEncounterResult {
   encounter: Encounter | null;
   start: (characterId: string) => void;
   end: () => void;
-  addEnemy: (name?: string, maxHp?: number) => void;
+  addEnemy: (init?: Partial<EnemyState>) => void;
   removeEnemy: (enemyId: string) => void;
   updateEnemy: (enemyId: string, patch: Partial<EnemyState>) => void;
   damageEnemy: (enemyId: string, amount: number) => void;
@@ -93,12 +93,21 @@ export function useEncounter(): UseEncounterResult {
     setStore(null);
   }, []);
 
-  const addEnemy = useCallback((name?: string, maxHp?: number) => {
+  const addEnemy = useCallback((init?: Partial<EnemyState>) => {
     if (!store) return;
-    setStore({
-      ...store,
-      enemies: [...store.enemies, makeEnemy(name, maxHp ?? 10)],
-    });
+    const base = makeEnemy(init?.name, init?.hp?.max);
+    const enemy: EnemyState = {
+      ...base,
+      ...init,
+      // Always preserve a freshly-generated id so re-adds don't collide.
+      id: base.id,
+      // hp must be a full {current, max} pair; use the override's max when given.
+      hp: {
+        max: init?.hp?.max ?? base.hp.max,
+        current: init?.hp?.current ?? init?.hp?.max ?? base.hp.current,
+      },
+    };
+    setStore({ ...store, enemies: [...store.enemies, enemy] });
   }, []);
 
   const removeEnemy = useCallback((enemyId: string) => {

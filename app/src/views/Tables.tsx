@@ -3,7 +3,7 @@ import { Link, NavLink, useParams } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
 import { NotesPanel } from "@/components/NotesPanel";
-import { tables } from "@/data";
+import { useTablesData } from "@/data/lazy";
 import {
   categoryFor,
   groupByCategory,
@@ -17,11 +17,12 @@ import {
 } from "@/lib/tables";
 import type { CodexTable, TableRow } from "@/types/tables";
 
-export function TablesView() {
+export default function TablesView() {
   const { id } = useParams();
   const [query, setQuery] = useState("");
+  const tables = useTablesData();
 
-  const allKeys = useMemo(() => Object.keys(tables), []);
+  const allKeys = useMemo(() => Object.keys(tables), [tables]);
   const filteredKeys = useMemo(() => {
     if (!query.trim()) return allKeys;
     const q = query.toLowerCase();
@@ -99,6 +100,7 @@ export function TablesView() {
 // ---------------------------------------------------------------------------
 
 function IntroPanel() {
+  const tables = useTablesData();
   const sample = ["L1HA_Rooms", "AT1", "WMT1", "MIT1", "ENP1"];
   return (
     <Card title="Tables">

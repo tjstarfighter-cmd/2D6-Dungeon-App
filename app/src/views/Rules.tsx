@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 
-import { rulesMd } from "@/data";
+import { useRulesData } from "@/data/lazy";
+import { remarkCrossLinkTables } from "@/lib/rules-cross-link";
 
 interface TocItem {
   level: 2 | 3;
@@ -12,9 +13,10 @@ interface TocItem {
   id: string;
 }
 
-export function RulesView() {
+export default function RulesView() {
   const location = useLocation();
   const navigate = useNavigate();
+  const rulesMd = useRulesData();
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -86,7 +88,7 @@ export function RulesView() {
           className="rounded-lg border border-zinc-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900"
         >
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, remarkCrossLinkTables]}
             rehypePlugins={[rehypeSlug]}
             components={components}
             // Strip our generator marker comments — they have no meaning at
@@ -197,9 +199,25 @@ function makeMarkdownComponents() {
     p: (props: any) => <p className="my-3 leading-relaxed" {...props} />,
     strong: (props: any) => <strong className="font-semibold text-zinc-900 dark:text-zinc-100" {...props} />,
     em: (props: any) => <em {...props} />,
-    a: (props: any) => (
-      <a className="text-emerald-700 underline hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300" {...props} />
-    ),
+    a: ({ href, children, ...props }: any) => {
+      const cls =
+        "text-emerald-700 underline hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300";
+      // Route in-app links through React Router so navigation is
+      // client-side (no full reload). External links and same-page hash
+      // anchors stay as plain <a>.
+      if (typeof href === "string" && href.startsWith("/")) {
+        return (
+          <Link to={href} className={cls} {...props}>
+            {children}
+          </Link>
+        );
+      }
+      return (
+        <a href={href} className={cls} {...props}>
+          {children}
+        </a>
+      );
+    },
     ul: (props: any) => <ul className="my-3 list-disc space-y-1 pl-6" {...props} />,
     ol: (props: any) => <ol className="my-3 list-decimal space-y-1 pl-6" {...props} />,
     li: (props: any) => <li className="leading-relaxed" {...props} />,

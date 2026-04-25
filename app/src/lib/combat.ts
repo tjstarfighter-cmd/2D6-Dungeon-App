@@ -35,6 +35,24 @@ export function formatDiceSet(primary: number, secondary: number): string {
   return `${DICE_FACES[primary - 1] ?? primary} ${DICE_FACES[secondary - 1] ?? secondary}`;
 }
 
+/**
+ * Parse every die value from a free-form dice-set string. Tolerates dice
+ * unicode and digits, and ignores everything else (whitespace, "+", commas).
+ * Returns dice in the order they appear, e.g. "⚅ ⚁ + ⚁" -> [6, 2, 2].
+ */
+export function parseDiceList(s: string): number[] {
+  if (!s) return [];
+  const out: number[] = [];
+  for (const c of s) {
+    if (FACE_TO_NUM[c]) {
+      out.push(FACE_TO_NUM[c]);
+    } else if (c >= "1" && c <= "6") {
+      out.push(Number(c));
+    }
+  }
+  return out;
+}
+
 export function rollD6(): number {
   return Math.floor(Math.random() * 6) + 1;
 }
@@ -157,4 +175,54 @@ export function applySixRule(rolls: number[], modifier: number): number {
   const raw = sum + modifier;
   const has6 = rolls.includes(6);
   return has6 ? Math.max(1, raw) : Math.max(0, raw);
+}
+
+// ---- Armour deflection ---------------------------------------------------
+
+/** Parse the |reduction| amount from an armour modifier like "-1 Damage". */
+export function parseArmourDeflection(modifier: string): number {
+  if (!modifier) return 0;
+  const m = modifier.match(/[-−](\d+)/);
+  return m ? Number(m[1]) : 0;
+}
+
+export interface DeflectionEval {
+  diceSet: number[];        // parsed armour dice
+  matches: boolean[];       // per-die match against the enemy roll
+  fullMatch: boolean;       // true when the whole armour set matches → suggest applying
+  modifier: number;         // damage reduction this piece would grant if applied
+}
+
+/**
+ * Evaluate whether one armour piece deflects an enemy attack roll.
+ *
+ * Per the Core Rules: a 1-die armour set matches the enemy's Primary
+ * attack die; a 2-die set matches Primary AND Secondary in order. For
+ * 3+ dice (notation like "⚅ ⚁ + ⚁") the rules are nuanced; we use a
+ * loose heuristic — every armour die must equal Primary or Secondary —
+ * and let the player override the suggested check.
+ */
+export function evaluateDeflection(
+  diceSetText: string,
+  enemyPrimary: number,
+  enemySecondary: number,
+  modifierText: string,
+): DeflectionEval {
+  const diceSet = parseDiceList(diceSetText);
+  const modifier = parseArmourDeflection(modifierText);
+  if (diceSet.length === 0) {
+    return { diceSet: [], matches: [], fullMatch: false, modifier };
+  }
+  let matches: boolean[];
+  if (diceSet.length === 1) {
+    matches = [diceSet[0] === enemyPrimary];
+  } else if (diceSet.length === 2) {
+    matches = [diceSet[0] === enemyPrimary, diceSet[1] === enemySecondary];
+  } else {
+    matches = diceSet.map(
+      (d) => d === enemyPrimary || d === enemySecondary,
+    );
+  }
+  const fullMatch = matches.every(Boolean);
+  return { diceSet, matches, fullMatch, modifier };
 }

@@ -1,30 +1,48 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { Layout } from "@/components/Layout";
-import { SheetView } from "@/views/Sheet";
-import { CombatView } from "@/views/Combat";
-import { TablesView } from "@/views/Tables";
-import { CardsView } from "@/views/Cards";
-import { RulesView } from "@/views/Rules";
-import { NotesView } from "@/views/Notes";
+
+// Each view is its own chunk so the first paint doesn't pay for
+// react-markdown / remark-gfm / rehype-slug (Rules) up front.
+const SheetView = lazy(() => import("@/views/Sheet"));
+const CombatView = lazy(() => import("@/views/Combat"));
+const TablesView = lazy(() => import("@/views/Tables"));
+const CardsView = lazy(() => import("@/views/Cards"));
+const RulesView = lazy(() => import("@/views/Rules"));
+const NotesView = lazy(() => import("@/views/Notes"));
+const SearchView = lazy(() => import("@/views/Search"));
+
+function Loader() {
+  return (
+    <div className="p-6 text-sm text-zinc-500" role="status" aria-live="polite">
+      Loading…
+    </div>
+  );
+}
+
+function Lazy({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<Loader />}>{children}</Suspense>;
+}
 
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<SheetView />} />
-        <Route path="combat" element={<CombatView />} />
-        <Route path="tables" element={<TablesView />} />
-        <Route path="tables/:id" element={<TablesView />} />
-        <Route path="cards" element={<CardsView />} />
-        <Route path="cards/:id" element={<CardsView />} />
-        <Route path="rules" element={<RulesView />} />
-        <Route path="notes" element={<NotesView />} />
+        <Route index element={<Lazy><SheetView /></Lazy>} />
+        <Route path="combat" element={<Lazy><CombatView /></Lazy>} />
+        <Route path="tables" element={<Lazy><TablesView /></Lazy>} />
+        <Route path="tables/:id" element={<Lazy><TablesView /></Lazy>} />
+        <Route path="cards" element={<Lazy><CardsView /></Lazy>} />
+        <Route path="cards/:id" element={<Lazy><CardsView /></Lazy>} />
+        <Route path="rules" element={<Lazy><RulesView /></Lazy>} />
+        <Route path="notes" element={<Lazy><NotesView /></Lazy>} />
+        <Route path="search" element={<Lazy><SearchView /></Lazy>} />
         {/* Reserved for future epics — render a friendly stub if someone
             navigates there manually. */}
-        <Route path="map" element={<SheetView />} />
-        <Route path="present/*" element={<SheetView />} />
-        <Route path="*" element={<SheetView />} />
+        <Route path="map" element={<Lazy><SheetView /></Lazy>} />
+        <Route path="present/*" element={<Lazy><SheetView /></Lazy>} />
+        <Route path="*" element={<Lazy><SheetView /></Lazy>} />
       </Route>
     </Routes>
   );
