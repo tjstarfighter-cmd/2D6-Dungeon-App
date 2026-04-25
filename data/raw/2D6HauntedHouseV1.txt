@@ -1,0 +1,834 @@
+===== PAGE 1 =====
+1 
+===== PAGE 2 =====
+ 
+===== PAGE 3 =====
+3 
+ 
+2D6 Dungeon 
+Haunted House Expansion 
+A roll-and-write, print & play, solo player, dungeon crawler game 
+Written and Designed by  
+Toby Lancaster 
+Cover by 
+Henrik Karppinen 
+Illustration by 
+Dean Spencer 
+Proofreaders 
+Clive Sutherland, Jeffrey Mullen, Nick Moore,  
+Jonathan Mortimer, Steve Boulter, Scott Kirby,  
+Todd Pote and Brett Moyer. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Copyright 2023 DR Games (Version 1) 
+===== PAGE 4 =====
+4 
+ 
+Contents 
+ 
+Introduction, Setting and Theme, Low Magic  
+ 
+5 
+Constable Levels Table 
+ 
+ 
+ 
+ 
+ 
+6 
+All Deaths’ Eve, The Constable, The Fear Sheet 
+  
+6 
+How Fear Works, Magic Banes, Designed for Low Levels 7 
+Size of Maps, Completing the House 
+ 
+ 
+ 
+7 
+Trapped In The House, Treasure, Gods  
+ 
+ 
+8 
+Drawing Creature Encounters 
+ 
+ 
+ 
+ 
+8 
+Tables, No Patrols and Sound , No rations 
+   
+ 
+8 
+Room and Door Generation Changes 
+ 
+ 
+  
+9 
+Considered as 1 Level, Doors and Locks  
+ 
+ 
+9 
+A Door  On Every Wall, No Exit Squares 
+ 
+  
+9 
+Fitting in Rooms  
+ 
+ 
+ 
+ 
+ 
+ 
+9 
+No Generated Corridors, No Large Rooms 
+ 
+ 
+10 
+Types of Rooms, Level 1 - The Entrance Room Hallway 
+10 
+Level 2 - The Landing, Level 3 - The Loft Space 
+ 
+11 
+Fear Sheet 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+12 
+Tables Index 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+13 
+Bestiary Index  
+ 
+ 
+ 
+ 
+ 
+ 
+24 
+ 
+ 
+===== PAGE 5 =====
+5 
+Introduction 
+ 
+This is the Haunted House Expansion 
+for 2D6 Dungeon, a seasonal special, 
+and features the rules and tables for 
+exploring a Haunted House. To play 
+the Haunted House Expansion you 
+will need the 2D6 Dungeon Core 
+Rules to reference, but there are some 
+exclusive and themed rules below that 
+make exploring the Haunted House 
+quite different to exploring a dungeon. 
+You will also need the Tables Codex as 
+some of the tables referenced in this 
+expansion are found there.  
+ 
+Warning 
+ 
+There are aspects of horror in this 
+version of 2D6 which you may find 
+disturbing. It is also ‘set on hard’ and  
+is meant to be challenging. 
+ 
+Setting and Theme 
+ 
+The Haunted House expansion is 
+based in the same world as the rest of 
+the 2D6 Dungeon and, although the 
+Haunted House theme is often seen in 
+modern contexts, in this situation it is 
+placed in the fantasy world of 
+Coradine. This time though, rather 
+than playing an adventurer, you play 
+the town constable and have been 
+called to a house on the outskirts of 
+town, where something strange is 
+happening. As it happens, it is All 
+Deaths' Eve and locals want the site 
+cleared so the evil does not spread to 
+the rest of the village. They are calling 
+it a haunting, an infestation of Low 
+Magic, but who knows what creatures 
+have taken up residence? 
+ 
+Low Magic 
+ 
+There is a form of magic that is 
+commonly known as ‘Low Magic’ and 
+is viewed as debased and sinister by the 
+normal folk of Coradine. It 
+occasionally creeps to the surface, 
+residuals of dark magic lingering on 
+corpses of monsters who have 
+breached the upside, contaminating 
+objects that people then take up. 
+Sometimes those who return from the 
+dungeons unknowingly bring back 
+cursed items or treasure and the power 
+of the gods from below can seep into 
+dark hollows or tar pits on open 
+ground. A few who encounter these, 
+occasionally women out foraging in the 
+forests or children playing in the fields, 
+become poisoned. They begin to 
+practice the dark arts and cannot 
+explain their compulsions. Over time 
+they show signs of their corruption 
+and are cast out, and often retreat into 
+the underworld, or find a place of 
+sanctuary away from prying eyes where 
+they can continue with their newfound 
+addiction. The magic they practice is 
+weak and often involves imbuing 
+strangely crafted objects with curses or 
+wards, carving or weaving into them 
+symbols with a dark purpose. 
+ 
+ 
+===== PAGE 6 =====
+6 
+All Deaths' Eve 
+ 
+On All Deaths' Eve those who practice 
+Low Magic are drawn to each other in 
+what is known as the Dark Correlation. 
+It is a day when the vibrancy and heat 
+of summer has long gone and ahead 
+lies the cold of death. It is a turning 
+point when their dark magic is not 
+interrupted by the light, when 
+creatures charged by Low Magic can 
+emerge for one night before their 
+power begins to wane or they are 
+found. If they are left to practice their 
+magic, they become stronger and next 
+year the infection would have spread 
+and, although they never threaten the 
+peace of the surface, they can take 
+your loved ones. 
+ 
+The Haunted House is one such place 
+where the Dark Correlation is 
+happening, and it is up to you to stop 
+the infection. 
+ 
+The Constable 
+ 
+In this version of 2D6 Dungeon you 
+play a constable rather than an 
+adventurer. You use a normal character 
+sheet and use the same manoeuvres. 
+The main difference between the 
+adventurer and constable is the XP 
+level names and number of them. The 
+constable also never goes down into 
+dungeons or lairs. They work on the 
+surface and can be employed by 
+adventurers to help deal with problems 
+in their realm, an aspect that features 
+in the expansion 2D6 Realm 
+(published 2024). 
+ 
+The Fear Sheet 
+ 
+One of the few psychological aspects 
+that Low Magic can command is 
+primal fear. When you enter the 
+Haunted House, you will encounter a 
+focused and pervasive fear that is 
+amplified by Low Magic. This will 
+affect your mind and torture your 
+physical being. To represent this there 
+is an addition to your character sheet 
+that is called the Fear Sheet, which you 
+must print off for this adventure. It is 
+found on page 12 after the rules.  
+Constable Levels Table 
+Level 
+Title 
+Number and 
+Max Level of 
+Manoeuvres 
+XP to 
+Level 
+Up 
+Shift 
+Total 
+Discipline 
+Total 
+Precision 
+Total 
+HP 
+Base 
+line 
+1 
+Schooled 
+2 - Level 1 
+200 
++2 
++1 
+0 
+10 
+2 
+Competent 
+2 - Level 1 
+750 
++2 
++1 
++1 
+20 
+3 
+Skilled 
+2 - Level 1 
+1500 
++2 
++2 
++1 
+25 
+4 
+Hardy 
+2 - Level 2 
+2500 
++2 
++2 
++2 
+35 
+5 
+Imposing 
+3 - Level 2 
+- 
++3 
++3 
++2 
+55 
+===== PAGE 7 =====
+7 
+How Fear Works 
+ 
+You will gather Fear Points as you 
+explore the Haunted House. As you do 
+you become more crippled by fear, and 
+it affects your ability to perform. When 
+you gain Fear Points you are affected 
+in numerous ways, as can be seen on 
+the Fear Sheet. Your observational 
+skills are marred, your ability to fight 
+stifled and ultimately your sanity is 
+tested by what you experience. The 
+second you gain 10 Fear Points you 
+crack, run your hands through your 
+hair and flee from the house 
+screaming. You have failed and spend 
+time recovering over the coming 
+weeks. If you can avoid 10 Fear Points 
+and clear the final room, then the fear 
+evaporates with the realisation of 
+success. Archive the Fear Sheet. 
+ 
+You can lose Fear Points when in the 
+Haunted House, but there are only a 
+few occasions when you do. Fear Point 
+effects are also cumulative, so if you 
+have 6 points then you have 6 affects 
+that are imposed on your character, the 
+effect for the sixth point and all the 
+points prior to that. 
+ 
+Magic Banes 
+ 
+On the Fear Sheet is a space for Magic 
+Banes. These are objects, imbued with 
+Low Magic, that you have found in the 
+house. All of them have a one-time use 
+and have been left in the house by the 
+Low Magic users who infest it. They 
+can be used on their creators though 
+and are useful when facing tough odds. 
+But there is a side effect, if you use 
+one you gain 1 Fear Point, the effect 
+of the Magic Bane terrifying you (see 
+Magic Bane table). Banes cannot be 
+taken outside the house. They have no 
+power if they are.  
+ 
+Designed for Low Level Characters 
+ 
+The Haunted House is designed for 
+level 1 constables. A starting adventure 
+if you like for this new character. If 
+you wish to explore a second Haunted 
+House with this character, then double 
+the number of creatures in every 
+second encounter apart from the loft. 
+It is designed to be a short Halloween 
+adventure with a small, three level map. 
+As previously mentioned there will be 
+further missions for the constable in 
+future expansions. 
+ 
+Size of the Map 
+ 
+There are three levels to the Haunted 
+House. The first two are 11x11 and the 
+third and top level, the loft space, is 
+one room size. The stairs on levels 1 
+and 2 go upwards as would be 
+expected in a house. There is no cellar. 
+ 
+Completing the House 
+ 
+The goal for the Haunted House is to 
+clear all three levels. The final room is 
+in the loft space, and you need to 
+explore every room on the map to 
+clear out all the monsters that live 
+there so they will no longer threaten 
+the town. Once this is done the 
+constable descends and leaves the 
+house. Back in town the people are 
+relieved and you are given 30 GC, a  
+===== PAGE 8 =====
+8 
+small reward that has been gathered as 
+thanks for their continued safety. The 
+local bard is already scribing a song of 
+your exploits.  
+ 
+Trapped In The House 
+ 
+When you enter the house the door 
+slams shut behind you and is held shut 
+by a magical presence, Low Magic 
+ward runes scratched upon its surface. 
+You cannot force it open or retreat 
+through a window as they too are 
+magically sealed. Only when you clear 
+the house does the magic dissipate, 
+allowing you to escape, or when you 
+are broken by fear and it releases you. 
+ 
+Treasure 
+ 
+There is a range of All Deaths’ Eve 
+themed loot and several special items 
+to be found in the Haunted House. All 
+are yours to keep, apart from Banes, as 
+part of your constable’s salary. 
+ 
+Gods 
+ 
+The gods have no hold over the 
+Haunted House, their presence kept at 
+bay by the Low Magic that is 
+empowered by All Deaths’ Eve. In the 
+Haunted House you are alone. 
+ 
+Drawing Creature Encounters 
+ 
+There is more flexibility with creature 
+encounters in the Haunted House. 
+There are four Halloween level 1 
+animals (HL1A), four Halloween level 
+1 Humanoids (HL1H) and four 
+Halloween level 1 undead (HL1U) 
+included here and can be found at the 
+back of the book. There is also a free 
+Halloween Creature Card Expansion 
+for the Haunted House with more 
+creatures that can be added. This is 
+free to download and includes 
+contributions from the original backers 
+of 2D6 Dungeon. When asked to roll 
+on a creature table for the Haunted 
+House you can instead draw a card of 
+the correct type if you prefer, turn it 
+over and face the creature. In this way 
+you can expand the range of creatures 
+available. 
+ 
+Tables 
+ 
+Some core rules tables are referenced 
+in the room descriptions, for which 
+you will need to use the Tables Codex. 
+These include HST1, RATT1, POT1, 
+POT2, PT1, BT1, SCT1 and SCT2. 
+ 
+No Patrols and Sound 
+ 
+There are no patrols in the Haunted 
+House, but if you do make excessive 
+noise, you hear a loud scream and stop 
+what you are doing. You gain 1 Fear 
+Point consequently. It pays to be quiet 
+in the housed house. 
+ 
+No Rations 
+ 
+You may not eat or use rations in the 
+house. You do not eat on the stairs, for 
+the levels are considered to be 1 level.  
+===== PAGE 9 =====
+9 
+Room and Door Generation 
+Changes 
+ 
+There are several key changes to how 
+rooms and doors are generated in the 
+Haunted House. This is because the 
+function of the property is very 
+different from a dungeon and 
+consequently work differently, 
+although these changes require you to 
+know the core rules so you can adapt 
+them. 
+ 
+Considered as 1 Level 
+ 
+Even though there are 3 levels to the 
+house compared to dungeon sizes they 
+are much smaller. All three are 
+considered 1 level for potion and scroll 
+effects. For example, if you take a 
+Potion of Willpower then it lasts for 
+the whole time you are in the house. 
+ 
+Doors and Locks 
+ 
+Every door in the Haunted House is 
+wooden. Draw them in as you go. 
+They are also unlocked but they have a 
+mind of their own, the Low Magic 
+seeping into the once living wood of 
+the structure. When using a door roll a 
+D6. On a 5 or 6 you roll on HDT, the 
+Haunted Door Table, for something 
+strange is going on. Do not roll on 
+HDT when back tracking. 
+ 
+A Door on Every Wall 
+ 
+Whenever you generate a room in the 
+Haunted House add an exit to every 
+wall unless one of the walls is the 
+Outer Boundary. Add a door even if 
+the wall has only one available square. 
+Do not add more than one door to a 
+wall and, as per normal, do not add a 
+door to the wall you entered through. 
+There is one exception though. If 
+there is a space that can only be 
+accessed if you place a second door 
+on the adjoining wall, then do so. 
+No space can go unexplored in the 
+house, even single squares. 
+ 
+No Exit Squares 
+ 
+There are no exit shafts in the Haunted 
+House, for the walls are narrow 
+wooden partitions, not thick stone 
+walls that you find in a dungeon. The 
+rooms are tightly packed to take full 
+advantage of the foundation. Simply 
+incorporate the walls you have already 
+established into any new rooms you 
+generate.  
+ 
+Fitting in Rooms 
+ 
+You must fill the entire floor space of 
+the house. If you generate a room that 
+is larger than the space but there is a  
+===== PAGE 10 =====
+10 
+ gap next to another room that it may 
+push into, do so and occupy this off-
+set space. This represents the fact that 
+some of these rooms have alcoves and 
+inbuilt nooks. Failure to fit in small 
+spaces to the natural room layout will 
+result in too many small rooms. 
+ 
+No Generated Corridors (+1 to 1s) 
+ 
+Apart from the Entrance Room there 
+are no corridors in the Haunted 
+House. When you roll a corridor +1 
+to the 1 (not to both dice unless you 
+roll double 1) and so therefore treat it 
+as a small room. Make sure you 
+generate every small space available in 
+the house, even single squares. 
+ 
+No Large Rooms 
+ 
+There are no, what are considered by 
+the core rules, large rooms in the 
+Haunted House. Consider all rooms, 
+apart from small rooms, which are 6 
+squares or smaller, to be normal 
+rooms. Roll on the Level Room Table. 
+If you roll doubles proceed as normal 
+and roll again. Even if the dimensions 
+of the room are large, still roll for a 
+normal room, although there is limited 
+space in the house. 
+ 
+Types of  Room 
+ 
+For each level there are a maximum of 
+18 different types of normal room, per 
+level, rather than 36 as in the core rules 
+for dungeons. This is simply because 
+there are only so many types of room 
+found in a house on Coradine. It is 
+also worth noting that not all houses 
+have a kitchen because inhabitants may 
+cook over a fireplace or burner. But 
+due to the presence of Low Magic you 
+cannot start fires yourself in the house. 
+The elemental properties are not the 
+same in this haunted abode. Each 
+room has two dice number references 
+rather than one and each room is 
+unique, not including small rooms. 
+ 
+Level 1 - The Entrance Room 
+Hallway 
+ 
+The first room of the Haunted House 
+is a 1 by 6 corridor, called the hallway, 
+with two evenly spaced wooden doors 
+along the east and west walls (two on 
+each wall) with a staircase going up to 
+level 2 at the end of the corridor, 
+giving you five ways in which to leave 
+the hallway. Add in the stairs up from 
+level 1, so you will need to position 
+this new room above the stairs below. 
+There is no encounter here. You can 
+explore the rooms in any order but you 
+must clear all rooms to complete the 
+adventure.  
+===== PAGE 11 =====
+11 
+Level 2 – The Landing 
+ 
+When you climb the stairs to level 2, 
+add in the stairs from level 1, so you 
+will need to position the level 2 landing 
+room above the stairs below. Including 
+the stairs from level 1, draw a 2 by 5, 
+or 5 by 2, room in any direction you 
+like. Add a staircase or ladder in one 
+corner that leads to level 3. There is no 
+encounter here. Draw a wooden door 
+on each wall.  
+ 
+Level 3 – The Loft Space 
+ 
+When you enter this level simply 
+generate 1 room but plus 3 to each 
+dice, making the room larger. Roll 
+for this on LFTT1 - Loft Space Table 1 
+to discover what it is. There is only one 
+room on this level. It is the final room 
+and when cleared, as long as all the 
+rooms on the lower levels are also 
+cleared, you have completed the 
+Haunted House. The front door opens, 
+the Low Magic dissipates, and you can 
+leave victorious. 
+ 
+Note from the author 
+ 
+“Thank you for playing the Haunted 
+House for 2D6 Dungeon. When I 
+created this I wanted to it to be a fun  
+and spooky Halloween experience. So I 
+hope it hit the mark!  
+ 
+It is also worth noting that it is fine if 
+you want to tinker with some of these 
+rules, house-ruling if you like. I have 
+absolutely no problem with any player 
+bringing their own ideas to the game. 
+ 
+There will be more adventures for the 
+constable in the new 2D6 Realm  
+expansion that is coming to Kickstarter 
+in late in 2023, so keep an eye out for 
+more adventures. Don’t forget to also 
+check out our website at 
+www.drgames.co.uk.” 
+ 
+Enjoy! 
+Toby Lancaster 
+===== PAGE 12 =====
+12 
+===== PAGE 13 =====
+13 
+Haunted House Tables 
+Tables for the Haunted House 
+Table 
+Page 
+COBT1 - Casket or Small Box Table 1 
+14 
+DAMIT1 - Dark Miasma Table 1 
+14 
+HL1A - Halloween Level 1 Animals 
+15 
+HL1H - Halloween Level 1 Humans 
+15 
+HL1U - Halloween Level 1 Undead 
+15 
+HDT - Haunted Door Table 
+16 
+LFTT1 - Loft Space Table 1 
+16 
+HHSR - Haunted House Small Rooms 
+17 
+Haunted House - Level 1 - Part 1 
+18 
+Haunted House - Level 1 - Part 2 
+19 
+Haunted House - Level 2 - Part 1 
+20 
+Haunted House - Level 2 - Part 2 
+21 
+MBAT1 - Magic Bane Table 1 
+22 
+RALT1 - Random Loot Table 1 
+22 
+SOBT1 - Strange Object Table 1 
+23 
+WAHT1 - Wall Hanging Table 1 
+23 
+===== PAGE 14 =====
+14 
+===== PAGE 15 =====
+15 
+===== PAGE 16 =====
+16 
+===== PAGE 17 =====
+17 
+===== PAGE 18 =====
+18 
+===== PAGE 19 =====
+19 
+===== PAGE 20 =====
+20 
+===== PAGE 21 =====
+21 
+===== PAGE 22 =====
+22 
+===== PAGE 23 =====
+23 
+===== PAGE 24 =====
+24 
+Bestiary 
+An index of the creatures for the Haunted House. 
+Creatures 
+Page 
+Clay Ogle 
+25 
+Dark Enchanter 
+25 
+Gargoyle 
+25 
+Giant Bat 
+25 
+Morphed Beast 
+26 
+Possessed Owl 
+26 
+Shrunken Head 
+26 
+Spirit 
+26 
+Straw Manikin 
+27 
+Tortured Being 
+27 
+Witch Doctor 
+27 
+Wolfspawn 
+27 
+===== PAGE 25 =====
+25 
+===== PAGE 26 =====
+26 
+===== PAGE 27 =====
+27 
+===== PAGE 28 =====
+28 
+===== PAGE 29 =====
+29 
+===== PAGE 30 =====
+
+===== PAGE 31 =====
+31 
+===== PAGE 32 =====
+32 
+This is the Haunted House Expansion for 2D6 Dungeon, a seasonal special, 
+and features the rules and tables for exploring a Haunted House. To play the 
+Haunted House Expansion you will need the 2D6 Dungeon Core Rules to 
+reference, but there are some exclusive and themed rules that make exploring 
+the Haunted House quite different to exploring a dungeon. You will also need 
+the Tables Codex as some of the tables referenced in this expansion are found 
+there.  
+ 
+The Haunted House expansion is based in the same world as the rest of the 
+2D6 Dungeon and although the Haunted House theme is often seen in modern 
+contexts, in this situation it is placed in the fantasy world of Coradine. This time 
+though, rather than playing an adventurer, you play the town constable and have 
+been called to a house on the outskirts of town, where something strange is 
+happening. As it happens it is All Deaths' Eve and locals want the site cleared so 
+the evil does not spread to the rest of the village. They are calling it a haunting, 
+an infestation of Low Magic, but who knows what creatures have taken up 
+residence? 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DR Games ©2023 

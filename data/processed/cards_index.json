@@ -1,0 +1,1066 @@
+{
+  "summary": {
+    "total": 111,
+    "by_kind": {
+      "creature": 91,
+      "god": 6,
+      "herb": 6,
+      "reference": 4,
+      "sheet": 4
+    },
+    "by_level": {
+      "1": 29,
+      "2": 14,
+      "3": 13,
+      "4": 5,
+      "5": 7,
+      "6": 7,
+      "7": 6,
+      "8": 4,
+      "9": 2,
+      "10": 4
+    },
+    "by_category": {
+      "Animal": 12,
+      "Fungal": 4,
+      "Human": 51,
+      "Insect": 4,
+      "Monster": 7,
+      "Undead": 12,
+      "Creature": 1
+    },
+    "records_with_issues": 0
+  },
+  "cards": [
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Giant Horned Anaconda L1 (A).png",
+      "filename": "Giant Horned Anaconda L1 (A).png",
+      "raw_stem": "Giant Horned Anaconda L1 (A)",
+      "name": "Giant Horned Anaconda",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Guard Dog L1 (A).png",
+      "filename": "Guard Dog L1 (A).png",
+      "raw_stem": "Guard Dog L1 (A)",
+      "name": "Guard Dog",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Huge Infected Rat L1 (A).png",
+      "filename": "Huge Infected Rat L1 (A).png",
+      "raw_stem": "Huge Infected Rat L1 (A)",
+      "name": "Huge Infected Rat",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Huge Rat L1 (A).png",
+      "filename": "Huge Rat L1 (A).png",
+      "raw_stem": "Huge Rat L1 (A)",
+      "name": "Huge Rat",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Scarlet Cobra L1 (A).png",
+      "filename": "Scarlet Cobra L1 (A).png",
+      "raw_stem": "Scarlet Cobra L1 (A)",
+      "name": "Scarlet Cobra",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Shard Rock Python L1 (A).png",
+      "filename": "Shard Rock Python L1 (A).png",
+      "raw_stem": "Shard Rock Python L1 (A)",
+      "name": "Shard Rock Python",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/War Hound L1 (A).png",
+      "filename": "War Hound L1 (A).png",
+      "raw_stem": "War Hound L1 (A)",
+      "name": "War Hound",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Animal Cards/Work Dog L1 (A).png",
+      "filename": "Work Dog L1 (A).png",
+      "raw_stem": "Work Dog L1 (A)",
+      "name": "Work Dog",
+      "level": 1,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Fungal/Fungal Geist L1 (F).png",
+      "filename": "Fungal Geist L1 (F).png",
+      "raw_stem": "Fungal Geist L1 (F)",
+      "name": "Fungal Geist",
+      "level": 1,
+      "category": "Fungal",
+      "category_code": "F"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Fungal/Musty Bloater L1 (F).png",
+      "filename": "Musty Bloater L1 (F).png",
+      "raw_stem": "Musty Bloater L1 (F)",
+      "name": "Musty Bloater",
+      "level": 1,
+      "category": "Fungal",
+      "category_code": "F"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Fungal/Slimy Gorger L1 (F).png",
+      "filename": "Slimy Gorger L1 (F).png",
+      "raw_stem": "Slimy Gorger L1 (F)",
+      "name": "Slimy Gorger",
+      "level": 1,
+      "category": "Fungal",
+      "category_code": "F"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Apothecary L1 (H).png",
+      "filename": "Apothecary L1 (H).png",
+      "raw_stem": "Apothecary L1 (H)",
+      "name": "Apothecary",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Artisan L1 (H).png",
+      "filename": "Artisan L1 (H).png",
+      "raw_stem": "Artisan L1 (H)",
+      "name": "Artisan",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Blacksmith L1 (H).png",
+      "filename": "Blacksmith L1 (H).png",
+      "raw_stem": "Blacksmith L1 (H)",
+      "name": "Blacksmith",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Crazed Preacher L1 (H).png",
+      "filename": "Crazed Preacher L1 (H).png",
+      "raw_stem": "Crazed Preacher L1 (H)",
+      "name": "Crazed Preacher",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Cultist L1 (H).png",
+      "filename": "Cultist L1 (H).png",
+      "raw_stem": "Cultist L1 (H)",
+      "name": "Cultist",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Dark Cleric L1 (H).png",
+      "filename": "Dark Cleric L1 (H).png",
+      "raw_stem": "Dark Cleric L1 (H)",
+      "name": "Dark Cleric",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Guard L1 (H).png",
+      "filename": "Guard L1 (H).png",
+      "raw_stem": "Guard L1 (H)",
+      "name": "Guard",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Handler L1 (H).png",
+      "filename": "Handler L1 (H).png",
+      "raw_stem": "Handler L1 (H)",
+      "name": "Handler",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Infernal Monk L1 (H).png",
+      "filename": "Infernal Monk L1 (H).png",
+      "raw_stem": "Infernal Monk L1 (H)",
+      "name": "Infernal Monk",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Jailor L1 (H).png",
+      "filename": "Jailor L1 (H).png",
+      "raw_stem": "Jailor L1 (H)",
+      "name": "Jailor",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Labourer L1 (H).png",
+      "filename": "Labourer L1 (H).png",
+      "raw_stem": "Labourer L1 (H)",
+      "name": "Labourer",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Medic L1(H).png",
+      "filename": "Medic L1(H).png",
+      "raw_stem": "Medic L1(H)",
+      "name": "Medic",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Merchant L1 (H).png",
+      "filename": "Merchant L1 (H).png",
+      "raw_stem": "Merchant L1 (H)",
+      "name": "Merchant",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Scout L1 (H).png",
+      "filename": "Scout L1 (H).png",
+      "raw_stem": "Scout L1 (H)",
+      "name": "Scout",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Thug L1 (H).png",
+      "filename": "Thug L1 (H).png",
+      "raw_stem": "Thug L1 (H)",
+      "name": "Thug",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Veteran L1 (H).png",
+      "filename": "Veteran L1 (H).png",
+      "raw_stem": "Veteran L1 (H)",
+      "name": "Veteran",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Human Cards/Warrior L1 (H).png",
+      "filename": "Warrior L1 (H).png",
+      "raw_stem": "Warrior L1 (H)",
+      "name": "Warrior",
+      "level": 1,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L1 Cards/L1 Insect Cards/Huge Spider L1 (I).png",
+      "filename": "Huge Spider L1 (I).png",
+      "raw_stem": "Huge Spider L1 (I)",
+      "name": "Huge Spider",
+      "level": 1,
+      "category": "Insect",
+      "category_code": "I"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L10 Cards/L10 Humans Cards/Blood Lord L10 (H).png",
+      "filename": "Blood Lord L10 (H).png",
+      "raw_stem": "Blood Lord L10 (H)",
+      "name": "Blood Lord",
+      "level": 10,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L10 Cards/L10 Humans Cards/Nether Lord L10 (H).png",
+      "filename": "Nether Lord L10 (H).png",
+      "raw_stem": "Nether Lord L10 (H)",
+      "name": "Nether Lord",
+      "level": 10,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L10 Cards/L10 Monster/Ferric Lord L10 (M).png",
+      "filename": "Ferric Lord L10 (M).png",
+      "raw_stem": "Ferric Lord L10 (M)",
+      "name": "Ferric Lord",
+      "level": 10,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L10 Cards/L10 Monster/Mire Lord L10 (M).png",
+      "filename": "Mire Lord L10 (M).png",
+      "raw_stem": "Mire Lord L10 (M)",
+      "name": "Mire Lord",
+      "level": 10,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Animal Cards/Brown Bear L2 (A).png",
+      "filename": "Brown Bear L2 (A).png",
+      "raw_stem": "Brown Bear L2 (A)",
+      "name": "Brown Bear",
+      "level": 2,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Animal Cards/Giant Rat L2 (A).png",
+      "filename": "Giant Rat L2 (A).png",
+      "raw_stem": "Giant Rat L2 (A)",
+      "name": "Giant Rat",
+      "level": 2,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Fungal Cards/Sporal Rapnel L2 (F).png",
+      "filename": "Sporal Rapnel L2 (F).png",
+      "raw_stem": "Sporal Rapnel L2 (F)",
+      "name": "Sporal Rapnel",
+      "level": 2,
+      "category": "Fungal",
+      "category_code": "F"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Adept L2 (H).png",
+      "filename": "Adept L2 (H).png",
+      "raw_stem": "Adept L2 (H)",
+      "name": "Adept",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Amaurotic L2 (H).png",
+      "filename": "Amaurotic L2 (H).png",
+      "raw_stem": "Amaurotic L2 (H)",
+      "name": "Amaurotic",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Banished L2 (H).png",
+      "filename": "Banished L2 (H).png",
+      "raw_stem": "Banished L2 (H)",
+      "name": "Banished",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Baric Knight L2 (H).png",
+      "filename": "Baric Knight L2 (H).png",
+      "raw_stem": "Baric Knight L2 (H)",
+      "name": "Baric Knight",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Heedless L2 (H).png",
+      "filename": "Heedless L2 (H).png",
+      "raw_stem": "Heedless L2 (H)",
+      "name": "Heedless",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Mercenary L2 (H).png",
+      "filename": "Mercenary L2 (H).png",
+      "raw_stem": "Mercenary L2 (H)",
+      "name": "Mercenary",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Mystic L2 (H).png",
+      "filename": "Mystic L2 (H).png",
+      "raw_stem": "Mystic L2 (H)",
+      "name": "Mystic",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Human Cards/Overlord L2 (H).png",
+      "filename": "Overlord L2 (H).png",
+      "raw_stem": "Overlord L2 (H)",
+      "name": "Overlord",
+      "level": 2,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Undead Cards/Skeleton Warrior L2 (U).png",
+      "filename": "Skeleton Warrior L2 (U).png",
+      "raw_stem": "Skeleton Warrior L2 (U)",
+      "name": "Skeleton Warrior",
+      "level": 2,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Undead Cards/The Vanished L2 (U).png",
+      "filename": "The Vanished L2 (U).png",
+      "raw_stem": "The Vanished L2 (U)",
+      "name": "The Vanished",
+      "level": 2,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L2 Cards/L2 Undead Cards/Zombie L2 (U).png",
+      "filename": "Zombie L2 (U).png",
+      "raw_stem": "Zombie L2 (U)",
+      "name": "Zombie",
+      "level": 2,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Afflicted L3 (H).png",
+      "filename": "Afflicted L3 (H).png",
+      "raw_stem": "Afflicted L3 (H)",
+      "name": "Afflicted",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Basal Initiate L3 (H).png",
+      "filename": "Basal Initiate L3 (H).png",
+      "raw_stem": "Basal Initiate L3 (H)",
+      "name": "Basal Initiate",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Grey Anchorite L3 (H).png",
+      "filename": "Grey Anchorite L3 (H).png",
+      "raw_stem": "Grey Anchorite L3 (H)",
+      "name": "Grey Anchorite",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Oldfang Pillarist L3 (H).png",
+      "filename": "Oldfang Pillarist L3 (H).png",
+      "raw_stem": "Oldfang Pillarist L3 (H)",
+      "name": "Oldfang Pillarist",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Puppeter L3 (H).png",
+      "filename": "Puppeter L3 (H).png",
+      "raw_stem": "Puppeter L3 (H)",
+      "name": "Puppeter",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Shadow Blade L3 (H).png",
+      "filename": "Shadow Blade L3 (H).png",
+      "raw_stem": "Shadow Blade L3 (H)",
+      "name": "Shadow Blade",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Human Cards/Tomb Raider L3 (H).png",
+      "filename": "Tomb Raider L3 (H).png",
+      "raw_stem": "Tomb Raider L3 (H)",
+      "name": "Tomb Raider",
+      "level": 3,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Ashen Fext L3 (U).png",
+      "filename": "Ashen Fext L3 (U).png",
+      "raw_stem": "Ashen Fext L3 (U)",
+      "name": "Ashen Fext",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Faraviata L3 (U).png",
+      "filename": "Faraviata L3 (U).png",
+      "raw_stem": "Faraviata L3 (U)",
+      "name": "Faraviata",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Ghost L3 (U).png",
+      "filename": "Ghost L3 (U).png",
+      "raw_stem": "Ghost L3 (U)",
+      "name": "Ghost",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Mummy L3 (U).png",
+      "filename": "Mummy L3 (U).png",
+      "raw_stem": "Mummy L3 (U)",
+      "name": "Mummy",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Stone Maiden L3 (U).png",
+      "filename": "Stone Maiden L3 (U).png",
+      "raw_stem": "Stone Maiden L3 (U)",
+      "name": "Stone Maiden",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L3 Cards/L3 Undead/Undead Bear L3 (U).png",
+      "filename": "Undead Bear L3 (U).png",
+      "raw_stem": "Undead Bear L3 (U)",
+      "name": "Undead Bear",
+      "level": 3,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L4  Cards/L4 Creature Cards/Under Troll L4 (C).png",
+      "filename": "Under Troll L4 (C).png",
+      "raw_stem": "Under Troll L4 (C)",
+      "name": "Under Troll",
+      "level": 4,
+      "category": "Creature",
+      "category_code": "C"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L4  Cards/L4 Human Cards/Red Guard L4 (H).png",
+      "filename": "Red Guard L4 (H).png",
+      "raw_stem": "Red Guard L4 (H)",
+      "name": "Red Guard",
+      "level": 4,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L4  Cards/L4 Undead Cards/Banshee L4 (U).png",
+      "filename": "Banshee L4 (U).png",
+      "raw_stem": "Banshee L4 (U)",
+      "name": "Banshee",
+      "level": 4,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L4  Cards/L4 Undead Cards/Ofilit L4 (U).png",
+      "filename": "Ofilit L4 (U).png",
+      "raw_stem": "Ofilit L4 (U)",
+      "name": "Ofilit",
+      "level": 4,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L4  Cards/L4 Undead Cards/Zordian Shade L4 (U).png",
+      "filename": "Zordian Shade L4 (U).png",
+      "raw_stem": "Zordian Shade L4 (U)",
+      "name": "Zordian Shade",
+      "level": 4,
+      "category": "Undead",
+      "category_code": "U"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Ascunde L5 (H).png",
+      "filename": "Ascunde L5 (H).png",
+      "raw_stem": "Ascunde L5 (H)",
+      "name": "Ascunde",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Efflux Crear L5(H).png",
+      "filename": "Efflux Crear L5(H).png",
+      "raw_stem": "Efflux Crear L5(H)",
+      "name": "Efflux Crear",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Mordell Axiom L5 (H).png",
+      "filename": "Mordell Axiom L5 (H).png",
+      "raw_stem": "Mordell Axiom L5 (H)",
+      "name": "Mordell Axiom",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Murind L5 (H).png",
+      "filename": "Murind L5 (H).png",
+      "raw_stem": "Murind L5 (H)",
+      "name": "Murind",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Raptured Shimbay L5 (H).png",
+      "filename": "Raptured Shimbay L5 (H).png",
+      "raw_stem": "Raptured Shimbay L5 (H)",
+      "name": "Raptured Shimbay",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Terra Magna L5 (H).png",
+      "filename": "Terra Magna L5 (H).png",
+      "raw_stem": "Terra Magna L5 (H)",
+      "name": "Terra Magna",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L5  Cards/L5 Humans/Vudelian Brawler L5 (H).png",
+      "filename": "Vudelian Brawler L5 (H).png",
+      "raw_stem": "Vudelian Brawler L5 (H)",
+      "name": "Vudelian Brawler",
+      "level": 5,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Animal Cards/Earth Croc L6 (A).png",
+      "filename": "Earth Croc L6 (A).png",
+      "raw_stem": "Earth Croc L6 (A)",
+      "name": "Earth Croc",
+      "level": 6,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Animal Cards/Scale Hound L6 (A).png",
+      "filename": "Scale Hound L6 (A).png",
+      "raw_stem": "Scale Hound L6 (A)",
+      "name": "Scale Hound",
+      "level": 6,
+      "category": "Animal",
+      "category_code": "A"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Human Cards/Infernal Cardinal L6 (H).png",
+      "filename": "Infernal Cardinal L6 (H).png",
+      "raw_stem": "Infernal Cardinal L6 (H)",
+      "name": "Infernal Cardinal",
+      "level": 6,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Insect Cards/Mortley Fly L6 (I).png",
+      "filename": "Mortley Fly L6 (I).png",
+      "raw_stem": "Mortley Fly L6 (I)",
+      "name": "Mortley Fly",
+      "level": 6,
+      "category": "Insect",
+      "category_code": "I"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Insect Cards/Scuttle Cow L6 (I).png",
+      "filename": "Scuttle Cow L6 (I).png",
+      "raw_stem": "Scuttle Cow L6 (I)",
+      "name": "Scuttle Cow",
+      "level": 6,
+      "category": "Insect",
+      "category_code": "I"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Insect Cards/Vibralect L6 (I).png",
+      "filename": "Vibralect L6 (I).png",
+      "raw_stem": "Vibralect L6 (I)",
+      "name": "Vibralect",
+      "level": 6,
+      "category": "Insect",
+      "category_code": "I"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L6 Cards/L6 Monsters Cards/Summoned Flayer L6 (M).png",
+      "filename": "Summoned Flayer L6 (M).png",
+      "raw_stem": "Summoned Flayer L6 (M)",
+      "name": "Summoned Flayer",
+      "level": 6,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/Defectus L7 (H).png",
+      "filename": "Defectus L7 (H).png",
+      "raw_stem": "Defectus L7 (H)",
+      "name": "Defectus",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/Haxa L7 (H).png",
+      "filename": "Haxa L7 (H).png",
+      "raw_stem": "Haxa L7 (H)",
+      "name": "Haxa",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/Night Umbra L7 (H).png",
+      "filename": "Night Umbra L7 (H).png",
+      "raw_stem": "Night Umbra L7 (H)",
+      "name": "Night Umbra",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/Pen Tamer L7 (H).png",
+      "filename": "Pen Tamer L7 (H).png",
+      "raw_stem": "Pen Tamer L7 (H)",
+      "name": "Pen Tamer",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/Shudder Fasa L7 (H).png",
+      "filename": "Shudder Fasa L7 (H).png",
+      "raw_stem": "Shudder Fasa L7 (H)",
+      "name": "Shudder Fasa",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L7 Cards/L7 Human Cards/The Keeper L7 (H).png",
+      "filename": "The Keeper L7 (H).png",
+      "raw_stem": "The Keeper L7 (H)",
+      "name": "The Keeper",
+      "level": 7,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L8 Cards/L8 Monster Cards/Cyclops L8 (M).png",
+      "filename": "Cyclops L8 (M).png",
+      "raw_stem": "Cyclops L8 (M)",
+      "name": "Cyclops",
+      "level": 8,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L8 Cards/L8 Monster Cards/Inghety L8 (M).png",
+      "filename": "Inghety L8 (M).png",
+      "raw_stem": "Inghety L8 (M)",
+      "name": "Inghety",
+      "level": 8,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L8 Cards/L8 Monster Cards/Lizard King L8 (M).png",
+      "filename": "Lizard King L8 (M).png",
+      "raw_stem": "Lizard King L8 (M)",
+      "name": "Lizard King",
+      "level": 8,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L8 Cards/L8 Monster Cards/Minotaur L8 (M).png",
+      "filename": "Minotaur L8 (M).png",
+      "raw_stem": "Minotaur L8 (M)",
+      "name": "Minotaur",
+      "level": 8,
+      "category": "Monster",
+      "category_code": "M"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L9 Cards/L9 human Cards/Jade Diviner L9 (H).png",
+      "filename": "Jade Diviner L9 (H).png",
+      "raw_stem": "Jade Diviner L9 (H)",
+      "name": "Jade Diviner",
+      "level": 9,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "creature",
+      "image": "docs/2D6 Dungeon Cards/L9 Cards/L9 human Cards/Rubicund L9 (H).png",
+      "filename": "Rubicund L9 (H).png",
+      "raw_stem": "Rubicund L9 (H)",
+      "name": "Rubicund",
+      "level": 9,
+      "category": "Human",
+      "category_code": "H"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Grakada the Core.png",
+      "filename": "Grakada the Core.png",
+      "name": "Grakada the Core"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Intuneric the Murk.png",
+      "filename": "Intuneric the Murk.png",
+      "name": "Intuneric the Murk"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Maduva the Rot.png",
+      "filename": "Maduva the Rot.png",
+      "name": "Maduva the Rot"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Murataynie the Pulp.png",
+      "filename": "Murataynie the Pulp.png",
+      "name": "Murataynie the Pulp"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Nevazator the Blind.png",
+      "filename": "Nevazator the Blind.png",
+      "name": "Nevazator the Blind"
+    },
+    {
+      "kind": "god",
+      "image": "docs/2D6 Dungeon Cards/God Cards/Radacina the Radix.png",
+      "filename": "Radacina the Radix.png",
+      "name": "Radacina the Radix"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Dankoma stems.png",
+      "filename": "Dankoma stems.png",
+      "name": "Dankoma stems"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Ilios Petals.png",
+      "filename": "Ilios Petals.png",
+      "name": "Ilios Petals"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Kathoto Spines.png",
+      "filename": "Kathoto Spines.png",
+      "name": "Kathoto Spines"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Malako Leaves.png",
+      "filename": "Malako Leaves.png",
+      "name": "Malako Leaves"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Scarlet Orievatus.png",
+      "filename": "Scarlet Orievatus.png",
+      "name": "Scarlet Orievatus"
+    },
+    {
+      "kind": "herb",
+      "image": "docs/2D6 Dungeon Cards/Herb Cards/Zoumerous Leaves.png",
+      "filename": "Zoumerous Leaves.png",
+      "name": "Zoumerous Leaves"
+    },
+    {
+      "kind": "reference",
+      "image": "docs/2D6 Dungeon Cards/Reference Cards/Combat and Shift Platform.png",
+      "filename": "Combat and Shift Platform.png",
+      "name": "Combat and Shift Platform"
+    },
+    {
+      "kind": "reference",
+      "image": "docs/2D6 Dungeon Cards/Reference Cards/Quick Reference Combat Card 1.png",
+      "filename": "Quick Reference Combat Card 1.png",
+      "name": "Quick Reference Combat Card 1"
+    },
+    {
+      "kind": "reference",
+      "image": "docs/2D6 Dungeon Cards/Reference Cards/Quick Reference Combat Card 2.png",
+      "filename": "Quick Reference Combat Card 2.png",
+      "name": "Quick Reference Combat Card 2"
+    },
+    {
+      "kind": "reference",
+      "image": "docs/2D6 Dungeon Cards/Reference Cards/Quick Reference Combat Card 3.png",
+      "filename": "Quick Reference Combat Card 3.png",
+      "name": "Quick Reference Combat Card 3"
+    },
+    {
+      "kind": "sheet",
+      "image": "docs/2D6 Dungeon Cards/2D6 Backpack.png",
+      "filename": "2D6 Backpack.png",
+      "name": "2D6 Backpack"
+    },
+    {
+      "kind": "sheet",
+      "image": "docs/2D6 Dungeon Cards/2D6 Character Sheet 2.png",
+      "filename": "2D6 Character Sheet 2.png",
+      "name": "2D6 Character Sheet 2"
+    },
+    {
+      "kind": "sheet",
+      "image": "docs/2D6 Dungeon Cards/2D6 Character Sheet.png",
+      "filename": "2D6 Character Sheet.png",
+      "name": "2D6 Character Sheet"
+    },
+    {
+      "kind": "sheet",
+      "image": "docs/2D6 Dungeon Cards/Narrative Moments.png",
+      "filename": "Narrative Moments.png",
+      "name": "Narrative Moments"
+    }
+  ]
+}

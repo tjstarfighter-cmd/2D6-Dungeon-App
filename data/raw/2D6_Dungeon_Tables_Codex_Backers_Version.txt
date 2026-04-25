@@ -1,0 +1,1447 @@
+===== PAGE 1 =====
+1 
+===== PAGE 2 =====
+2 
+ 
+===== PAGE 3 =====
+3 
+ 
+2D6 Dungeon 
+Tables Codex 
+A roll and write, print and play, solo player, dungeon crawler game 
+Written and Designed by  
+Toby Lancaster 
+Cover Art by 
+Eric Pommer (cover), Daniel Comerci and Dean Spencer 
+Proofreaders 
+Brent Ritchey, Clive Sutherland and Vincent Yip 
+Playtesters 
+ 
+Steve Boulter, Victor Haerinck Jr., Scott Kirby, Paul Baker, Nick Moore,  
+Tammy Dave, Frederico S. B. Mesquita, Tenten Kasak, Daniel Glassey, 
+James Marshall, Jess Rombocos, Michael Russell, Clive Sutherland,  
+Michael Ladd, Kaleb Mayfiled, Brian Moore, Tim Archer, Chris Brown,  
+Kasla Anesh, Patrick Philippi, Bob Bell, Brett Moyer, Jonathan Mortimer, 
+Michael Frusti, Vincent Yip, Dave Yan, Curt Rustle, Ibah Mycin,  
+Dimme, Orey Crounk, Loren, Dunbruha Jones,  Leszek Cimala, 
+Todd Pote, Justin Vinci,  Angelika Fröhlich, William Beekman,  
+Doug Rosengard,  Michael Philips, Eccentric Marcupial,  
+Patrick Szellas, Jeffrey Mullen, Julien Touzot, Sam Walmsley    
+João Campos, Javier Altman, Kevin Wiles, Eric Maxham (Flow Charts)   
+ 
+ 
+ 
+ 
+Copyright 2023 DR Games (Version - 1) 
+===== PAGE 4 =====
+4 
+The Tables Codex 
+ 
+To play 2D6 Dungeon you will need to 
+refer to the tables in the Tables Codex. 
+The tables are split up into four groups 
+and their pages highlighted with set 
+colour. 
+ 
+Generic tables that can apply to every 
+level and serve as general reference are 
+listed in yellow and start on page 5. 
+ 
+Random lists tables that list random 
+selections of items and will be 
+accessed throughout the game are 
+listed in green starting on page 14. 
+ 
+Loot tables that list loot that can be 
+found in game are listed in pink 
+starting on page 18. 
+ 
+Level tables that are needed for 
+individual levels are listed in a range of 
+colours, separated into groups of two 
+levels, starting on page 33. 
+ 
+Creature Cards are listed in page of 
+four cards from page 101. 
+ 
+The Modified Ranges Rule 
+  
+Some tables do not account for higher 
+or lower numbers after modifiers are 
+applied. In these cases, the Modified 
+Ranges Rule applies. This means that 
+you roll a zero for example on a table 
+and the nearest number is 1 you follow 
+the result for the 1. Or if you roll a 
+seven and the table only shows a six 
+then you go with the six. No bonuses 
+or penalties are applied for being out 
+of the range of the table. Some tables, 
+even though they require just one die 
+to be rolled, will have a broader range 
+of results, but this is taking into 
+account the application of modifiers to 
+the roll in this case. This allows for 
+more extreme rolls to have a more 
+specific consequence. 
+  
+Optional  Tables 
+ 
+A selection of optional tables can be 
+found at the back of the Tables Codex 
+book on page 129. 
+===== PAGE 5 =====
+5 
+Generic Tables 
+Tables that can apply to every level and serve as reference 
+Table 
+Page 
+Armour Table 1 
+6 
+ENAT1 - Enchanted Armour Table 1 
+6 
+FTCCT1 - Failed to Cast Correctly Table 1 
+7 
+GCT1- Gem Combination  Table 1 
+7 
+Magic Items Table 1 
+8 
+Magic Potions Table 1 
+9 
+Magic Scroll Table 1 
+10 
+POLT1 - Portcullis Lever Table 1  
+11 
+RFUT1 -  Recovery From Unconsciousness Table 1 
+11 
+STIT1 - Stolen Item Table 1 
+12 
+Starting Armour Table 1 
+12 
+Starting Scroll Table 1 
+12 
+Values of Gems Table  
+12 
+Values of Miscellaneous Items Table 
+12 
+Weapon Manoeuvres Table 1 
+13 
+===== PAGE 6 =====
+6 
+===== PAGE 7 =====
+7 
+===== PAGE 8 =====
+8 
+===== PAGE 9 =====
+9 
+===== PAGE 10 =====
+10 
+===== PAGE 11 =====
+11 
+===== PAGE 12 =====
+12 
+===== PAGE 13 =====
+13 
+===== PAGE 14 =====
+14 
+Random Lists Tables 
+Tables that list random selections of items. 
+Table 
+Page 
+ART1 to 4 - Armour - Random Tables 1 to 4 
+15 
+ECT1 - Empty Container Table 1 
+15 
+GMT1 - Gem Table 1 
+15 
+GOT1 - God Table 1 
+15 
+HAOIT1 - Half an Ornate Item Table 1 
+15 
+HST1 - Herbs Table 1 
+15 
+MIT1 to 2 - Metal Item Tables 1 to 2 
+15 
+POT1 to 4 - Potions Tables 1 to 4 
+16 
+MA1 - Magical Amulet Table 1 
+16 
+MI1 - Magical Item Table 1 
+16 
+MR1 - Magical Ring Table 1 
+16 
+MW1 - Magical Wand Table 1 
+16 
+SCT1 to 4 - Scrolls Tables 1 to 4 
+16 
+SST1 - Symbol Selection Table 1 
+17 
+WIT1 - Worship Items Table 1 
+17 
+WIT2 - Worship Items Table 2 
+17 
+WRT1 - Wrecked Item Table 1 
+17 
+===== PAGE 15 =====
+15 
+===== PAGE 16 =====
+16 
+===== PAGE 17 =====
+17 
+===== PAGE 18 =====
+18 
+Loot Tables 
+Tables that list loot which can be found in game. 
+Table 
+Page 
+BT1 and BT2 - Bag Tables 1 and 2 
+19 
+BST1 and BST2 - Body Search Table 1 and 2 
+20 
+CT1 and CT2 - Chest Tables 1 and 2 
+21 
+CT3 and CT4 - Chest Tables 3 and 4 
+22 
+PT1 and PT2 - Pouch Tables 1 and 2 
+23 
+PT3 and PT4 - Pouch Tables 1 and 2 
+24 
+RPT1 and RPT2 - Religious Pouch Tables 1 and 2 
+25 
+RPT3 and RPT4 - Religious Pouch Tables 3 and 4 
+26 
+RATT1 - Religious Artifacts Treasure Table 1 
+27 
+RUPT1 - Rubbish Pile Table 1 
+27 
+RUNE1 and RUNE2 - Rune Stone Tables 1 and 2 
+28 
+SECT1 and SECT2 - Secret Hatch Tables 1 and 2 
+29 
+SLT1 and SLT2 - Sarcophagus Loot Tables 1 and 2 
+30 
+TAT1 - Table - Table 1 
+31 
+TCT1 - Tea Chest Table 1 
+31 
+URL1 and URL2 - Urn Loot Table 1 and 2 
+32 
+===== PAGE 19 =====
+19 
+===== PAGE 20 =====
+20 
+===== PAGE 21 =====
+21 
+===== PAGE 22 =====
+22 
+===== PAGE 23 =====
+23 
+===== PAGE 24 =====
+24 
+===== PAGE 25 =====
+25 
+===== PAGE 26 =====
+26 
+===== PAGE 27 =====
+27 
+===== PAGE 28 =====
+28 
+===== PAGE 29 =====
+29 
+===== PAGE 30 =====
+30 
+===== PAGE 31 =====
+31 
+===== PAGE 32 =====
+32 
+===== PAGE 33 =====
+33 
+Level 1 & 2 Tables 
+The Level 1 Entry and the Level 2 Domain Levels are where the lower level 
+humans live and work. It is also an area where loot, captives and resources from 
+raids are kept. Expect to find living spaces, prisons, stores and hints of the 
+Infernal Order. 
+Tables needed for level 1 and 2 of the dungeon. 
+Table 
+Page 
+ENP1 - Encounter Prisoner Table 1 
+34 
+ENP2 - Encounter Prisoner Table 2 
+34 
+EXT1 - Exit Type Table 1 
+35 
+EXT2 - Exit Type Table 2 
+35 
+IAUT1 - Interruptions and the Unexpected - Table 1 - Part 1  
+36 
+IAUT1 - Interruptions and the Unexpected - Table 1 - Part 2  
+37 
+L1A - Level 1 Animals 
+38 
+L1CE - Level 1 Crate Encounters 
+38 
+L1D - Level 1 Dogs 
+38 
+L1F - Level 1 Fungal 
+38 
+L1G - Level 1 Guards 
+38 
+L1M - Level 1 Martial 
+38 
+L1P -  Level 1 Patrols 
+38 
+L1R - Level 1 Religious Enemy 
+38 
+L1S - Level 1 Snakes 
+38 
+L1W - Level 1 Wardens 
+38 
+L1WO - Level 1 Workers 
+38 
+L2TR - Level 2 Trap Table 
+39 
+L2G - Level 2 Guards 
+39 
+L2P - Level 2 Patrols 
+39 
+L2R - Level 2 Religious Enemy 
+39 
+L2WO - Level 2 Workers 
+39 
+L1LR - Level 1 Large Rooms 
+40 
+L2LR - Level 2 Large Rooms 
+41 
+Level 1 Rooms - Human Ancestry - The Entry - Part 1 
+42 
+Level 1 Rooms - Human Ancestry - The Entry - Part 2 
+43 
+Level 2 Rooms - Human Ancestry - The Domain - Part 1 
+44 
+Level 2 Rooms - Human Ancestry - The Domain - Part 2 
+45 
+L1SR - Level 1 Small Rooms 
+46 
+L2SR - Level 2 Small Rooms 
+47 
+===== PAGE 34 =====
+34 
+===== PAGE 35 =====
+35 
+===== PAGE 36 =====
+36 
+===== PAGE 37 =====
+37 
+===== PAGE 38 =====
+38 
+===== PAGE 39 =====
+39 
+===== PAGE 40 =====
+40 
+===== PAGE 41 =====
+41 
+===== PAGE 42 =====
+42 
+===== PAGE 43 =====
+43 
+===== PAGE 44 =====
+44 
+===== PAGE 45 =====
+45 
+===== PAGE 46 =====
+46 
+===== PAGE 47 =====
+47 
+===== PAGE 48 =====
+48 
+Level 3 & 4 Tables 
+The Level 3 Crypt and the Level 4 Haunted Levels are where the dungeon dead 
+are interned. The levels are mostly dusty stone chambers littered with 
+sarcophagi and plagued by the wondering dead or those who dare to venture 
+down for hidden treasure. 
+Tables needed for level 3 and 4 of the dungeon. 
+Table 
+Page 
+EXT3 - Exit Type Table 3 
+49 
+EXT4 - Exit Type Table 4 
+49 
+IAUT2 - Interruptions and the Unexpected - Table 2 - Part 1  
+50 
+IAUT2 - Interruptions and the Unexpected - Table 2 - Part 2  
+51 
+L3P -  Level 3 Patrols 
+52 
+L3UN -  Level 3 Undead 
+52 
+L4P -  Level 4 Patrols 
+52 
+L4UN -  Level 4 Undead 
+52 
+L3LR - Level 3 Large Rooms 
+53 
+L4LR - Level 4 Large Rooms 
+54 
+Level 3 Rooms - Human Ancestry - The Crypt - Part 1 
+55 
+Level 3 Rooms - Human Ancestry - The Crypt - Part 2 
+56 
+Level 4 Rooms - Human Ancestry - The Haunted - Part 1 
+57 
+Level 4 Rooms - Human Ancestry - The Haunted - Part 2 
+58 
+L3SR - Level 3 Small Rooms 
+59 
+L4SR - Level 4 Small Rooms 
+60 
+===== PAGE 49 =====
+49 
+===== PAGE 50 =====
+50 
+===== PAGE 51 =====
+51 
+===== PAGE 52 =====
+52 
+===== PAGE 53 =====
+53 
+===== PAGE 54 =====
+54 
+===== PAGE 55 =====
+55 
+===== PAGE 56 =====
+56 
+===== PAGE 57 =====
+57 
+===== PAGE 58 =====
+58 
+===== PAGE 59 =====
+59 
+===== PAGE 60 =====
+60 
+===== PAGE 61 =====
+61 
+Level 5 & 6 Tables 
+The Level 5 Infernal and the Level 6 Cultist Den Levels are the home of the 
+Infernal Order. This is where they live and practice their dark sacrificial arts. 
+You can expect to find shrines, cells, places of worship and evidence of magical 
+studies. 
+Tables needed for level 5 and 6 of the dungeon. 
+Table 
+Page 
+EXT5 - Exit Type Table 5 
+63 
+EXT6 - Exit Type Table 6 
+63 
+IAUT3 - Interruptions and the Unexpected - Table 3 - Part 1  
+64 
+IAUT3 - Interruptions and the Unexpected - Table 3 - Part 2  
+65 
+L5P -  Level 5 Patrols 
+66 
+L5M -  Level 5 Martial 
+66 
+L5WO -  Level 5 Workers 
+66 
+L6P -  Level 6 Patrols 
+66 
+L5LR - Level 5 Large Rooms 
+67 
+L6LR - Level 6 Large Rooms 
+68 
+Level 5 Rooms - Human Ancestry - The Infernal - Part 1 
+69 
+Level 5 Rooms - Human Ancestry - The Infernal - Part 2 
+70 
+Level 6 Rooms - Human Ancestry - The Cultist Den - Part 1 
+71 
+Level 6 Rooms - Human Ancestry - The Cultist Den - Part 2 
+72 
+L5SR - Level 5 Small Rooms 
+73 
+L6SR - Level 6 Small Rooms 
+74 
+===== PAGE 62 =====
+62 
+New Rules for Level 6 
+ 
+A Room Sequence 
+ 
+The exits column has been expanded 
+from level 6 onwards to EXIT/
+NEXT. It can now feature an exit type 
+and a room name, indicating a Room 
+Sequence. Because of the nature of the 
+dungeon as you go deeper dominant 
+powers take over a series of spaces that 
+they use for their own maniacal 
+purposes. This means that a sequence 
+of rooms will have a theme. When an 
+exit type has a room name beneath it 
+that is the room you will encounter 
+next, if you move forward from here, 
+not if you retreat back to a different 
+room though. So, for example if you 
+roll the Dark Pool, then proceeding 
+forward to an unexplored, connected 
+room, it will be the Piranha Nets and 
+then after this the Seaweed Statue. 
+ 
+If you come back to a room, that has a 
+room in the Next Room column, and 
+you have not moved forward from 
+there before and decide to do so, you 
+must still encounter the room in the 
+Next Room column. This triggers the 
+Room Sequence. 
+ 
+These rooms are unique. You may roll 
+a room from a Room Sequence out of 
+order. If so, change that rolled room 
+for the first in the correlating Room 
+Sequence. For example, if you rolled 
+Piranha Nets then you encounter the 
+Dark Pool. Sometimes you will have 
+left a Room Sequence incomplete, say 
+rolling a Dark Pool but not 
+progressing to the Piranha Nets. If you 
+then roll up any of that Room 
+Sequence, when rolling for room type 
+for a new unconnected room, ignore 
+the result and roll again. Once a Room 
+Sequence has been started it cannot be 
+finished elsewhere in the dungeon. The 
+final room in a Room Sequence has 
+the word FINAL in the Next Room 
+column so that you can identify it as 
+the final room in a sequence. 
+ 
+To summarise: There are Room 
+Sequences from level 6 onwards which 
+must be completed together. If you roll 
+any of the rooms in the sequence, start 
+with the first one. The area of the 
+dungeon where they are started is 
+where they will be finished. Rooms in 
+Room Sequences are unique and share 
+a theme. You do not have to complete 
+a Room Sequence once started and can 
+backout. 
+ 
+If you roll a small room as the next 
+room ignore the sequence and 
+continue it when you next roll a 
+normal or large room. If you roll a 
+normal or large room, make it part of 
+the specific Room Sequence. 
+ 
+If you do not have enough space left 
+on the map complete what you can of 
+the Room Sequence, even if it is only 1 
+room, before the final room where you 
+will find the stairs down and 
+potentially face the level boss.  
+ 
+===== PAGE 63 =====
+63 
+===== PAGE 64 =====
+64 
+===== PAGE 65 =====
+65 
+===== PAGE 66 =====
+66 
+===== PAGE 67 =====
+67 
+===== PAGE 68 =====
+68 
+===== PAGE 69 =====
+69 
+===== PAGE 70 =====
+70 
+===== PAGE 71 =====
+71 
+===== PAGE 72 =====
+72 
+===== PAGE 73 =====
+73 
+===== PAGE 74 =====
+74 
+===== PAGE 75 =====
+75 
+Level 7 & 8 Tables 
+The Level 7 Menagerie and the Level 8 Monster Maze Levels are where the 
+larger creatures and monsters lurk. Some are managed, having been trapped, 
+caged and brought down and others have lived in the depths before the 
+dungeon was built.  
+Tables needed for level 7 and 8 of the dungeon. 
+Table 
+Page 
+EXT7 - Exit Type Table 7 
+77 
+EXT8 - Exit Type Table 8 
+77 
+IAUT4 - Interruptions and the Unexpected - Table 4 - Part 1  
+78 
+IAUT4 - Interruptions and the Unexpected - Table 4 - Part 2  
+79 
+L7P -  Level 7 Patrols 
+80 
+L8P -  Level 8 Patrols 
+80 
+L7BT -  Level 7 Blessed by the Gods Table 
+80 
+L7LR - Level 7 Large Rooms 
+81 
+L8DS -  Level 8 Desperate Search 
+82 
+L8MO - Level 8 Maze Object 
+82 
+L8TR - Level 8 Trap Table 
+83 
+Level 7 Rooms - Human Ancestry - The Menagerie - Part 1 
+84 
+Level 7 Rooms - Human Ancestry - The Menagerie - Part 2 
+85 
+Level 8 Rooms - Human Ancestry - The Monster Maze - Part 1 
+86 
+Level 8 Rooms - Human Ancestry - The Monster Maze - Part 2 
+87 
+L7SR - Level 7 Small Rooms 
+88 
+L8SR - Level 8 Small Rooms 
+89 
+===== PAGE 76 =====
+76 
+New Rules for Level 8 
+ 
+Smaller Rooms and More Corridors 
+ 
+When exploring Level 8 deduct 2 from 
+both dice. So, for example if you roll 4 
+and a 4 then the modified result will be 
+2 and 2. One is the lowest number it 
+can be modified to. If a 3 and 2 is 
+rolled the modified result would be 1 
+and 1. This will result in more 
+corridors and small rooms. Do not 
+deduct 2 from the dice when rolling 
+the second time after rolling 
+doubles on the first roll. 
+ 
+Large Rooms 
+ 
+When you encounter a large room with 
+level 8 it is dealt with very differently. 
+You do not roll on a large rooms table. 
+Instead calculate the exits and then 
+within the area of the large room draw 
+in a series of walls so that it looks like a 
+mini maze. Then roll on the table 
+L8MO for you find an object in the 
+maze.  
+Fleeing Level 8 Monsters 
+ 
+On this level, and only this level, you 
+can flee from Level 8 Monsters due to 
+the fact they are self-contained within 
+their own Room Sequence. They also 
+do not alert the hierarchy of the 
+dungeon to your presence, trapped as 
+they are in the depths of the dungeon. 
+To flee from a Monster, you leave the 
+combat and the room during your 
+round, without hitting the monster. 
+They get a free attack as you escape. 
+You must then remain in that 
+monster’s Room Sequence; the 
+previous three rooms. Within this 
+space you can carry out any action and 
+some of these may be healing or 
+making potion bombs, but once you 
+have completed these activities the 
+monster appears and you continue the 
+fight. The Monster has the same 
+remaining HP as when you finished 
+fighting it before. You can not go 
+beyond the monster’s Room Sequence 
+for if you try the creature catches you 
+and attacks, so this process of fleeing is 
+a temporary fix for an inevitable 
+conclusion to the fight, but it can buy 
+you time and give you further options.  
+ 
+When fleeing, once for each room 
+you return to, in the monster’s 
+Room Sequence, you can conduct a 
+desperate search, roll on L8DS. 
+===== PAGE 77 =====
+77 
+===== PAGE 78 =====
+78 
+===== PAGE 79 =====
+79 
+===== PAGE 80 =====
+80 
+===== PAGE 81 =====
+81 
+===== PAGE 82 =====
+82 
+===== PAGE 83 =====
+83 
+===== PAGE 84 =====
+84 
+===== PAGE 85 =====
+85 
+===== PAGE 86 =====
+86 
+===== PAGE 87 =====
+87 
+===== PAGE 88 =====
+88 
+===== PAGE 89 =====
+89 
+===== PAGE 90 =====
+90 
+Level 9 & 10 Tables 
+The Level 9 Cursed and the Level 10 Dungeon Lords Levels are dark and 
+twisted by terrible curses, thrust upon lost souls by angry gods, and controlled 
+by the powerful Dungeon Lords. If the lords were to fall the dungeon would 
+collapse and victory would be yours.   
+Tables needed for level 9 and 10 of the dungeon. 
+Table 
+Page 
+EXT9 - Exit Type Table 9 
+92 
+EXT10 - Exit Type Table 10 
+92 
+L9P -  Level 9 Patrols 
+93 
+L10P -  Level 10 Patrols 
+93 
+L10ST -  Level 10 Special Treasure Table 
+93 
+L9LR - Level 9 Large Rooms 
+94 
+Level 9 Rooms - Human Ancestry - The Cursed - Part 1 
+95 
+Level 9 Rooms - Human Ancestry - The Cursed - Part 2 
+96 
+Level 10 Rooms - Human Ancestry - The Dungeon Lords - Part 1 
+97 
+Level 10 Rooms - Human Ancestry - The Dungeon Lords - Part 2 
+98 
+L9SR - Level 9 Small Rooms 
+99 
+L10SR - Level 10 Small Rooms 
+100 
+===== PAGE 91 =====
+91 
+New Rules for Level 10 
+ 
+New Minimum Level Size 
+ 
+The minimum map size for level 10 is 
+25x25 squares. This is up from 20x20 
+squares for the previous levels. 
+ 
+Room Sizes 
+ 
+There is no Large Rooms Table for 
+level 10, although you can roll large 
+rooms, they are just dealt with 
+differently. If you roll a large room, it 
+triggers the Dungeon Lords sequence 
+or continues it on if you have already 
+started it. The first room in the 
+Dungeon Lord sequence is the Blood 
+Pool. 
+ 
+When exploring Level 10 add 2 to 
+both dice. So, for example if you roll 4 
+and a 4 then the modified result will be 
+6 and 6. If you roll a 1 on either dice 
+do not add 2. This means that your 
+dungeon exploration still has corridors 
+but also larger rooms. If a 3 and 1 is 
+rolled the modified result would be 5 
+and 1. This will result in more 
+corridors. Do not add 2 to the dice 
+when rolling the second time after 
+rolling doubles on the first roll. 
+ 
+The Dungeon Lord Rooms 
+ 
+When a large room is rolled it triggers 
+the Dungeon Lord sequence. The 
+Dungeon Lord sequence is as follows: 
+Blood Pool, Metal Chamber, Swamp 
+Room and then High Throne. The last 
+Dungeon Lord room revealed, the 
+High Throne, is the last room of the 
+Dungeon. You have become a Legend, 
+as long as you defeat the Nether Lord 
+and loot their body. Upon their death a 
+portal opens and through this you can 
+return to the village. 
+ 
+The Lord’s Pendants 
+ 
+One of the treasures you find upon the 
+Nether Lord’s body is the Lord’s 
+Pendants. These are valuable items of 
+solid gold and worth 200gc, but are 
+also evidence of your success. You 
+show these at the town as the crowds 
+applaud your success. 
+ 
+===== PAGE 92 =====
+92 
+===== PAGE 93 =====
+93 
+===== PAGE 94 =====
+94 
+===== PAGE 95 =====
+95 
+===== PAGE 96 =====
+96 
+===== PAGE 97 =====
+97 
+===== PAGE 98 =====
+98 
+===== PAGE 99 =====
+99 
+===== PAGE 100 =====
+100 
+===== PAGE 101 =====
+101 
+ 
+ 
+Bestiary 
+The following tables are designed as Creature Cards. These can be referenced 
+here or printed out and made into cards for easy access. You will need to have 
+access to these cards throughout the game. 
+ 
+The Creature Cards are in alphabetical order for easy reference. 
+ 
+To make these cards into physical cards there are three easy steps.  
+You will need transparent card sleeves. 
+ 
+1. Print and cut the cards out. The backs of the cards are on page 128, which 
+can also be printed as well. 
+2. Slide them into the sleeves. 1 front and 1 back for each sleeve. 
+3. Place a piece of tougher card (e.g. a playing or CCG card) between the front 
+and back of printed and cut Creature Cards to give them rigidity. 
+ 
+===== PAGE 102 =====
+102 
+LEVEL 1 - CREATURE CARDS 
+===== PAGE 103 =====
+103 
+===== PAGE 104 =====
+104 
+===== PAGE 105 =====
+105 
+===== PAGE 106 =====
+106 
+===== PAGE 107 =====
+107 
+===== PAGE 108 =====
+108 
+===== PAGE 109 =====
+109 
+LEVEL 2 - CREATURE CARDS 
+===== PAGE 110 =====
+110 
+===== PAGE 111 =====
+111 
+===== PAGE 112 =====
+112 
+===== PAGE 113 =====
+113 
+LEVEL 3 - CREATURE CARDS 
+===== PAGE 114 =====
+114 
+===== PAGE 115 =====
+115 
+===== PAGE 116 =====
+116 
+===== PAGE 117 =====
+117 
+LEVEL 4 - CREATURE CARDS 
+===== PAGE 118 =====
+118 
+===== PAGE 119 =====
+119 
+LEVEL 5 - CREATURE CARDS 
+===== PAGE 120 =====
+120 
+LEVEL 5 - CREATURE CARDS 
+===== PAGE 121 =====
+121 
+LEVEL 6 - CREATURE CARDS 
+===== PAGE 122 =====
+122 
+LEVEL 6 - CREATURE CARDS 
+===== PAGE 123 =====
+123 
+LEVEL 7 - CREATURE CARDS 
+===== PAGE 124 =====
+124 
+LEVEL 7 - CREATURE CARDS 
+===== PAGE 125 =====
+125 
+LEVEL 8 - CREATURE CARDS 
+===== PAGE 126 =====
+126 
+LEVEL 9 - CREATURE CARDS 
+===== PAGE 127 =====
+127 
+LEVEL 10 - CREATURE CARDS 
+===== PAGE 128 =====
+128 
+===== PAGE 129 =====
+129 
+ 
+ 
+Optional Tables 
+ 
+Several useful tables follow that were stretch goals in the original campaign. 
+These pose options for particular situations such as encountering a dead end or 
+discovering a secret compartment in a chest. They are not compulsory to the 
+core rules but are official optional tables that can add more narrative, fun and 
+loot! It is recommended not to overuse these as there are limited entries and it 
+may become repetitive to do so. Throwing one or two in per level would work 
+nicely. Each table has a short description of when they might be used in the 
+game. These are guidelines but feel free to use them as you want. 
+ 
+It is recommended to use these tables for levels 1 to 5 but they can be used at 
+deeper levels. 
+The rare items tables were also created through a collaborative stream with 
+supporters of the project on the 4th July 2023 at our Youtube channel (Search 
+Toby Lancaster). We would like to thank all those who attended and James, 
+Jonny, Kasak, Jim, Todd, Scott, Javier, Wade and Dragon for their imaginative 
+contributions.  
+===== PAGE 130 =====
+130 
+===== PAGE 131 =====
+131 
+===== PAGE 132 =====
+132 
+===== PAGE 133 =====
+133 
+===== PAGE 134 =====
+134 
+===== PAGE 135 =====
+135 
+===== PAGE 136 =====
+136 
+===== PAGE 137 =====
+137 
+===== PAGE 138 =====
+138 
+===== PAGE 139 =====
+139 
+ 
+Tables Index 
+When prompted to roll on a table look it up here. 
+Table 
+Page 
+Armour Table 1 
+6 
+ART1 to 4 - Armour - Random Tables 1 to 4 
+15 
+BST1 and BST2 - Body Search Table 1 and 2 
+20 
+BT1 and BT2 - Bag Tables 1 and 2 
+19 
+CT1 and CT2 - Chest Tables 1 and 2 
+21 
+CT3 and CT4 - Chest Tables 3 and 4 
+22 
+ECT1 - Empty Container Table 1 
+15 
+ENAT1 - Enchanted Armour Table 1 
+6 
+ENP1 - Encounter Prisoner Table 1 
+34 
+ENP2 - Encounter Prisoner Table 2 
+34 
+EXT1 - Exit Type Table 1 
+35 
+EXT2 - Exit Type Table 2 
+35 
+EXT3 - Exit Type Table 3 
+49 
+EXT4 - Exit Type Table 4 
+49 
+EXT5 - Exit Type Table 5 
+63 
+EXT6 - Exit Type Table 6 
+63 
+EXT7 - Exit Type Table 7 
+77 
+EXT8 - Exit Type Table 8 
+77 
+EXT9 - Exit Type Table 9 
+92 
+EXT10 - Exit Type Table 10 
+92 
+FTCCT1 - Failed to Cast Correctly Table 1 
+7 
+GCT1- Gem Combination  Table 1 
+7 
+GMT1 - Gem Table 1 
+15 
+GOT1 - God Table 1 
+15 
+HAOIT1 - Half an Ornate Item Table 1 
+15 
+HST1 - Herbs Table 1 
+15 
+IAUT1 - Interruptions and the Unexpected - Table 1 - Part 1  
+36 
+IAUT1 - Interruptions and the Unexpected - Table 1 - Part 2  
+37 
+IAUT2 - Interruptions and the Unexpected - Table 2 - Part 1  
+50 
+IAUT2 - Interruptions and the Unexpected - Table 2 - Part 2  
+51 
+IAUT3 - Interruptions and the Unexpected - Table 3 - Part 1  
+64 
+IAUT3 - Interruptions and the Unexpected - Table 3 - Part 2  
+65 
+IAUT4 - Interruptions and the Unexpected - Table 4 - Part 1  
+78 
+IAUT4 - Interruptions and the Unexpected - Table 4 - Part 2  
+79 
+L1A - Level 1 Animals 
+38 
+L1CE - Level 1 Crate Encounters 
+38 
+L1D - Level 1 Dogs 
+38 
+L1F - Level 1 Fungal 
+38 
+L1G - Level 1 Guards 
+38 
+L1LR - Level 1 Large Rooms 
+40 
+===== PAGE 140 =====
+140 
+L1M - Level 1 Martial 
+38 
+L1P -  Level 1 Patrols 
+38 
+L1R - Level 1 Religious Enemy 
+38 
+L1S - Level 1 Snakes 
+38 
+L1SR - Level 1 Small Rooms 
+46 
+L1W - Level 1 Wardens 
+38 
+L1WO - Level 1 Workers 
+38 
+L2G - Level 2 Guards 
+39 
+L2LR - Level 2 Large Rooms 
+41 
+L2P - Level 2 Patrols 
+39 
+L2R - Level 2 Religious Enemy 
+39 
+L2SR - Level 2 Small Rooms 
+47 
+L2TR - Level 2 Trap Table 
+39 
+L2WO - Level 2 Workers 
+39 
+L3LR - Level 3 Large Rooms 
+53 
+L3P -  Level 3 Patrols 
+52 
+L3SR - Level 3 Small Rooms 
+59 
+L3UN -  Level 3 Undead 
+52 
+L4LR - Level 4 Large Rooms 
+54 
+L4P -  Level 4 Patrols 
+52 
+L4SR - Level 4 Small Rooms 
+60 
+L4UN -  Level 4 Undead 
+52 
+L5LR - Level 5 Large Rooms 
+67 
+L5M -  Level 5 Martial 
+66 
+L5P -  Level 5 Patrols 
+66 
+L5SR - Level 5 Small Rooms 
+73 
+L5WO -  Level 5 Workers 
+66 
+L6LR - Level 6 Large Rooms 
+68 
+L6P -  Level 6 Patrols 
+66 
+L6SR - Level 6 Small Rooms 
+74 
+L7BT -  Level 7 Blessed by the Gods Table 
+80 
+L7LR - Level 7 Large Rooms 
+81 
+L7P -  Level 7 Patrols 
+80 
+L7SR - Level 7 Small Rooms 
+88 
+L8DS -  Level 8 Desperate Search 
+82 
+L8MO - Level 8 Maze Object 
+82 
+L8P -  Level 8 Patrols 
+80 
+L8SR - Level 8 Small Rooms 
+89 
+L8TR - Level 8 Trap Table 
+83 
+L9P - Level 9 Patrols 
+93 
+L9LR - Level 9 Large Rooms 
+94 
+L9SR - Level 9 Small Rooms 
+99 
+L10P - Level 10 Patrols 
+93 
+L10SR - Level 10 Small Rooms 
+100 
+L10ST - Level 10 Special Treasure Table 
+93 
+===== PAGE 141 =====
+141 
+Level 1 Rooms - Human Ancestry - The Entry - Part 1 
+42 
+Level 1 Rooms - Human Ancestry - The Entry - Part 2 
+43 
+Level 2 Rooms - Human Ancestry - The Domain - Part 1 
+44 
+Level 2 Rooms - Human Ancestry - The Domain - Part 2 
+45 
+Level 3 Rooms - Human Ancestry - The Crypt - Part 1 
+55 
+Level 3 Rooms - Human Ancestry - The Crypt - Part 2 
+56 
+Level 4 Rooms - Human Ancestry - The Haunted - Part 1 
+57 
+Level 4 Rooms - Human Ancestry - The Haunted - Part 2 
+58 
+Level 5 Rooms - Human Ancestry - The Infernal - Part 1 
+69 
+Level 5 Rooms - Human Ancestry - The Infernal - Part 2 
+70 
+Level 6 Rooms - Human Ancestry - The Cultist Den - Part 1 
+71 
+Level 6 Rooms - Human Ancestry - The Cultist Den - Part 2 
+72 
+Level 7 Rooms - Human Ancestry - The Menagerie - Part 1 
+84 
+Level 7 Rooms - Human Ancestry - The Menagerie - Part 2 
+85 
+Level 8 Rooms - Human Ancestry - The Monster Maze - Part 1 
+86 
+Level 8 Rooms - Human Ancestry - The Monster Maze - Part 2 
+87 
+Level 9 Rooms - Human Ancestry - The Cursed - Part 1 
+95 
+Level 9 Rooms - Human Ancestry - The Cursed - Part 2 
+96 
+Level 10 Rooms - Human Ancestry - The Dungeon Lords - Part 1 
+97 
+Level 10 Rooms - Human Ancestry - The Dungeon Lords - Part 2 
+98 
+MA1 - Magical Amulet Table 1 
+16 
+Magic Items Table 1 
+8 
+Magic Potions Table 1 
+9 
+Magic Scroll Table 1 
+10 
+MI1 - Magical Item Table 1 
+16 
+MIT1 to 2 - Metal Item Tables 1 to 2 
+15 
+MR1 - Magical Ring Table 1 
+16 
+MW1 - Magical Wand Table 1 
+16 
+POLT1 - Portcullis Lever Table 1  
+11 
+POT1 to 4 - Potions Tables 1 to 4 
+16 
+PT1 and PT2 - Pouch Tables 1 and 2 
+23 
+PT3 and PT4 - Pouch Tables 1 and 2 
+24 
+RATT1 - Religious Artifacts Treasure Table 1 
+27 
+RFUT1 -  Recovery From Unconsciousness Table 1 
+11 
+RPT1 and RPT2 - Religious Pouch Tables 1 and 2 
+25 
+RPT3 and RPT4 - Religious Pouch Tables 3 and 4 
+26 
+RUNE1 and RUNE2 - Rune Stone Tables 1 and 2 
+28 
+RUPT1 - Rubbish Pile Table 1 
+27 
+SCT1 to 4 - Scrolls Tables 1 to 4 
+16 
+SECT1 and SECT2 - Secret Hatch Tables 1 and 2 
+29 
+SLT1 and SLT2 - Sarcophagus Loot Tables 1 and 2 
+30 
+SST1 - Symbol Selection Table 1 
+17 
+Starting Armour Table 1 
+12 
+Starting Scroll Table 1 
+12 
+===== PAGE 142 =====
+142 
+STIT1 - Stolen Item Table 1 
+12 
+TAT1 - Table - Table 1 
+31 
+TCT1 - Tea Chest Table 1 
+31 
+URL1 and URL2 - Urn Loot Table 1 and 2 
+32 
+Values of Gems Table  
+12 
+Values of Miscellaneous Items Table 
+12 
+Weapon Manoeuvres Table 1 
+13 
+WIT1 - Worship Items Table 1 
+17 
+WIT2 - Worship Items Table 2 
+17 
+WRT1 - Wrecked Item Table 1 
+17 
+===== PAGE 143 =====
+143 
+ 
+Optional Tables Index 
+When prompted to roll on a table look it up here. 
+Table 
+Page 
+AIT - Adventurer Infected Table 
+130 
+ANDT - Adventurer Near Death 
+130 
+CIET - Cave-In Event 
+131 
+CIRT - Cave-In Rescue 
+131 
+CLST - Closet Spaces 
+132 
+CDPT - Creature Drinks a Potion 
+132 
+CNDT - Creature Near Death Table 
+133 
+CRET - Creature Retreat Table 
+133 
+DEET - Dead End Event Table 
+134 
+DPQT - Dead Prisoner Quests Table 
+134 
+FVT - Forced Vision Table 
+135 
+GINT - God Intervention Table 
+135 
+HCCT - Hidden Chest Compartment Table 
+136 
+INPT - Innate Power Table 
+136 
+MUCT - Mushroom Consumption Table 
+137 
+RMRT - Rare Medical Remedies Table 
+137 
+RAPT - Rare Potions Table 
+138 
+RAST - Rare Scrolls Table 
+138 
+SERT - Secret Rooms Table 
+138 
+===== PAGE 144 =====
+144 
+Creature 
+Page  Creature 
+Page 
+Adept 
+109  Merchant 
+106 
+Afflicted 
+113  Minotaur 
+125 
+Amaurotic 
+109  Mire Lord 
+127 
+Apothecary 
+102  Mordeel Axiom 
+119 
+Artisan 
+102  Mortley Fly 
+121 
+Ascunde 
+119  Mummy 
+114 
+Ashen Fext 
+113  Murind 
+119 
+Banished 
+109  Musty Bloater 
+106 
+Banshee 
+117  Mystic 
+111 
+Baric Knight 
+109  Nether Lord 
+127 
+Basal Initiate 
+113  Night Umbra 
+123 
+Blacksmith 
+102  Ofilit 
+117 
+Blood Lord 
+127  Oldfang Pillarist 
+114 
+Brown Bear 
+110  Overlord 
+111 
+Crazed Preacher 
+102  Pen Tamer 
+123 
+Cultist 
+103  Puppeteer 
+115 
+Cyclops 
+125  Raptured Shimbay 
+120 
+Dark Cleric 
+103  Red Guard 
+117 
+Defectus  
+123  Rubicund 
+126 
+Earth Croc 
+121  Scale Hound 
+121 
+Efflux Crear 
+119  Scarlet Cobra 
+106 
+Faraviata 
+113  Scout 
+107 
+Ferric Lord 
+127  Scuttle Cow 
+122 
+Fungal Geist 
+103  Shadow Blade 
+115 
+Ghost 
+114  Shard Rock Python 
+107 
+Giant Horned Anaconda 
+103  Shudder Fasa 
+124 
+Giant Rat 
+110  Slimy Gorger 
+107 
+Grey Anchorite 
+114  Skeleton Warrior 
+111 
+Guard Dog 
+104  Sporal Rapnel 
+111 
+Guard 
+104  Stone Maiden 
+115 
+Haxa 
+123  Summoned Flayer 
+122 
+Heedless 
+110  Terra Magna 
+120 
+Huge Infected Rat 
+104  Thug 
+107 
+Huge Rat 
+104  Tomb Raider 
+115 
+Huge Spider 
+105  Undead Bear 
+116 
+Infernal Cardinal 
+121  Under Troll 
+117 
+Infernal Monk 
+105  The Vanished 
+112 
+Inghety 
+125  Veteran 
+108 
+Jade Diviner 
+126  Vibralect 
+122 
+Jailor 
+105  Vudelian Brawler 
+120 
+The Keeper 
+114  War Hound 
+108 
+Labourer 
+105  Warrior 
+108 
+Lizard King 
+125  Work Dog 
+108 
+Medic 
+106  Zombie 
+112 
+Mercenary 
+110  Zordian Shade 
+118 
+Creature Index 
+You can find the creature you are fighting quickly here in this index. 
+===== PAGE 145 =====
+145 
+To play 2D6 Dungeon you will need to refer to the tables in this book. It 
+is known as the Tables Codex. It serves to inject narrative into the story 
+and bring the adventures to life. The tables are split up into four groups 
+and their pages highlighted. It is not recommended to simply read 
+through the tables here in, but that the player should only read the entries 
+that their adventure prompts.   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright ©2023 DR Games  

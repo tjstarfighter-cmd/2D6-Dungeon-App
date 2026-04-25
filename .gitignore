@@ -1,0 +1,24 @@
+# Source materials (Toby Lancaster's PDFs + card images, 350 MB).
+# Kept locally; the structured extracts in data/processed/ are committed
+# and are enough to run the app. To re-run the extraction scripts, drop
+# the original PDFs back into docs/.
+docs/
+
+# Node / build artefacts (also covered by app/.gitignore, listed here
+# so a clone without sub-gitignores still skips them).
+node_modules/
+dist/
+dist-ssr/
+*.log
+.DS_Store
+
+# Claude Code: settings.local.json holds machine-specific approvals
+# and should not be shared.
+.claude/settings.local.json
+
+# OS / editor noise
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp

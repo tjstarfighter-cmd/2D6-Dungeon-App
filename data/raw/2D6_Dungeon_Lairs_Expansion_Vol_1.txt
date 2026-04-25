@@ -1,0 +1,634 @@
+===== PAGE 1 =====
+1 
+===== PAGE 2 =====
+ 
+===== PAGE 3 =====
+3 
+ 
+2D6 Dungeon 
+Lairs Expansion - Vol 1 
+A roll-and-write, print & play, solo player, dungeon crawler game 
+Written and Designed by  
+Toby Lancaster 
+Illustration by 
+Jeremy Mohler  
+Proofreaders 
+Brent Ritchey, Clive Sutherland, Vincent Yip and Jeffrey Mullen 
+Playtesters 
+ 
+Steve Boulter, Victor Haerinck Jr., Scott Kirby, Paul Baker, Nick Moore,  
+Tammy Dave, Frederico S. B. Mesquita, Tenten Kasak, Daniel Glassey, 
+James Marshall, Jess Rombocos, Michael Russell, Clive Sutherland,  
+Michael Ladd, Kaleb Mayfiled, Brian Moore, Tim Archer, Chris Brown,  
+Kasla Anesh, Patrick Philippi, Bob Bell, Brett Moyer, Jonathan Mortimer, 
+Michael Frusti, Vincent Yip, Dave Yan, Curt Rustle, Ibah Mycin,  
+Dimme, Orey Crounk, Loren, Dunbruha Jones,  Leszek Cimala, 
+Todd Pote, Justin Vinci,  Angelika Fröhlich, William Beekman,  
+Doug Rosengard,  Michael Philips, Eccentric Marcupial,  
+Patrick Szellas, Jeffrey Mullen, Julien Touzot, Sam Walmsley    
+João Campos, Javier Altman, Kevin Wiles, Eric Maxham 
+ 
+ 
+ 
+ 
+ 
+ 
+ Copyright 2023 DR Games (Version 1 - Second Printing) 
+===== PAGE 4 =====
+4 
+ 
+Contents 
+ 
+Introduction, Difficulty Level  
+ 
+ 
+ 
+ 
+5 
+Size of Lair, Dead Ends, Completing a Lair 
+ 
+ 
+5 
+An Example of an Incomplete Lair  
+    
+ 
+  
+6 
+Damage, No Exits, Treasure, The Gods, Walls  
+ 
+7 
+Doors and Locks, The Infernal Caves 
+ 
+ 
+ 
+8 
+Fire Resistance, The Sunken Swamp 
+ 
+   
+ 
+8 
+Becoming Soaked, Flooded Rooms, Two new Runes  
+9 
+Boulter’s Surge Rune, Romboco’s Scale Rune  
+ 
+9 
+Tables Index 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+11 
+Bestiary Index  
+ 
+ 
+ 
+ 
+ 
+ 
+28 
+ 
+===== PAGE 5 =====
+5 
+Introduction 
+ 
+This is the Lairs Expansion for 2D6 
+Dungeon and features the rules and 
+tables for the Infernal Caves and 
+Sunken Swamp. To play the Lairs 
+Expansion you will need the 2D6 
+Dungeon Core Rules and any 
+additional rules are listed below. You 
+will also need the Tables Codex as 
+some of the tables referenced in this 
+expansion are found there. 
+ 
+A New Adventure 
+ 
+Adventurers are known to have braved 
+the caves for many reasons. To help rid 
+the land of the creatures that might 
+venture out at night or to find treasure 
+to support their growing domains. 
+Others enter to raise their level before 
+they venture back into the main 
+undefeated dungeon that plagues the 
+land. 
+ 
+Difficulty Level 
+ 
+These lairs can be taken on by any 
+level adventurer, levels 1 to 10. There 
+are special conditions that have to be 
+applied depending on your level. For 
+example, when you encounter traps, 
+you will take damage per level of 
+adventurer. There are also four 
+versions of each creature. You fight 
+the creature that is closest to your level 
+at the start of the combat. If it is a tie 
+and you have fifty percent or less of 
+your HP you face the lower level 
+enemy. There are a few minor 
+exceptions, creatures which do not 
+have variations. Just fight these as per 
+their normal creature card from the 
+Tables Codex. 
+ 
+Size of the Lair 
+ 
+Every lair you explore cannot exceed 
+25x25 squares. This size is set for 
+balancing reasons. 
+ 
+Dead Ends 
+ 
+If you find that you face a series of 
+dead ends, cannot progress and there is 
+less than 80% of the Lair explored, 
+then add in an extra room exit. Select a 
+wall that leads into as wide a space as 
+possible. This secret exit has revealed 
+itself after extensive searches.  
+ 
+Completing a Lair 
+ 
+You may retreat from a lair at any 
+point, following the same path you 
+came in by. But you cannot re-enter 
+and carry on where you left off. You 
+would instead restart a new lair. 
+ 
+The goal for the Infernal Caves is to 
+kill Harakor. Once this is done there is 
+an exit in that room that will take you 
+out to the surface. In the Sunken 
+Swamp you need to explore every 
+room and clear out all the monsters 
+that live there so they will no longer 
+threaten the town. Once this is done 
+the final room presents an exit you can 
+take. Back in town there is praise for 
+what you have achieved and word soon 
+spreads. You are toasted in the pub and 
+awarded a purse of 100 GC by the 
+town mayor. 
+===== PAGE 6 =====
+6 
+An Example Incomplete Lair 
+ 
+In this example the adventurer, Level 2 
+Vel Cotez, entered a sunken swamp 
+and made their way through a series of 
+rooms. They encountered a 
+Bladderwort Host, that took them 
+close to death. They pushed on 
+looking for treasure and came to a 
+Talis Lotus in a room full of tall plants. 
+They fought valiantly and managed to 
+take down the creature with only 2 HP 
+remaining. Being weakened, soaked 
+and on their last legs Vel left the lair 
+and returned to the surface. Having 
+not completed the lair they did not 
+receive a reward from the mayor and 
+cannot pick this lair back up in the 
+future. She will never find this lair 
+again. 
+===== PAGE 7 =====
+7 
+You can always return to these lairs 
+and explore them again once they have 
+been completed because the Order 
+restock the caves and new creatures 
+eventually emerge in the swamp. 
+ 
+No Exit Shafts 
+ 
+There are no exit shafts to climb or 
+portals to find in the lairs. There is 
+only one way in and only one way out, 
+but as previously mentioned, you  can 
+retreat from a lair. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Treasure 
+ 
+Loot quantity and quality varies 
+depending on the level of the creature 
+you are fighting, even if you are facing 
+a different variation of the same 
+creature. Also, when you find treasure, 
+it will sometimes have a new 
+abbreviation. PL refers to Per Level of 
+Adventurer and is placed after the coin 
+amount such as in this example: 10 GC 
+PL. Here if you are level 2 you would 
+find 20 GC and if you were level 9 you 
+would find 90 GC. This is for balance 
+purposes. Not all treasure is adjusted 
+like this. 
+ 
+Damage 
+ 
+The PL abbreviation is also used in 
+relation to damage taken on occasion. 
+This reflects that the encounter is no 
+doubt tougher for the higher level 
+dungeons, which are more financially 
+rewarding. 
+  
+The Gods 
+ 
+The Gods have little physical presence 
+in lairs, for the creatures that lurk there 
+are not worshippers. But they can be 
+tapped into if the right situation 
+presents itself and occasions might 
+occur when they could aid you on your 
+journey. 
+ 
+Cave and Swamp Walls 
+ 
+The walls in the caves and swamps are 
+uneven. As a result, when you are 
+drawing the walls for the rooms make 
+the line uneven to represent this. These 
+wiggly lines have to remain within one 
+square width of the rolled dimensions 
+of the room.  
+===== PAGE 8 =====
+8 
+If at any point a new room crosses 
+over this rough boundary, as rooms 
+will sometimes butt up to other rooms, 
+redraw both walls so they share the 
+buffer zone. 
+Doors and Locks 
+ 
+There are no doors in the Sunken 
+Swamp or the Infernal Caves so all 
+exits are archways. There are chests 
+though and some will be locked. This 
+will be highlighted in the text. 
+ 
+The Infernal Caves 
+ 
+To the north of the village is a network 
+of caves, the entrance for which is 
+known about and avoided. At night 
+terrifying calls can be heard emanating 
+from the depths. It is said that the 
+Infernal Order release the animals they 
+experiment on into the cave system, 
+creatures they cannot contain in their 
+Menagerie, but may have a use for in 
+some future maniacal plan. The caves 
+are formed by the heat of a large 
+underground lava lake and so are the 
+perfect environment for the creatures. 
+As a result, the Order have hidden 
+treasure within the caves to lure 
+Overlanders to their death. Rumour 
+has it that a monstrous, mutated bear 
+lives within and such is its reputation 
+that it has become known as Harakor. 
+The cave is also rumoured to be 
+infested with Furnicar, giant, heat 
+loving, human-hybrid ants.  
+ 
+Fire Resistance 
+ 
+The Infernal Monks have cast a 
+magical aura over the caves which 
+nullifies rings and armour that have 
+fire resistance. They only have no 
+effect for the Infernal Caves.  
+ 
+The Sunken Swamp 
+ 
+To the west of the village is the 
+wetlands. Fed by a series of narrow 
+tributaries the area is now flooded, old 
+fishing hamlets lost and sections have 
+formed swamps and marshes. 
+Treacherous to navigate, few but the 
+Osier farmers and Fisher People dare 
+to enter. Recently undead beings and 
+mutated creatures have been emerging 
+from the swamps and rumour has it 
+that some kind of subterranean lair is 
+the source of an undead corruption. It 
+is a threat to the village and must be 
+dealt with. 
+ 
+Within the Sunken Swamp the rooms 
+are of varying heights and levels. Some 
+rooms are open to the elements, the 
+walls too high and wet to climb out of, 
+while others turn downwards and 
+appear as caves. The main structure 
+was formed when an underground 
+cavern collapsed on to a conduit of 
+primordial magic. It prevented areas 
+from filling with water, forming walls 
+and open chambers, and revealing lost 
+treasures. The presence of the magic 
+imbued some of the creatures that 
+lived there with an undead curse,  
+===== PAGE 9 =====
+9 
+mutating some and empowering 
+others, calling forth wraiths to possess 
+long lost souls. 
+ 
+Becoming Soaked 
+ 
+Because you were more than aware of 
+the wet nature of the marshes you 
+have waterproofed your backpack with 
+oil and fat but if the room you 
+encounter is flooded you naturally 
+acquire the soaked status. You have 
+packed kindling and wood wrapped in 
+oil cloth and can use this to create a 
+fire. You have enough to start two fires 
+in the Sunken Swamp and can only 
+light them if the room description 
+states there is a dry space. You will 
+need to carefully monitor your soaked 
+status. Don’t forget if you backtrack to 
+a dry space you need to count the 
+rooms you backtrack through. 
+ 
+Flooded Rooms 
+ 
+Some rooms in the Sunken Swamp are 
+flooded and moving through them can 
+be challenging. If you encounter two 
+flooded chambers in a row you must 
+roll on SOT1 the Soaked Table 1. This 
+represents that potentially one or more 
+of your items has been damaged. If 
+the room is flooded it will be noted in 
+the description. Small rooms do not 
+count but large rooms do. 
+ 
+Two New Runes 
+ 
+There are two new Rune Stones in the 
+Sunken Swamp. These runes draw 
+upon the power of the ancient reptile 
+god seen on numerous items and 
+surfaces in the Lair. 
+ 
+BOULTER’S SURGE RUNE  
+ 
+Applied to Melee Weapons - Once per 
+combat, after you have hit an 
+opponent, you can fire a surge of 
+water from the tip of your weapon, 
+striking that opponent down, causing 
+10 damage and knocking them to the 
+floor. You can then follow up with an 
+extra hit before the next round. 
+ 
+ROMBOCO’S SCALE RUNE  
+ 
+Applied to Melee Weapons - Once per 
+combat as long as you are holding your 
+weapon you can turn your skin to 
+scales for an instant so as to deflect the 
+strike. You take no damage this round. 
+ 
+The Tables and Monsters 
+ 
+The tables and monsters for The 
+Infernal Caves and the Sunken Swamp 
+follow. They are combined for they 
+share some of the same tables. 
+===== PAGE 10 =====
+10 
+The Tables and Monsters 
+ 
+The tables and monsters for The 
+Infernal Caves and the Sunken Swamp 
+follow. They are combined for they 
+share some of the same tables. 
+ 
+There are no patrols in the Lairs so if a 
+table, used from the core rules, says to 
+roll on one ignore it.  
+ 
+Note from the author 
+ 
+“Thank you for playing the Lairs 
+Expansion for 2D6 Dungeon. When I 
+created this I wanted to offer up a 
+different experience from the main 
+human ancestry dungeon. I also 
+wanted all adventurers, no matter what 
+level they are, to be able to have a 
+challenging and fair experience. So I 
+had to have a leveling system built into 
+the expansion which is not present in 
+the main dungeon. I hope you enjoy  
+what this offers.  
+It is also worth nothing that it is fine if 
+you want to tinker with some of these 
+rules, house-ruling if you like. I have 
+absolutely no problem with any player 
+bringing their own ideas to the game. 
+ 
+There will be a second Lairs volume, 
+which will be an addon for the new 
+2D6 Kingdom expansion Kickstarter 
+campaign, coming later in 2023. So 
+keep an eye out for more adventures. 
+Don’t forget to also checkout our 
+website at www.drgames.co.uk.” 
+ 
+Enjoy! 
+ 
+Toby Lancaster 
+===== PAGE 11 =====
+11 
+Lairs Tables 
+Tables for the Infernal Caves and Sunken Swamp 
+Table 
+Page 
+CAT1 - Contaminated Air Table 1 
+12 
+CULT1 - Caught Up Loot Table 1 
+12 
+CLLR - Cave Lair Large Rooms Table 
+13 
+CLSR - Cave Lair Small Rooms Table  
+14 
+HLT1 - Hoarded Loot Table 1 
+15 
+LOT1 - Locker Table 1 
+15 
+ICIT1 - Infernal Caves Incidents Table 1 - Part 1 
+16 
+ICIT1 - Infernal Caves Incidents Table 1 - Part 2 
+17 
+Infernal Caves Rooms - Part 1 
+18 
+Infernal Caves Rooms - Part 2 
+19 
+MBT1 - Minor Blessing Table 
+20 
+SLT1 - Sack of Loot Table 1 
+20 
+SOT1 - Soaked Table 1 
+21 
+USGT - Unknown Scaled God Table 
+21 
+SSIT1 - Sunken Swamp Incidents Table - Part 1 
+22 
+SSIT1 - Sunken Swamp Incidents Table - Part 2 
+23 
+SSLR - Sunken Swamp Large Rooms Table 
+24 
+SSSR - Sunken Swamp Small Rooms Table 
+25 
+Sunken Swamp Rooms - Part 1 
+26 
+Sunken Swamp Rooms - Part 2 
+27 
+===== PAGE 12 =====
+12 
+===== PAGE 13 =====
+13 
+===== PAGE 14 =====
+14 
+===== PAGE 15 =====
+15 
+===== PAGE 16 =====
+16 
+===== PAGE 17 =====
+17 
+===== PAGE 18 =====
+18 
+===== PAGE 19 =====
+19 
+===== PAGE 20 =====
+20 
+===== PAGE 21 =====
+21 
+===== PAGE 22 =====
+22 
+===== PAGE 23 =====
+23 
+===== PAGE 24 =====
+24 
+===== PAGE 25 =====
+25 
+===== PAGE 26 =====
+26 
+===== PAGE 27 =====
+27 
+===== PAGE 28 =====
+28 
+Bestiary 
+An index of the creatures for the Infernal Caves and Sunken Swamp. 
+Creatures 
+Page 
+Bladderwort Hosts - Levels 2, 4, 7 & 9 
+29 
+Flame Wolf - Levels 2, 4, 7 & 9 
+30 
+Furnicar - Levels 2, 4, 7 & 9 
+31 
+Giant Spider - Levels 2, 4, 7 & 9 
+32 
+Harakor - Levels 2, 4, 7 & 9 
+33 
+Talis Lotus - Levels 2, 4, 7 & 9 
+34 
+Vean Fray - Levels 2, 4, 7 & 9 
+35 
+Water Cadaver - Levels 2, 4, 7 & 9 
+36 
+===== PAGE 29 =====
+29 
+===== PAGE 30 =====
+30 
+===== PAGE 31 =====
+31 
+===== PAGE 32 =====
+32 
+===== PAGE 33 =====
+33 
+===== PAGE 34 =====
+34 
+===== PAGE 35 =====
+35 
+===== PAGE 36 =====
+36 
+===== PAGE 37 =====
+37 
+===== PAGE 38 =====
+38 
+===== PAGE 39 =====
+
+===== PAGE 40 =====
+40 
+This is the Lairs Expansion for 2D6 Dungeon and features the rules and tables 
+for the Infernal Caves and Sunken Swamp. To play the Lairs Expansion you will 
+need the 2D6 Dungeon Core Rules and any additional rules are listed below. 
+You will also need the Tables Codex as some of the tables referenced in this 
+expansion are found there. 
+ 
+Adventurers are known to have braved the caves for many reasons. To help rid 
+the land of the creatures that might venture out at night or to find treasure to 
+support their growing domains. Others enter to raise their level before they 
+venture back into the main undefeated dungeon that plagues the land. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DR Games ©2023 
