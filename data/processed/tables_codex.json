@@ -1068,7 +1068,7 @@
           {
             "Roll": "⚄ ⚁",
             "Manoeuvre": "Incisive Cut",
-            "Damage": "D6 +2 damage"
+            "Damage": "D6 +1 damage"
           },
           {
             "Roll": "⚂ ⚁",
@@ -1310,7 +1310,7 @@
           },
           {
             "Roll": "⚅ ⚃",
-            "Manoeuvre": "Divarcating Stun",
+            "Manoeuvre": "Divaricating Stun",
             "Damage": "2D6 +9 damage"
           }
         ]
@@ -1424,7 +1424,7 @@
           },
           {
             "Roll": "⚃ ⚂",
-            "Manoeuvre": "Wailing Maul",
+            "Manoeuvre": "Wild Maul",
             "Damage": "D6 +7 damage"
           },
           {
@@ -3807,6 +3807,1789 @@
         "ROLL": 12,
         "ROOM TYPE": "BANNER ARMS",
         "DESCRIPTION": "On the wall are two crossed spears and a shield. You take a closer look and see they are for display only and useless. There are some cord and metal strips though.",
+        "UNIQUE": "NO"
+      }
+    ]
+  },
+  "L2TR": {
+    "title": "L2TR - LEVEL 2 TRAP TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6 for this table. If you successfully avoid a trap, then gain 30 XP.",
+    "flavorText": "You are caught by surprise.",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "A series of darts shoot from the walls. Roll 2D6. If one die matches your armor, you are saved. Otherwise, lose D3 HP."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "You stand on a slab that shifts. Roll D6 and add precision on a 4 or lower, lose 2HP as you twist your ankle."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "A large stone ball swings down. Roll D6 and add your shift. On a 5 or higher, you manage to dodge. Otherwise, lose D3 HP."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "A blade shoots from the wall, and you dodge it but tumble back, losing one random item from your pack as it is crushed."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Gas pours from a vent. If you have under 5 large items, you can skirt under the cloud or take D3HP. No time to drop stuff."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "The air smells toxic. If you are soaked, you become overwhelmed as it clings to your wet clothes. Lose the D3 HP."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "A large stone falls from above. If you have the heavy mace, you can smash it away. Otherwise, lose D3 HP."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "A swinging log comes down at you. If you have the greataxe, you can chop it in two. Otherwise, lose D3 HP."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "A spear shoots from the wall. If you have a longsword, you can deflect it. Otherwise lose D3 HP."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "The room becomes suddenly cold. Lose 2 HP if you do not wear 3 pieces of armor or don't have cold resistance."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Lightning flashes from the ceiling. If you are wearing metal armor, it conducts the electricity. Lose D6 HP. Your armor is unaffected."
+      }
+    ]
+  },
+  "L2G": {
+    "title": "L2G - LEVEL 2 GUARDS",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "MERCENARY"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "MERCENARY"
+      }
+    ]
+  },
+  "L2R": {
+    "title": "L2R - LEVEL 2 RELIGIOUS ENEMY",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "CULTIST"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "INFERNAL MONK"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "INFERNAL MONK"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "DARK CLERIC"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "MYSTIC"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "DARK CLERIC AND INFERNAL MONK"
+      }
+    ]
+  },
+  "L2P": {
+    "title": "L2P - LEVEL 2 PATROLS",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "GUARD"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "DARK CLERIC"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "MERCENARY"
+      }
+    ]
+  },
+  "L2WO": {
+    "title": "L2WO - LEVEL 2 WORKERS",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "ARTISAN"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "SCRIBE"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "BLACKSMITH"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "ADEPT"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "ADEPT"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "BLACKSMITH AND MEDIC"
+      }
+    ]
+  },
+  "MR1": {
+    "title": "MR1 - MAGIC RING TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "Ring of Baseness"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "Ring of Baseness"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "Ring of Senses"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "Ring of Telekinesis"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "Ring of Transformation"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "Ring of Transformation"
+      }
+    ]
+  },
+  "MA1": {
+    "title": "MA1 - MAGICAL AMULET TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "Amulet of Fire Resistance"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "Amulet of Fire Resistance"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "Amulet of Ice Resistance"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "Amulet of Ice Resistance"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "Amulet of Poison Resistance"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "Amulet of Poison Resistance"
+      }
+    ]
+  },
+  "MW1": {
+    "title": "MW1 - MAGIC WAND TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "Wand of Fireballs"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "Wand of Fireballs"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "Wand of Lightning"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "Wand of Sunder"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "Wand of Paralysis"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "Wand of Paralysis"
+      }
+    ]
+  },
+  "MI1": {
+    "title": "MI1 - MAGICAL ITEM TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "ENCOUNTERED": "Bracers of Blocking"
+      },
+      {
+        "ROLL": 2,
+        "ENCOUNTERED": "Explosive Marbles"
+      },
+      {
+        "ROLL": 3,
+        "ENCOUNTERED": "Headband of Taming"
+      },
+      {
+        "ROLL": 4,
+        "ENCOUNTERED": "Gloves of Knocking"
+      },
+      {
+        "ROLL": 5,
+        "ENCOUNTERED": "Powder of Invisibility"
+      },
+      {
+        "ROLL": 6,
+        "ENCOUNTERED": "Staff of Claws"
+      }
+    ]
+  },
+  "CT3": {
+    "title": "CT3 - CHEST TABLE 3",
+    "rollIdentifier": "ROLL",
+    "notes": "The modified ranges rule applies. Any items can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a chest and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "You flip the lid back and find a collection of worthless tin plates and goblets."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "The chest contains a sack which you rummage through. Inside is a cheese and some bread. Gain 1 ration."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "There is a small wooden case in the bottom. You flip it open and find a fine Lock Pick +3 (3)."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There are some uniforms here. You check them and find 2D6 GC and a turnip."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "The chest is virtually empty apart from half a silver cross worth 2D6 SC wrapped in a cloth."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Inside you find a small, portable shrine to a god, roll on GOT1. You can make a correct offering for 1 FP."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "The chest contains 2 empty potion vials, some Zoumeros Leaves, Ilios Petals and some cabbage leaves."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Some bottles have been smashed in this chest but two have survived. Roll on POT2 and POT3."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Wrapped in scraps of cloth and carefully placed in a chest is a piece of armour. Roll on ART3. Beneath this is a squash."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "You open the chest and find 4 HQ gems of the same type sitting on a purple pillow. Roll on GMT1-2."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Lying at the bottom is a beautiful throwing axe +3. It has the Yips' Rune engraved on it (see RUNE1)."
+      }
+    ]
+  },
+  "CT4": {
+    "title": "CT4 - CHEST TABLE 4",
+    "rollIdentifier": "ROLL",
+    "notes": "The modified ranges rule applies. Any items can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a chest and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "This chest has been looted. There is some sand and, strangely, a wish bone in the bottom."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "There is a red shawl in the chest. Next to it is a needle and thread in a small box and a pouch of sunflower seeds."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "In amongst some white feathers is half a copper pendant worth 2D6 SC and half a gold symbol worth 2D6 GC."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There is a length of rope in the chest alongside a fine looking Throwing Knife +2 and Lock Pick +4 (2)."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is a huge gold plated urn inside the chest. It is a large item worth 4D6 +30 GC."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Inside is a wooden box that breaks apart as you flip it open and see two potions. Roll on POT2 and POT3."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "A large bear skin is folded up inside the chest. It is worth 80 GC and a large item. There is also some dried meat here."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "There are some wooden cups and a series of pouches containing 9D6 GC. There is also a rune stone. Roll on RUNE1."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "The chest is full of paper. You rummage through it and find two scrolls. Roll on SCT3 and SCT4."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "There are some rusty sword blades here, and in a box, wrapped in paper, is a rune stone. Roll on RUNE2."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "There is an elegant piece of armour in the chest. Roll on ART3. It is also a Blazon piece of armour, see ENAT1."
+      }
+    ]
+  },
+  "BST1": {
+    "title": "BST1 - BODY SEARCH TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": "The modified ranges rule applies. Any items can be taken and used for Inventive Usage.",
+    "flavorText": "You search the body and find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "The body stinks, and a cloud of spores erupts. Lose 1 HP."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "The body bursts into flames destroying any loot. There is dark magic here."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "You pat down the body but find nothing."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There is a snapped off sword blade in the creature's ribcage."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Attached to a belt is a wallet. Inside you find some Malako Leaves."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "There is a golden chain around the corpse's neck. It is worth 3D6 +10 GC."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Strapped to the creature's back is a throwing axe +3."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Rolled up in a cloth are some sticks of charcoal and a quill feather. There is also a pouch containing 4D6 +20 GC."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "In a satchel at the creature's side is a vial of liquid. Roll on POT2. There is also 2D6 +10 SC in there."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "You pat down the body and find a pouch. Inside is 2D6 +40 SC and a Lock Pick +2 (1)."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "On a cord around the creature's neck is a HQ Garnet set in a gold frame."
+      }
+    ]
+  },
+  "BST2": {
+    "title": "BST2 - BODY SEARCH TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "The modified ranges rule applies. Any items can be taken and used for Inventive Usage.",
+    "flavorText": "You search the body and find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "Blood suddenly spurts from the body. Gain the bloodied status. There is nothing here."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "The body strangely fizzles to dust. Nothing remains, but odd magic was at work."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "The cloth disintegrates. You find a few of sunflower seeds."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "You rummage through the rags but find nothing."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "On a shoulder strap is an old throwing knife -1."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "A bag lays beside the body. Inside you find twigs, Daunkoma Stems and Scarlet Orievatus."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Strapped to the creature's leg is a broken leather holster, are two throwing knives. There is also a pouch with 3D6 GC."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Around the creature's forearm is a leather bracelet worth 2D6 SC. It is set with 2 large MQ Rubies."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Around the creature's neck is a silk sash worth 3D6 +30 GC. Hanging from it is a throwing axe +1."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "There is a small pouch of MQ Gems. Roll on GMT1 x3."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "There is a small packet of paper in an inside pocket. Inside is 2D6 +30 GC and a HQ Diamond."
+      }
+    ]
+  },
+  "PT3": {
+    "title": "PT3 - POUCH TABLE 3",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a pouch and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "The pouch comes apart when you open it. There was nothing in it."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "Nothing. The pouch is empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "There is a fine silver chain inside worth 2D6 +5 GC."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There are some Daunkoma Stems rolled up in a cloth. There is also 2D6 GC in the pouch."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Inside are some loose Scarlet Orievatus leaves and sunflower seeds. There is also D6 +5 GC in the pouch."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "The pouch is full of coins. You find 3D6 +15 SC and 3D6 +15 GC."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Tied in green twine is a Lock Pick +2 (3) next to a collection of coins worth 2D6 +5 GC."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Nestled into the pouch is a Potion of Extra Healing. There is also a gold nugget worth 1D6 GC in the pouch."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Folded up into a square is a Scroll of Sunder and a glass orb. There is also 2D6 +5 GC in the pouch."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "Wrapped in a square of silk is a rune stone. Roll on RUNE1."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Caught up in some cotton fluff is a Ring of Telekinesis."
+      }
+    ]
+  },
+  "PT4": {
+    "title": "PT4 - POUCH TABLE 4",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a pouch and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "It turns out to be a dirty rag. There is nothing inside."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "Nothing. The pouch is empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "There is a gold ring inside worth 4D6 +10 GC."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "Inside are some loose Zoumerous leaves and Kathoto spines."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Wrapped up in paper are some Malako leaves and a ball of thread. There is also D6 +10 GC in the pouch."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Inside, the pouch is full of coins. You find 4D6 +30 SC and 4D6 +30 GC."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Tucked inside the pouch is a Lock Pick +3 (3) and a Scroll of Melt Metal."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Inside is a Potion of Mighty Strength and a packet with one dose of a Powder of Invisibility."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Caught up in some straw is a rune stone. Roll on RUNE2. There is also 2D6 +5 GC in the pouch."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "A Ring of Transformation is wrapped in a square of leather."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "In a vial is a Potion of Domination and next to it a Ring of Senses."
+      }
+    ]
+  },
+  "RPT3": {
+    "title": "RPT3 - RELIGIOUS POUCH TABLE 3",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a pouch and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "The pouch comes apart in your hands."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "Nothing. The pouch is empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "Inside are some small pebbles."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "Tucked inside are some glass beads on a leather cord."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Curled up inside is a length of red ribbon. It appears stained in blood."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Wrapped in some hemp is some small, dried animal organs. They probably belonged to a mouse."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Inside the pouch are some Daunkoma Stems and Scarlet Orievatus."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "There are 2D6 GC and 2 LQ Pearls in the pouch."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "There is a large MQ garnet and a LQ sapphire in the pouch."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "Tucked inside is a small horn box. You flip it open and inside find some Powder of Invisibility."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Wound in twine is a small rune stone. Roll on RUNE1."
+      }
+    ]
+  },
+  "RPT4": {
+    "title": "RPT4 - RELIGIOUS POUCH TABLE 4",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You spot a pouch and open it. Inside you find the following...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "The empty pouch has a large hole in it."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "Nothing. The pouch is empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "Inside is a collection of worthless quartz."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "Wrapped in some hemp is a wax seal showing a man in a robe."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is a square of cotton fabric inside the pouch, wrapped around some Kathato Spines."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Inside the pouch is a religious symbol carved out of ebony."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "On a silver chain worth 2D6 SC are ten polished fangs."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Hidden in some down feathers is a glass orb and a wishbone."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "There is a large MQ ruby and two LQ emeralds in the pouch alongside 2D6 GC."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "At first you think there is nothing in the pouch and then you spot a special ring. Roll on MR1."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Inside the pouch is a polished rune stone. Roll on RUNE2."
+      }
+    ]
+  },
+  "RUNE1": {
+    "title": "RUNE1 - RUNE STONE TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll a D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "RUNE": "MOYER'S PYRO RUNE",
+        "APPLIED TO": "a Throwing Weapon",
+        "EFFECT": "When you throw this and successfully hit the target it explodes into flames causing 5D6 damage to the target. This weapon cannot be recovered if exploded."
+      },
+      {
+        "ROLL": 2,
+        "RUNE": "SUTHERLAND'S FOCUS RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "When you roll a Primary 6 on a combat roll, before shifting, you get +1 Shift for the next round of combat as the rune focuses your strength."
+      },
+      {
+        "ROLL": 3,
+        "RUNE": "BELL'S SONIC RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "Once per combat you can use one of the Weapon's Manoeuvre dice sets as armour, as you send out a sonic blast deflecting the blow. This is used after the attacker has rolled."
+      },
+      {
+        "ROLL": 4,
+        "RUNE": "SHROUD'S CURSE RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "If you hit with your weapon and do 5 or more damage the enemy is cursed for the combat. They become dizzy and struggle to land a hit precisely. When defending against a hit by a successful manoeuvre from a cursed creature you may swap around any armour's primary and secondary die."
+      },
+      {
+        "ROLL": 5,
+        "RUNE": "YIPS' RETURNING RUNE",
+        "APPLIED TO": "a Throwing Weapon",
+        "EFFECT": "When engraved on a throwing weapon it returns to the adventurer's hand if it causes damage on that attack, and can be thrown again in the same combat, giving 1 extra attack. You can only do this once per combat."
+      },
+      {
+        "ROLL": 6,
+        "RUNE": "MOORE'S AURA RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "When the adventurer takes damage in combat, they can heal 1 HP as the rune gives off a healing aura in response to the wielder's pain."
+      }
+    ]
+  },
+  "RUNE2": {
+    "title": "RUNE2 - RUNE STONE TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll a D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "RUNE": "WRIGHT'S WORD RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "A word is engraved below the rune. When spoken during combat a blast of wind pushes the enemy back giving the adventurer a chance to either throw a weapon or drink a potion without losing a round. The combat then continues on. This can be used once per combat."
+      },
+      {
+        "ROLL": 2,
+        "RUNE": "MARSHALL'S BITING RUNE",
+        "APPLIED TO": "a Throwing Weapon",
+        "EFFECT": "When a throwing weapon with this rune hits an enemy it does normal damage plus an electric shock for 2D6 damage. The weapon is subject to normal throwing weapon rules otherwise. If recovered it can be used again with the same effect."
+      },
+      {
+        "ROLL": 3,
+        "RUNE": "KIRBY'S BALANCE RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "This makes the weapon slightly more honed and balanced. Add 1 damage to one manoeuvre. This is transferable if that manoeuvre is ever swapped out."
+      },
+      {
+        "ROLL": 4,
+        "RUNE": "VORTAK'S INFLUX RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "A surge of power can be channelled through the rune to cause an extra 6 damage on one successfully executed manoeuvre. This can be used once per combat."
+      },
+      {
+        "ROLL": 5,
+        "RUNE": "CIMALA'S SCREEN RUNE",
+        "APPLIED TO": "a Melee Weapon",
+        "EFFECT": "An aura extends around the wielder of this weapon. If successfully hit by any magical attack deduct an additional point of damage."
+      },
+      {
+        "ROLL": 6,
+        "RUNE": "POTE'S REBOUND RUNE",
+        "APPLIED TO": "a Throwing Weapon",
+        "EFFECT": "A throwing weapon engraved with this rune hits twice, and on the second hit the creature's interrupt stats do not affect the damage roll. If recovered it can be used again with the same effect."
+      }
+    ]
+  },
+  "SECT1": {
+    "title": "SECT1 - SECRET HATCH TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You slide the hatch open and...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "There is a dusty empty hole."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "There are some splinters of wood and nothing more."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "Inside are some shards of ebony, that were once a small statue."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There are two gold goblets here. Each worth 2D6 GC."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "Inside is some cloth, which you unravel to reveal three throwing knives +1."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "There is a small box of trinkets here. Inside is a glass orb, an acorn and a black feather."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Upon the ledge is a Potion of Extra Healing."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "There is a small box. Inside are 2D6 LQ pearls sitting in some silk cloth."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Inside is a golden idol sitting in the centre of the hole. It is worth 4D6 GC."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "Inside are two dusty potions. Roll on POT2 and POT3."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Inside, placed on a small wooden block, is a rune stone. Roll on RUNE1."
+      }
+    ]
+  },
+  "SECT2": {
+    "title": "SECT2 - SECRET HATCH TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You slide the hatch open and...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "There is an empty hollow. It has been robbed already."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "You see two imprints in the dust where a couple of items once stood. It's empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "For some reason there is a pile of sand here. Nothing more."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There are two half burnt candles in the hatch next to a MQ garnet."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is a small, gold embossed book inside. It appears to be a religious text worth 2D6 GC."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "There is a silver candle stick here worth 8D6 SC. It is a large item."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "There is a box here. Inside it are some items including a fang and a dragon scale."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Inside you find a cobweb covered Potion of Further Health."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "There is some silver and gold jewellery shoved in here worth 12D6 SC and 2D6 GC."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "Placed in the centre, in a glass casket is a rune stone. Roll on RUNE2."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Inside is what appears to be a wand resting on a small pillow. Roll on MW1."
+      }
+    ]
+  },
+  "SLT1": {
+    "title": "SLT1 - SARCOPHAGUS LOOT TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You peer in and search around to find...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "There are some withered rags and dusty cobwebs. There is nothing here."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "Inside there is some decomposed wood laying in dirt and detritus."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "The stone space is clean and rough. There is nothing here."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "A rod of iron lies in the dirt. You don't know what it was used for. This is a large item."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is a dusty old shield here. It is useless but the straps on the back are salvageable."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "At the bottom of the space is an old vase. Inside are some gold bands worth 2D6 GC."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Laying along the base is an old cloak and stuffed inside are some Kathoto Spines."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "There is a case in the stone grave, tucked to one side. Inside you find a scroll. Roll on SCT3."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "Just laying at the foot of the sarcophagus is a rune stone. Roll on RUNE2."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "There is a piece of well-preserved armour here. Roll on ART2."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "As if fallen from the risen corpse an amulet lies in the sarcophagus. Roll on MA1."
+      }
+    ]
+  },
+  "SLT2": {
+    "title": "SLT2 - SARCOPHAGUS LOOT TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You peer in and search around to find...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "The inside seems as if it has been cleaned out. You find nothing."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "There is a pile of bones at the foot of the tomb."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "The rats have somehow made their way in. Their droppings are all that remain."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There is a long red robe here, and a scroll in a pocket. Roll on SCT3."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "In the small box, at the head of the sarcophagus, are some Dankoma Stems."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "There is a pouch here full of coins, 3D6 GC and 4D6 SC."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "Lying clear to see on the stone base is a necklace lined with 4 MQ gems, roll on GMT1-2."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "Lying in amongst some bones and splinters is a rune stone. Roll on RUNE1."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "A small stone statue of Nevazator is here. You can correctly make an offering and gain 2 FP."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "Clenched in a bony fist is a rune stone. You give the fingers a gentle kick to dislodge it. Roll on RUNE2."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "There is a discarded piece of armour here. It is surprisingly in good condition. Roll of ART3 -1."
+      }
+    ]
+  },
+  "URL1": {
+    "title": "URL1 - URN LOOT TABLE 1",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You look inside the urn and find...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "There is nothing inside the urn but dust."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "The urn has never been used. It is clean and empty."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "There are some fragments of bone rattling around the urn."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There is half a copper pendant worth D6 SC here."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is some ash here which is clearly from the remains of a small creature. You find a small set of fangs."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Caught up in some old twigs are two leather straps."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "There are four pieces of coal in the urn."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "In amongst the burnt bone are some Ilios Petals and Daunkoma Stems."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "There is a small package at the bottom. Inside it are three throwing darts and a pouch with 2D6 +10 GC."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "You rummage around and find a piece of jewellery worth 4D6 +20 GC."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Wrapped in a small leather pouch is a rune stone. Roll on RUNE1."
+      }
+    ]
+  },
+  "URL2": {
+    "title": "URL2 - URN LOOT TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6. The modified ranges rule applies. Any items you find can be taken and used for Inventive Usage.",
+    "flavorText": "You look inside the urn and find...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "You rummage in the urn but find nothing."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "There are the ashen remains of body in the urn."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "The urn is full of just twigs and leaves."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "There is half a silver cross worth 2D6 GC at the bottom."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There are some coins at the bottom including 4D6 SC and 5D6 +10 GC."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "Someone has hidden a potion in the urn. It is wrapped in cloth. Roll on POT2."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "There is a purse stashed in the bottom. Inside is some jewellery worth 4D6 +30 GC."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "There is an offering in the urn. You pull out a gold dagger worth 8D6 +40 GC."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "There is an object here, a tube made of bone and inside it are 2 scrolls. Roll on SCT2 twice."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "You search through some straw and find at the bottom a rune stone. Roll on RUNE1."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "Placed inside the ornate decorated urn is a magical item. You pull out a Staff of Claws. Unique, no roll if rolled again."
+      }
+    ]
+  },
+  "ENP2": {
+    "title": "ENP2 - ENCOUNTER PRISONER TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6 for this table. Liberate 1 prisoner and liberate 2 prisoners are shortened to L1PR and L2PR.",
+    "flavorText": "There is a prisoner here...",
+    "data": [
+      {
+        "ROLL": 2,
+        "RESULT": "There is a crouched woman here. You approach but her body vibrates, explodes and a black cloud engulfs you. Lose D6 HP."
+      },
+      {
+        "ROLL": 3,
+        "RESULT": "There is a person here. Roll D6. 1-3= They are injured. If you have cloth, they survive L1PR. 4-6= A MUSTY BLOATER bursts free of the corpse."
+      },
+      {
+        "ROLL": 4,
+        "RESULT": "The prisoner looks agitated. You can free them. Roll D6. 1-4= They attack you use ADEPT stats. 5-6= They escape L1PR."
+      },
+      {
+        "ROLL": 5,
+        "RESULT": "Inside the small space is a curled up prisoner. You move closer and find that they are dead, their body scarred and beaten."
+      },
+      {
+        "ROLL": 6,
+        "RESULT": "There is a body here, but they are long dead, their loose clothes hanging from the obviously skeletal form."
+      },
+      {
+        "ROLL": 7,
+        "RESULT": "This poor soul has been beaten and lays sprawled across the cell. They are dead."
+      },
+      {
+        "ROLL": 8,
+        "RESULT": "The prisoner has a deep gash. If you have some Malako Leaves you can save them (L1PR) otherwise they lapse into a coma and die."
+      },
+      {
+        "ROLL": 9,
+        "RESULT": "If you can pick the lock here (lock -2) you can free the prisoner. They run off the way you came. L1PR."
+      },
+      {
+        "ROLL": 10,
+        "RESULT": "The woman reaches for you asking for help. There is a key. You unlock and open the cell and she scampers away. L1PR."
+      },
+      {
+        "ROLL": 11,
+        "RESULT": "An old man slowly rises, shackles on his legs. You smash them off and he thanks you as he limps away. L1PR."
+      },
+      {
+        "ROLL": 12,
+        "RESULT": "There is a key on the wall here which you take and unlock cuffs on the prisoner who runs off. L1PR."
+      }
+    ]
+  },
+  "EXT2": {
+    "title": "EXIT TYPE TABLE 2",
+    "rollIdentifier": "ROLL",
+    "notes": null,
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": "⚀ ⚀",
+        "EXIT TYPE": "Wooden Doors (all locked)"
+      },
+      {
+        "ROLL": "⚀ ⚁",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚀ ⚂",
+        "EXIT TYPE": "Metal Doors"
+      },
+      {
+        "ROLL": "⚀ ⚃",
+        "EXIT TYPE": "Archways"
+      },
+      {
+        "ROLL": "⚀ ⚄",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚀ ⚅",
+        "EXIT TYPE": "Portcullises"
+      },
+      {
+        "ROLL": "⚁ ⚀",
+        "EXIT TYPE": "Wooden Doors (all locked)"
+      },
+      {
+        "ROLL": "⚁ ⚁",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚁ ⚂",
+        "EXIT TYPE": "Portcullises"
+      },
+      {
+        "ROLL": "⚁ ⚃",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚁ ⚄",
+        "EXIT TYPE": "Curtains"
+      },
+      {
+        "ROLL": "⚁ ⚅",
+        "EXIT TYPE": "Archways"
+      },
+      {
+        "ROLL": "⚂ ⚀",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚂ ⚁",
+        "EXIT TYPE": "Metal Doors"
+      },
+      {
+        "ROLL": "⚂ ⚂",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚂ ⚃",
+        "EXIT TYPE": "Archways (all locked)"
+      },
+      {
+        "ROLL": "⚂ ⚄",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚂ ⚅",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚃ ⚀",
+        "EXIT TYPE": "Metal Doors"
+      },
+      {
+        "ROLL": "⚃ ⚁",
+        "EXIT TYPE": "Archways"
+      },
+      {
+        "ROLL": "⚃ ⚂",
+        "EXIT TYPE": "Curtains"
+      },
+      {
+        "ROLL": "⚃ ⚃",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚃ ⚄",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚃ ⚅",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚄ ⚀",
+        "EXIT TYPE": "Portcullises"
+      },
+      {
+        "ROLL": "⚄ ⚁",
+        "EXIT TYPE": "Metal Doors (all locked)"
+      },
+      {
+        "ROLL": "⚄ ⚂",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚄ ⚃",
+        "EXIT TYPE": "Archways"
+      },
+      {
+        "ROLL": "⚄ ⚄",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚄ ⚅",
+        "EXIT TYPE": "Wooden Doors"
+      },
+      {
+        "ROLL": "⚅ ⚀",
+        "EXIT TYPE": "Metal Doors"
+      },
+      {
+        "ROLL": "⚅ ⚁",
+        "EXIT TYPE": "Portcullises"
+      },
+      {
+        "ROLL": "⚅ ⚂",
+        "EXIT TYPE": "Curtains"
+      },
+      {
+        "ROLL": "⚅ ⚃",
+        "EXIT TYPE": "Reinforced Doors"
+      },
+      {
+        "ROLL": "⚅ ⚄",
+        "EXIT TYPE": "Wooden Doors (all locked)"
+      },
+      {
+        "ROLL": "⚅ ⚅",
+        "EXIT TYPE": "Wooden Doors"
+      }
+    ]
+  },
+  "L2LR": {
+    "title": "L2LR - LEVEL 2 LARGE ROOMS (32 SQUARES OR LARGER)",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6 for this table. If you roll a unique room that already exists on this level then re-roll.",
+    "flavorText": "This space is larger than the average room being 32 squares or larger...",
+    "data": [
+      {
+        "ROLL": 2,
+        "ROOM TYPE": "STONE WORKSHOP",
+        "DESCRIPTION": "This large space has rough walls and piles of stone laying everywhere. There are the remains of a large stone statue that has been smashed. There is no one here.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 3,
+        "ROOM TYPE": "GRAND HALL",
+        "DESCRIPTION": "There are evenly spaced pillars running along this large stone lined hall, with a round central burner with a metal grill. As you approach roll on L2TR.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 4,
+        "ROOM TYPE": "CHURCH",
+        "DESCRIPTION": "This room is lined with pews and on a podium stands a figure. Roll on L2R and face them. There is a pestle and mortar and some Ilios Petals.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 5,
+        "ROOM TYPE": "PENITENTIARY",
+        "DESCRIPTION": "The northeast corner is being used to hold captives. There are whips and knives on a table. The floor is covered in bloodied straw. Fight a JAILOR and then roll on ENP2.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 6,
+        "ROOM TYPE": "FOUNTAIN ROOM",
+        "DESCRIPTION": "In the centre is an ornate fountain bubbling with clear water. It is dedicated to a god and carved in their form. Roll on GOT1. You can make an offering for 1 FP.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 7,
+        "ROOM TYPE": "ARCHERY RANGE",
+        "DESCRIPTION": "There are two lanes here, that run the length of the room. At one end are two archery targets. A person is at one pulling out arrows. Roll on L2G-1 and face them.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 8,
+        "ROOM TYPE": "SPARRING CHAMBER",
+        "DESCRIPTION": "This is a training room, where there is a circle of sand in which a MERCENARY and a GUARD are sparring. They turn and attack. If you survive roll on BT2 +2.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 9,
+        "ROOM TYPE": "CRATE STORE",
+        "DESCRIPTION": "This space is used for storage and crates scatter the space, creating hidden spaces. There is a noise so roll on L1CE, then roll on CT2. After roll on L2TR.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 10,
+        "ROOM TYPE": "WORK SPACE",
+        "DESCRIPTION": "One wall is lined with a workshop. On it are some small metal boxes and in one is a silver amulet worth 2D6 SC with two slots. If you have 2 gems you may roll on GCT1.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 11,
+        "ROOM TYPE": "DORMITORY",
+        "DESCRIPTION": "Lining the walls are bunks and you count enough for twelve men, but most are empty. However, two are occupied. Roll on L1W and L1WO. They attack. After, roll on CT2.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 12,
+        "ROOM TYPE": "STUDY",
+        "DESCRIPTION": "Lined with bookshelves and desks, this huge study is occupied by two workers. Roll twice on L2WO-1. You must face them. If you survive roll on SCT2 and SCT3.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      }
+    ]
+  },
+  "L2HA_Rooms": {
+    "title": "Level 2 Rooms - Human Ancestry - The Domain",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6 (D66) for this table. If you roll a unique room that already exists on this level then re-roll.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": "⚀ ⚀",
+        "ROOM TYPE": "EMPTY SPACE",
+        "DESCRIPTION": "This room is bare and seems to have been cleared out or forgotten about.",
+        "ENCOUNTER": "There is nothing in this space.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚀ ⚁",
+        "ROOM TYPE": "FINE BEDROOM",
+        "DESCRIPTION": "A smart double bed is pushed up to a wall, with a cupboard to one side. The space is neat.",
+        "ENCOUNTER": "There is a locked chest here. The rough lock is -2. If you can open it gain 3D6 XP and roll on CT2.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚀ ⚂",
+        "ROOM TYPE": "GUARD POST",
+        "DESCRIPTION": "Two benches stand before a stone fireplace, with an armchair to one side.",
+        "ENCOUNTER": "There is a foe here. Roll on L2WO. If you survive roll on table IAUT1.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚀ ⚃",
+        "ROOM TYPE": "ARMOURY",
+        "DESCRIPTION": "A room lined with empty weapon racks with an anvil and hammer nearby. There are also nails.",
+        "ENCOUNTER": "The Armourer is here. Use BLACKSMITH stats. If you survive roll on ART2 -1.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚀ ⚄",
+        "ROOM TYPE": "STORAGE AREA",
+        "DESCRIPTION": "The walls are lined with shelves, which are full of boxes and crates. There is also a sack.",
+        "ENCOUNTER": "Roll a D6. 1-3 = A random patrol comes by roll on L2P -1. If you survive roll on TGT1+2.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚀ ⚅",
+        "ROOM TYPE": "OATH COURT",
+        "DESCRIPTION": "A line of pews face three tall chairs, and wood panelling lines the walls.",
+        "ENCOUNTER": "A lone BARIC KNIGHT standing guard roars and attacks you. If you survive roll on RATT1+2.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚁ ⚀",
+        "ROOM TYPE": "SCRIBES ROOM",
+        "DESCRIPTION": "Four tall desks stand in a square. Scrolls and quills line their surfaces.",
+        "ENCOUNTER": "An agitated ADEPT rises and attacks. If you survive you find a scroll roll on SCT2.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚁ ⚁",
+        "ROOM TYPE": "FISHERY",
+        "DESCRIPTION": "There are two large tanks here, full of fish. A fishing spear leans against a wall.",
+        "ENCOUNTER": "You may choose to fish but become soaked. Gain 25 XP and 1 ration before you leave.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚁ ⚂",
+        "ROOM TYPE": "HOLDING CELL",
+        "DESCRIPTION": "A wooden cell has been built into this chamber and has a small food hatch.",
+        "ENCOUNTER": "Roll a D6. 1-4 = The JAILOR is here. You must fight them. If you survive roll on ENP2.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚁ ⚃",
+        "ROOM TYPE": "WASH ROOM",
+        "DESCRIPTION": "Metal basins line two walls. One is full of soapy water. There are two rags on the side.",
+        "ENCOUNTER": "Roll a D6. 1-3 = A random patrol comes by roll on L2P. If you survive roll on TAT1.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚁ ⚄",
+        "ROOM TYPE": "VESTRY",
+        "DESCRIPTION": "A large dark wood cabinet stands open. Inside, on a shelf, is an ornate statue and a candle.",
+        "ENCOUNTER": "Roll on GOT1 to establish the god. You can make a correct offering to gain 1 FP. Then roll on L2TR.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚁ ⚅",
+        "ROOM TYPE": "KENNEL",
+        "DESCRIPTION": "There are two wooden kennels here and a pole, attached to which, by a long lead, is a dog.",
+        "ENCOUNTER": "An ADEPT stands and releases the dog. Roll on L1D. After the dog face the ADEPT.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚂ ⚀",
+        "ROOM TYPE": "RESTING LOUNGE",
+        "DESCRIPTION": "There are benches and armchairs lined along the walls here. The floor is littered with boots.",
+        "ENCOUNTER": "Roll a D6. 1-4 a MERCENARY is here resting. They rise from their chair. You must face them.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚂ ⚁",
+        "ROOM TYPE": "BEAR CAGES",
+        "DESCRIPTION": "Upon the dirty floor are two tall cages. In one is a large BROWN BEAR. It roars, rattling the cage.",
+        "ENCOUNTER": "The cage door stands ajar and horrified you see it swing open. The BROWN BEAR attacks.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚂ ⚂",
+        "ROOM TYPE": "LOOT LOCK-UP",
+        "DESCRIPTION": "Bars and a locked gate section off a corner room. Inside you see two chests.",
+        "ENCOUNTER": "The gate has a lock +1. If you succeed roll on CT1 and CT2, then on L2TR after.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚂ ⚃",
+        "ROOM TYPE": "PRAYER ROOM",
+        "DESCRIPTION": "Curtains line the walls and a large mural shows a dark room with an animal skull on a stool.",
+        "ENCOUNTER": "Roll a D6. 1-4 = roll on L2R as a figure emerges. If you survive search the room. Roll on RATT1+2.",
+        "EXITS": "CURTAINS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚂ ⚄",
+        "ROOM TYPE": "THRONE ROOM",
+        "DESCRIPTION": "A massive stone throne sits on a raised platform. Wooden benches line the walls.",
+        "ENCOUNTER": "Sitting on the throne is an OVERLORD. The large figure rises and growls. You must face them.",
+        "EXITS": "METAL DOORS",
+        "UNIQUE": "60% YES"
+      },
+      {
+        "ROLL": "⚂ ⚅",
+        "ROOM TYPE": "DARK CHAMBER",
+        "DESCRIPTION": "There are some stools in a circle here. In the middle the light has strangely dimmed.",
+        "ENCOUNTER": "You sense this is a sacred space. You can make a correct sacrifice to Intuneric for 1 FP here.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚃ ⚀",
+        "ROOM TYPE": "ROUGH CHAMBER",
+        "DESCRIPTION": "This room has not been finished. Some of the walls appear rough and uneven.",
+        "ENCOUNTER": "Roll a D6. 1-3= A patrol comes by, roll on L2P. After roll on L2TR.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚃ ⚁",
+        "ROOM TYPE": "SMOKING CHAMBER",
+        "DESCRIPTION": "A number of chairs are scattered around this smoke filled room. You see a figure.",
+        "ENCOUNTER": "Roll on L2G. After you spot a glass orb on the fireplace mantel and a random item. Roll on MIT1.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚃ ⚂",
+        "ROOM TYPE": "KITCHEN",
+        "DESCRIPTION": "This space has a series of counters, covered in pots, cutting boards and knives.",
+        "ENCOUNTER": "The chef is here. They attack on sight. Use ADEPT stats. After gain 1 ration and roll on IAUT1.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚃ ⚃",
+        "ROOM TYPE": "HOLY CELL",
+        "DESCRIPTION": "Hanging in a cage is a blind man. He holds out a hand for his god and whispers to you.",
+        "ENCOUNTER": "Roll on GOT1 to establish the god. You can give him a correct offering to gain 1 FP.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚃ ⚄",
+        "ROOM TYPE": "TILED BATH HOUSE",
+        "DESCRIPTION": "Behind a dirty curtain is a low, tiled bath. There is no one here, but the bath is full.",
+        "ENCOUNTER": "Someone turns up. Roll on L2G and face them. Ignore the enemies armour related interrupts.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚃ ⚅",
+        "ROOM TYPE": "CANTEEN",
+        "DESCRIPTION": "Three stools stand next to a stone bar on which is a barrel. On the wall is a horseshoe.",
+        "ENCOUNTER": "The barman attacks (use ADEPT stats) also face a patron. If you survive roll on L2G -1.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚄ ⚀",
+        "ROOM TYPE": "GUARDHOUSE",
+        "DESCRIPTION": "There is a wrought iron cell here built into the wall. You can make out a form inside.",
+        "ENCOUNTER": "If you can successfully pick the lock roll on ENP2. If you fail to pick it roll on L2P as a patrol comes.",
+        "EXITS": "REINFORCED DOORS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚄ ⚁",
+        "ROOM TYPE": "MONUMENT",
+        "DESCRIPTION": "A wall monument showing a relief of a god rising up. Beneath is a recess to place items.",
+        "ENCOUNTER": "Roll on GOT1 to establish the god. A correctly placed offering will gain you 1 FP.",
+        "EXITS": "CURTAINS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚄ ⚂",
+        "ROOM TYPE": "DARK CELL",
+        "DESCRIPTION": "A stone cell has been built into this dark space. Someone inside is screaming.",
+        "ENCOUNTER": "You can leave or roll on L2R. If you fight and win you find a prisoner in the cell. Roll on ENP2.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚄ ⚃",
+        "ROOM TYPE": "TRAINING ROOM",
+        "DESCRIPTION": "There is a cut up wooden pole covered in marks here. Wooden swords lay about.",
+        "ENCOUNTER": "A MERCENARY is practicing here. You must fight him. If you survive roll on IAUT1.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚄ ⚄",
+        "ROOM TYPE": "QUARTERMASTER'S OFFICE",
+        "DESCRIPTION": "At a cluttered desk, sits a gruff looking person. They are thumbing some documents.",
+        "ENCOUNTER": "They see you, shout and attack. Use ADEPT stats and roll on IAUT1 afterwards.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚄ ⚅",
+        "ROOM TYPE": "METAL WORKSHOP",
+        "DESCRIPTION": "Desks and shelves line one wall. There are hammers, strips of metal and an anvil.",
+        "ENCOUNTER": "A BLACKSMITH turns to face you. If you survive you find some items. Roll on MIT1 and MIT2.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚅ ⚀",
+        "ROOM TYPE": "TREATMENT ROOM",
+        "DESCRIPTION": "There are shelves lined with jars and bottles. A wooden table stands in the centre.",
+        "ENCOUNTER": "You must face an APOTHECARY. If you survive you search the shelves. Roll on POT2 and POT3.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚅ ⚁",
+        "ROOM TYPE": "SPIKE CHAMBER",
+        "DESCRIPTION": "Large iron spikes line the walls and ceiling here and seem to serve no function.",
+        "ENCOUNTER": "A BARIC KNIGHT is training here. They turn and attack. There is a large chest here. Roll on CT2.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚅ ⚂",
+        "ROOM TYPE": "FLOODED CHAMBER",
+        "DESCRIPTION": "Part of this room has been sectioned off, for a dirty pool of water has formed. It stinks.",
+        "ENCOUNTER": "As you draw near a SPORAL RAPNEL rises up from the pool and attacks. After roll on IAUT1.",
+        "EXITS": "RANDOM",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚅ ⚃",
+        "ROOM TYPE": "CHAPEL",
+        "DESCRIPTION": "There are some pews here and a selection of odd chairs and a wooden pulpit.",
+        "ENCOUNTER": "A DARK CLERIC stands behind the pulpit, points and attacks. If you survive roll on RATT1+2.",
+        "EXITS": "CURTAINS",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": "⚅ ⚄",
+        "ROOM TYPE": "EMPTY SPACE",
+        "DESCRIPTION": "This room has been left empty, the floor and walls have been cleaned.",
+        "ENCOUNTER": "There is nobody or anything here.",
+        "EXITS": "ARCHWAYS",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": "⚅ ⚅",
+        "ROOM TYPE": "SACRIFICIAL STAGE",
+        "DESCRIPTION": "A long ripped curtain hangs above a bloody stage upon which is a chopping block.",
+        "ENCOUNTER": "A MYSTIC emerges from behind a curtain and attacks. If you survive roll on RATT1+2 and ENP2.",
+        "EXITS": "WOODEN DOORS",
+        "UNIQUE": "NO"
+      }
+    ]
+  },
+  "L2SR": {
+    "title": "L2SR - LEVEL 2 SMALL ROOMS (6 SQUARES OR SMALLER)",
+    "rollIdentifier": "ROLL",
+    "notes": "Roll 2D6 for this table. If you roll a unique room that already exists on this level then re-roll. All exits are archways.",
+    "flavorText": "This space is too small to be a normal room but it is not a corridor. All exits are archways.",
+    "data": [
+      {
+        "ROLL": 2,
+        "ROOM TYPE": "EMPTY SPACE",
+        "DESCRIPTION": "There is nothing in this small space.",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 3,
+        "ROOM TYPE": "STRANGE TEXT",
+        "DESCRIPTION": "This narrow room connects the corridors and has no furniture. On the wall though is some illegible text.",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 4,
+        "ROOM TYPE": "GRAKADA HOLY PLACE",
+        "DESCRIPTION": "There is a small statue of GRAKADA here. A piece of muddy cloth is wrapped around it. There is a bowl into which you can make an offering. If placed correctly, check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 5,
+        "ROOM TYPE": "INTUNERIC ALTAR",
+        "DESCRIPTION": "There is a tall black altar to INTUNERIC here. It appears to be made of Onyx. There is a cleft in the stone into which you can make an offering. If placed correctly, check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 6,
+        "ROOM TYPE": "MADUVA SANCTUARY",
+        "DESCRIPTION": "There is a collection of bones lashed together in the form of MADUVA here. A tray made of leg bones stands before it into which you can make a correct offering. Check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 7,
+        "ROOM TYPE": "MURATAYNIE FONT",
+        "DESCRIPTION": "There is a stone font to MURATAYNIE here. The texture of the stone appears as if exposed muscle. You can make an offering here, the font, if placed correctly, check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 8,
+        "ROOM TYPE": "NEVAZATOR SHRINE",
+        "DESCRIPTION": "There is a statue of NEVAZATOR here, wearing a blind. He holds out a large hand onto which you can make a correct offering. Check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 9,
+        "ROOM TYPE": "RADACINA RELIQUARY",
+        "DESCRIPTION": "Nailed to the wall here is a collection of dry roots in the form of RADACINA. Below is a ledge onto which you can make a correct offering. Check the god card, gain 1 FP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 10,
+        "ROOM TYPE": "HEATED SPACE",
+        "DESCRIPTION": "There is a small burner here, that is lit. The space is warm, flickering shadows cast across the room. If you wait here for one round, after, gain D3 HP.",
+        "UNIQUE": "YES"
+      },
+      {
+        "ROLL": 11,
+        "ROOM TYPE": "MUSHROOM FARM",
+        "DESCRIPTION": "There is a small vat built into the wall here and it is full of earth. Growing in the soil are some mushrooms. They are edible. Roll D6. If you roll 3 or more it can count as a ration.",
+        "UNIQUE": "NO"
+      },
+      {
+        "ROLL": 12,
+        "ROOM TYPE": "WALL BANNER",
+        "DESCRIPTION": "On the wall are two crossed swords and a mace. You take a closer look and see they are for display only and useless. There are some cord, hemp and metal strips though.",
         "UNIQUE": "NO"
       }
     ]

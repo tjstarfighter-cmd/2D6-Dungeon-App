@@ -66,16 +66,20 @@ export function rowMatchesRoll(
 
 // ----- Categorisation ------------------------------------------------------
 
-export const CATEGORIES = [
+// Categories are open-ended (string) so per-level "Level 2", "Level 3", …
+// buckets can appear dynamically as more L2+ tables get added. The constants
+// below define the *display order* for known categories; everything else
+// (Level N for N>=2, then "Other", then alphabetical) sorts after.
+const PRIMARY_ORDER = [
   "Generic Reference",
   "Item Generation",
   "Loot & Containers",
   "Encounters & Hazards",
   "Level 1 Creatures",
   "Level 1 Rooms",
-  "Other",
 ] as const;
-export type Category = (typeof CATEGORIES)[number];
+
+export type Category = string;
 
 const EXPLICIT: Record<string, Category> = {
   // Generic reference — the things you look up most.
@@ -143,23 +147,46 @@ export function categoryFor(key: string): Category {
   if (EXPLICIT[key]) return EXPLICIT[key];
   if (ROOM_KEYS.has(key)) return "Level 1 Rooms";
   if (key.startsWith("L1")) return "Level 1 Creatures";
+  // L2+ : single bucket per level until subdivision is needed.
+  const m = key.match(/^L(\d+)/);
+  if (m) return `Level ${m[1]}`;
   return "Other";
 }
 
-/** Group all table keys by category, preserving insertion order within. */
+/**
+ * Group all table keys by category. Preserves PRIMARY_ORDER for known
+ * buckets, then Level N (sorted by N), then any other custom categories
+ * alphabetically, then "Other" last.
+ */
 export function groupByCategory(
   keys: string[],
 ): { category: Category; keys: string[] }[] {
   const buckets = new Map<Category, string[]>();
-  for (const c of CATEGORIES) buckets.set(c, []);
   for (const key of keys) {
     const cat = categoryFor(key);
+    if (!buckets.has(cat)) buckets.set(cat, []);
     buckets.get(cat)!.push(key);
   }
-  return CATEGORIES.filter((c) => buckets.get(c)!.length > 0).map((c) => ({
-    category: c,
-    keys: buckets.get(c)!,
-  }));
+  const result: { category: Category; keys: string[] }[] = [];
+  for (const c of PRIMARY_ORDER) {
+    const ks = buckets.get(c);
+    if (ks && ks.length > 0) {
+      result.push({ category: c, keys: ks });
+      buckets.delete(c);
+    }
+  }
+  const remaining = Array.from(buckets.entries()).sort(([a], [b]) => {
+    const aL = a.match(/^Level (\d+)$/);
+    const bL = b.match(/^Level (\d+)$/);
+    if (aL && bL) return Number(aL[1]) - Number(bL[1]);
+    if (aL) return -1;
+    if (bL) return 1;
+    if (a === "Other") return 1;
+    if (b === "Other") return -1;
+    return a.localeCompare(b);
+  });
+  for (const [c, ks] of remaining) result.push({ category: c, keys: ks });
+  return result;
 }
 
 // ----- Display helpers -----------------------------------------------------
