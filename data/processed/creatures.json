@@ -1431,5 +1431,77 @@
     "mishap": "The Keeper raises a mighty arm but an old claw wound opens and splits, dripping blood. They lose 2D6 HP.",
     "prime": "The Keeper laughs as they break through to place a huge hand on your throat and squeeze. Lose 3D6 HP.",
     "image": "The Keeper L7 (H).png"
+  },
+  "Cyclops L8 (M)": {
+    "name": "CYCLOPS",
+    "level": 8,
+    "category": "Monster",
+    "hp": 70,
+    "xp": 2700,
+    "shift": 3,
+    "treasure": "A Ring of Telekinesis",
+    "interrupt": "Magic Aura on Primary 1s, 5s and 6s -3 damage / Float Upwards on Secondary 5s and 6s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "BRAIN SLASH",   "formula": "2D6 +7 damage" },
+      { "primary": 6, "secondary": 5, "name": "LOCKED TRANCE", "formula": "2D6 +7 damage + special attack - Locked -2 Shift next round" }
+    ],
+    "flavour": "The Cyclops is a magical being elevated from the base rituals of the infernal Order and gifted the one sight, beyond sight, by Nevazator. Their eyes are taken and a magical eye grows in their place.",
+    "mishap": "The Cyclops hesitates, puts a hand to its head and grimaces, unable to tap its power. It loses 2D6 HP.",
+    "prime": "A black aura rises above the Cyclops. Black bolts shoot from it striking your body. Lose 2D6 +8 HP.",
+    "image": "Cyclops L8 (M).png"
+  },
+  "Inghety L8 (M)": {
+    "name": "INGHETY",
+    "level": 8,
+    "category": "Monster",
+    "hp": 82,
+    "xp": 2800,
+    "shift": 3,
+    "treasure": "No Treasure",
+    "interrupt": "Rough Fur on Primary 2s, 3s and 6s -4 damage / Broad Swipe on Secondary 1s, 5s and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 2, "name": "SAVAGE BITE",     "formula": "2D6 +6 damage" },
+      { "primary": 3, "secondary": 3, "name": "FREEZING BREATH", "formula": "2D6 +4 damage" }
+    ],
+    "flavour": "The Inghety is a beast that comes from a frozen region of the Lace Mountains and trapped and released into the dungeon. It is ravenously hungry and awaits its victims in its cold lair.",
+    "mishap": "The Inghety grabs up some furniture and crushes it in it's jaws, missing its next attack to postures.",
+    "prime": "The beast brings down a terrifying hand of jagged claws that you cannot escape. Lose 2D6 +10 HP.",
+    "image": "Inghety L8 (M).png"
+  },
+  "Lizard King L8 (M)": {
+    "name": "LIZARD KING",
+    "level": 8,
+    "category": "Monster",
+    "hp": 70,
+    "xp": 2650,
+    "shift": 3,
+    "treasure": "No Treasure",
+    "interrupt": "Scale Skin on Primary 3s, 4s and 5s -4 damage / Leap Backwards on Secondary 2s, 4s and 5s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "HAND CHOP", "formula": "2D6 +7 damage" },
+      { "primary": 4, "secondary": 3, "name": "TAIL LASH", "formula": "2D6 +6 damage" }
+    ],
+    "flavour": "The Lizard King is the largest of the humanoid lizards and is appointed its title because of this. It was found on one of the few lake islands on the surface, captured and released into level 8.",
+    "mishap": "The beast's large bulk is caught up as it moves in for a swipe. You counter with a jab for 2D6 damage.",
+    "prime": "The beast jumps up high and spins, pummelling you with its tail, two and three times. Lose 3D6 +3 HP.",
+    "image": "Lizard King L8 (M).png"
+  },
+  "Minotaur L8 (M)": {
+    "name": "MINOTAUR",
+    "level": 8,
+    "category": "Monster",
+    "hp": 90,
+    "xp": 3000,
+    "shift": 3,
+    "treasure": "No Treasure",
+    "interrupt": "Muscular Form on Primary 1s, 3s and 5s -5 damage / Horn Swing on Secondary 1s, 3s and 5s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "HOOF KICK",   "formula": "2D6 +8 damage" },
+      { "primary": 6, "secondary": 5, "name": "HORN CHARGE", "formula": "2D6 +3 damage + special attack - Winded -2 Shift next round" }
+    ],
+    "flavour": "The Minotaur is a creature of myth. Rumour has it that the original dungeon builders captured it in an ancient maze. It is fearless and powerful and will defend its territory with its life.",
+    "mishap": "The Minotaur charges low and catches its horns. It's exposed so you swing to cut it for 3D6 damage.",
+    "prime": "The beast flips you into the air. One random armour piece falls off. It cannot be used again in this combat.",
+    "image": "Minotaur L8 (M).png"
   }
 }
