@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { preloadCreatures } from "@/data/lazy";
 import { useCharacters } from "@/hooks/useCharacters";
+import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import { useEncounter } from "@/hooks/useEncounter";
 import {
   Button,
@@ -499,6 +500,11 @@ function PlayerTurnPanel({
   const [secondary, setSecondary] = useState<number | null>(null);
   const [chosen, setChosen] = useState<ManoeuvreOption | null>(null);
 
+  // Publishers for the /present/roll OBS overlay. The roll context
+  // overlay reads from this slot — we publish on player D66 tap below
+  // and on damage rolls inside DamagePanel.
+  const { publishResolved: publishRollResolved } = useCurrentRoll();
+
   // Reset chosen when the active character changes (so manoeuvres always match).
   useEffect(() => {
     setPrimary(null);
@@ -528,6 +534,38 @@ function PlayerTurnPanel({
     if (isPlayerPrime) return evaluatePrimeOptions(manoeuvres);
     return evaluateManoeuvres(manoeuvres, primary, secondary, effectiveShift);
   }, [manoeuvres, primary, secondary, effectiveShift, isPlayerMishap, isPlayerPrime]);
+
+  // Publish player D66 to the OBS roll overlay whenever both dice are set.
+  useEffect(() => {
+    if (primary === null || secondary === null) return;
+    let headline: string;
+    if (isPlayerMishap) {
+      headline = "Mishap — auto miss";
+    } else if (isPlayerPrime) {
+      headline = "Prime Attack — pick any Manoeuvre";
+    } else if (manoeuvres.length === 0) {
+      headline = "(no Manoeuvres on sheet)";
+    } else {
+      const affordable = options.filter((o) => o.affordable).length;
+      headline = `Shift ${effectiveShift} available · ${affordable}/${options.length} options`;
+    }
+    publishRollResolved({
+      source: "combat:player",
+      label: "Player manoeuvre",
+      dice: "D66",
+      value: `${primary} + ${secondary} = ${primary + secondary}`,
+      result: { headline },
+    });
+  }, [
+    primary,
+    secondary,
+    isPlayerMishap,
+    isPlayerPrime,
+    manoeuvres.length,
+    options,
+    effectiveShift,
+    publishRollResolved,
+  ]);
 
   function autoRoll() {
     setPrimary(rollD6());
@@ -794,6 +832,8 @@ function DamagePanel({
   const [exactBonus, setExactBonus] = useState(0);
   const [interruptReduction, setInterruptReduction] = useState(0);
   const [targetId, setTargetId] = useState<string>(enemies[0]?.id ?? "");
+  const { publishPending: publishRollPending, publishResolved: publishRollResolved } =
+    useCurrentRoll();
 
   const exactBonusMax = option.exact ? Math.max(0, shiftAvailable - option.cost) : 0;
 
@@ -858,6 +898,55 @@ function DamagePanel({
   // if the user fiddles with the stepper, ignore it when isPrime is set.
   const effectiveInterrupt = isPrime ? 0 : interruptReduction;
   const finalDamage = Math.max(0, damageBase + exactBonus - effectiveInterrupt);
+
+  // Publish the player damage roll to the OBS overlay. Pending while
+  // waiting on dice; resolved once they're filled in. Skipped when
+  // there's no parseable formula (manual damage path).
+  const manoeuvreName = option.manoeuvre.name || "Manoeuvre";
+  const formulaDisplay = formula
+    ? `${formula.dice}D${formula.sides}${
+        formula.modifier !== 0
+          ? `${formula.modifier > 0 ? "+" : ""}${formula.modifier}`
+          : ""
+      }`
+    : "—";
+  useEffect(() => {
+    if (!formula) return;
+    if (rollsReady) return;
+    publishRollPending({
+      source: "combat:player-damage",
+      label: `${manoeuvreName} damage`,
+      dice: formulaDisplay,
+    });
+  }, [formula, rollsReady, manoeuvreName, formulaDisplay, publishRollPending]);
+  useEffect(() => {
+    if (!formula || !rollsReady) return;
+    const breakdown: string[] = [`base ${damageBase}`];
+    if (exactBonus) breakdown.push(`+${exactBonus} ${isPrime ? "Prime" : "Exact"}`);
+    if (effectiveInterrupt) breakdown.push(`−${effectiveInterrupt} Interrupt`);
+    publishRollResolved({
+      source: "combat:player-damage",
+      label: `${manoeuvreName} damage`,
+      dice: formulaDisplay,
+      value: rolls.slice(0, formula.dice).join(" + "),
+      result: {
+        headline: `${finalDamage} damage`,
+        sub: breakdown.length > 1 ? breakdown.join(" · ") : undefined,
+      },
+    });
+  }, [
+    formula,
+    rollsReady,
+    rolls,
+    damageBase,
+    exactBonus,
+    effectiveInterrupt,
+    finalDamage,
+    isPrime,
+    manoeuvreName,
+    formulaDisplay,
+    publishRollResolved,
+  ]);
 
   return (
     <div className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-3 dark:border-emerald-800 dark:bg-emerald-950/30">
@@ -1098,6 +1187,54 @@ function EnemyTurnPanel({ characterId }: { characterId: string }) {
     if (best) setChosen(best);
   }, [options, chosen]);
 
+  // Publishers for the /present/roll OBS overlay.
+  const {
+    publishPending: publishRollPending,
+    publishResolved: publishRollResolved,
+  } = useCurrentRoll();
+
+  // Enemy D66 publish — fires whenever both dice are set.
+  const enemyName = selectedEnemy?.name || "Enemy";
+  useEffect(() => {
+    if (primary === null || secondary === null) return;
+    let headline: string;
+    if (!auto) {
+      headline = "manual roll (no creature stats)";
+    } else if (isMishap) {
+      headline = `Mishap — ${selectedCreature?.mishap ? "see card" : "no card text"}`;
+    } else if (isPrime) {
+      headline = `Prime Attack — ${selectedCreature?.prime ? "see card" : "no card text"}`;
+    } else if (chosen?.affordable) {
+      headline = chosen.manoeuvre.name;
+    } else if (options.length === 0) {
+      headline = "(no manoeuvres listed)";
+    } else {
+      const affordable = options.filter((o) => o.affordable).length;
+      headline = affordable === 0
+        ? "Miss — no reachable Manoeuvre"
+        : `${affordable}/${options.length} options · Shift ${effectiveEnemyShift}`;
+    }
+    publishRollResolved({
+      source: "combat:enemy",
+      label: `${enemyName} attacks`,
+      dice: "D66",
+      value: `${primary} + ${secondary} = ${primary + secondary}`,
+      result: { headline },
+    });
+  }, [
+    primary,
+    secondary,
+    auto,
+    isMishap,
+    isPrime,
+    selectedCreature,
+    chosen,
+    options,
+    effectiveEnemyShift,
+    enemyName,
+    publishRollResolved,
+  ]);
+
   const armour = active?.armour ?? [];
   const deflections = useMemo(() => {
     if (primary === null || secondary === null) return [];
@@ -1171,6 +1308,71 @@ function EnemyTurnPanel({ characterId }: { characterId: string }) {
     !isPrime &&
     options.length > 0 &&
     !options.some((o) => o.affordable);
+
+  // Enemy damage publish — pending while waiting on dice, resolved once
+  // they're filled in. Skipped for Mishap/Prime/manual paths (those don't
+  // go through a parseable formula).
+  const enemyManoeuvreName = chosen?.manoeuvre.name ?? "";
+  const enemyFormulaDisplay = formula
+    ? `${formula.dice}D${formula.sides}${
+        formula.modifier !== 0
+          ? `${formula.modifier > 0 ? "+" : ""}${formula.modifier}`
+          : ""
+      }`
+    : "—";
+  useEffect(() => {
+    if (!auto || isMishap || isPrime) return;
+    if (!chosen?.affordable) return;
+    if (!formula) return;
+    if (rollsReady) return;
+    publishRollPending({
+      source: "combat:enemy-damage",
+      label: `${enemyName} · ${enemyManoeuvreName}`,
+      dice: enemyFormulaDisplay,
+    });
+  }, [
+    auto,
+    isMishap,
+    isPrime,
+    chosen,
+    formula,
+    rollsReady,
+    enemyName,
+    enemyManoeuvreName,
+    enemyFormulaDisplay,
+    publishRollPending,
+  ]);
+  useEffect(() => {
+    if (!auto || isMishap || isPrime) return;
+    if (!chosen?.affordable) return;
+    if (!formula || !rollsReady) return;
+    const target = active?.name ?? "you";
+    const sub = totalDeflection > 0
+      ? `(after −${totalDeflection} deflection)`
+      : undefined;
+    publishRollResolved({
+      source: "combat:enemy-damage",
+      label: `${enemyName} · ${enemyManoeuvreName}`,
+      dice: enemyFormulaDisplay,
+      value: rolls.slice(0, formula.dice).join(" + "),
+      result: { headline: `${finalDamage} to ${target}`, sub },
+    });
+  }, [
+    auto,
+    isMishap,
+    isPrime,
+    chosen,
+    formula,
+    rollsReady,
+    rolls,
+    finalDamage,
+    totalDeflection,
+    active,
+    enemyName,
+    enemyManoeuvreName,
+    enemyFormulaDisplay,
+    publishRollResolved,
+  ]);
 
   function autoRollD66() {
     setPrimary(rollD6());

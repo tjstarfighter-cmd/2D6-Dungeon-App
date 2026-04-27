@@ -65,6 +65,16 @@ export default function PresentIndex() {
       </header>
 
       <div className="mx-auto max-w-5xl space-y-6">
+        <Section title="Live overlay">
+          <ul className="space-y-2">
+            <PresenterRow
+              to="/present/roll"
+              title="Roll context"
+              subtitle="Transparent overlay — pending and resolved dice rolls from Combat and Tables"
+            />
+          </ul>
+        </Section>
+
         <Section title={`Maps (${maps.length})`}>
           {maps.length === 0 ? (
             <Empty>No maps yet — create one in the Map view.</Empty>

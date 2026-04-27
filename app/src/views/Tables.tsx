@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
 import { NotesPanel } from "@/components/NotesPanel";
 import { useTablesData } from "@/data/lazy";
+import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import {
   categoryFor,
   groupByCategory,
@@ -135,6 +136,37 @@ function IntroPanel() {
 function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable }) {
   const kind = rollKindFor(table);
   const [roll, setRoll] = useState<RollValue | null>(null);
+  const { publishResolved: publishRollResolved } = useCurrentRoll();
+
+  // Publish to the OBS roll overlay whenever the user lands on a roll
+  // for this table. We summarise the matched row by joining all but the
+  // first column (the first column is the roll/range, the rest is the
+  // result the viewer cares about).
+  useEffect(() => {
+    if (roll === null) return;
+    const matched = table.data.find((r) => rowMatchesRoll(r, roll));
+    let headline = "(no matching row)";
+    if (matched) {
+      const cols = Object.keys(matched);
+      const resultCols = cols.slice(1);
+      const parts = resultCols
+        .map((c) => {
+          const v = matched[c];
+          if (v === undefined || v === null) return "";
+          if (Array.isArray(v)) return "(see table)";
+          return String(v);
+        })
+        .filter(Boolean);
+      if (parts.length > 0) headline = parts.join(" · ");
+    }
+    publishRollResolved({
+      source: "table",
+      label: table.title,
+      dice: kind.toUpperCase(),
+      value: String(roll),
+      result: { headline, sub: tableKey },
+    });
+  }, [roll, table, tableKey, kind, publishRollResolved]);
 
   return (
     <Card>

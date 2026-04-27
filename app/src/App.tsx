@@ -19,6 +19,7 @@ const PresentIndex = lazy(() => import("@/views/present/Index"));
 const PresentMap = lazy(() => import("@/views/present/Map"));
 const PresentCard = lazy(() => import("@/views/present/Card"));
 const PresentTable = lazy(() => import("@/views/present/Table"));
+const PresentRoll = lazy(() => import("@/views/present/Roll"));
 
 function Loader() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
       <Route path="present/map/:id" element={<Lazy><PresentMap /></Lazy>} />
       <Route path="present/card/:id" element={<Lazy><PresentCard /></Lazy>} />
       <Route path="present/table/:id" element={<Lazy><PresentTable /></Lazy>} />
+      <Route path="present/roll" element={<Lazy><PresentRoll /></Lazy>} />
 
       <Route element={<Layout />}>
         <Route index element={<Lazy><SheetView /></Lazy>} />
