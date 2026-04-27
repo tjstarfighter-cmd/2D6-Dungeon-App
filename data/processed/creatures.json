@@ -981,5 +981,95 @@
     "mishap": "The undead bear tries to barge you but slips and tumbles to the ground, missing the next round.",
     "prime": "Long claws snap the straps on your armour. It must be repaired before it can be used again.",
     "image": "Undead Bear L3 (U).png"
+  },
+  "Banshee L4 (U)": {
+    "name": "BANSHEE",
+    "level": 4,
+    "category": "Undead",
+    "hp": 28,
+    "xp": 190,
+    "shift": 1,
+    "treasure": "Roll on BST2+2",
+    "interrupt": "Resonating Barrier on Primary 1s, 2s and 6s -2 damage",
+    "manoeuvres": [
+      { "primary": 5, "secondary": 3, "name": "PITCHED SCREAM", "formula": "D6 damage" },
+      { "primary": 6, "secondary": 4, "name": "VIBRO PUNCH",    "formula": "D3 +1 damage + special attack - Shift -1 next round" }
+    ],
+    "flavour": "Banshees are twisted by the Orbit of Psyche. They are beings who tormented by their own minds or are sent away into the depths where they cannot disturb those in the domain above.",
+    "mishap": "The Banshee seems tormented, grabbing their head, giving you an extra attack next round.",
+    "prime": "The Banshee opens her mouth and screams. The sonic wave hits you. Lose 4 HP.",
+    "image": "Banshee L4 (U).png"
+  },
+  "Ofilit L4 (U)": {
+    "name": "OFILIT",
+    "level": 4,
+    "category": "Undead",
+    "hp": 25,
+    "xp": 210,
+    "shift": 2,
+    "treasure": "Roll on BST2+1 + a torque worth 3D6 GC",
+    "interrupt": "Padded Shoulder on Primary 5s -2 damage / Swinging Forearm on Secondary 3s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 2, "name": "GRATING CLAWS", "formula": "D6 +2 damage" },
+      { "primary": 5, "secondary": 4, "name": "CRUSHING GRIP", "formula": "D3 +2 damage" }
+    ],
+    "flavour": "Ofilit are ancient giants of the old world, returned to the deep caves as undead beings, only to find the dungeon in its place. They wander the tunnels confused, aggressively seeking their lost home.",
+    "mishap": "The Ofilit wildly swings its fist against the wall, and some stone comes down on it causing 2D3 damage.",
+    "prime": "The Ofilit charges, its oddly domed skull striking you hard in the chest, winding you, causing 2D3 damage.",
+    "image": "Ofilit L4 (U).png"
+  },
+  "Under Troll L4 (C)": {
+    "name": "UNDER TROLL",
+    "level": 4,
+    "category": "Creature",
+    "hp": 40,
+    "xp": 250,
+    "shift": 1,
+    "treasure": "Roll on BT1 +3 and BT2 +3",
+    "interrupt": "Tough Skin on Secondary 1s, 2s, 3s, 4s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "MIGHTY FIST", "formula": "D6 +1 damage" },
+      { "primary": 6, "secondary": 5, "name": "ROCK THROW",  "formula": "D3 damage + special attack - 1 random, carried large item is lost" }
+    ],
+    "flavour": "When the dungeon was being made a number of ancient Under Trolls were discovered and trapped. Later these angry creatures escaped into the lower levels and now hunt for fresh meat.",
+    "mishap": "The Troll is blinded by a flash of light. A big target, you lunge in and strike it hard for D6 damage.",
+    "prime": "The Troll grips your arm and twists it. Now in pain, you lose 1 shift for the next two combat rounds.",
+    "image": "Under Troll L4 (C).png"
+  },
+  "Red Guard L4 (H)": {
+    "name": "RED GUARD",
+    "level": 4,
+    "category": "Human",
+    "hp": 32,
+    "xp": 160,
+    "shift": 2,
+    "treasure": "Roll on PT2",
+    "interrupt": "Plate Armour on Primary 2s, 3s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 6, "name": "SWORD THRUST", "formula": "D6 +1 damage" },
+      { "primary": 6, "secondary": 4, "name": "QUICK SLASH",  "formula": "D3 +3 damage" }
+    ],
+    "flavour": "The Red Guard are elite warriors raised from childhood and trained by the Infernal Order. They are taught to guard the lower levels and serve the Mordeel and the Infernal Cardinal.",
+    "mishap": "The Red Guard stumbles and misses their swing. You are able to counter and cause D6 damage.",
+    "prime": "The Red Guard pulls a dagger and flings it at you and it slices past your face. Lose D6 +2 HP.",
+    "image": "Red Guard L4 (H).png"
+  },
+  "Zordian Shade L4 (U)": {
+    "name": "ZORDIAN SHADE",
+    "level": 4,
+    "category": "Undead",
+    "hp": 50,
+    "xp": 300,
+    "shift": 2,
+    "treasure": "Roll on BT1 +3 and BT2 +3",
+    "interrupt": "Agile Leap on Primary 1s, 2s, and 6s -1 damage / Muscular Frame on Secondary 1s and 2s -2 damage",
+    "manoeuvres": [
+      { "primary": 5, "secondary": 3, "name": "CLAWS SLASH", "formula": "D6 +2 damage" },
+      { "primary": 6, "secondary": 4, "name": "GAS ROAR",    "formula": "D3 damage + special attack - next combat round -1 Shift." }
+    ],
+    "flavour": "Zordian Shades are possessed corpses of a species of extinct lion, scourged by primordial magic. They hate humans and seek revenge for the persecution they suffered in life. It roars!",
+    "mishap": "It seems to want to destroy a piece of furniture in its rage and misses the next round.",
+    "prime": "The Zordian Shade pounces and jumps high across the room, to land on top of you. Lose D6 HP.",
+    "image": "Zordian Shade L4 (U).png"
   }
 }
