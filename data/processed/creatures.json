@@ -1323,5 +1323,113 @@
     "mishap": "The Vibralect seems to fizz as the electric energy cuts out. It cannot use its ELECTRIC ZAP for 2 rounds.",
     "prime": "Bolts of lightning erupt from the creature's antennae and strike your limbs. Lose 2D6 +6 HP.",
     "image": "Vibralect L6 (I).png"
+  },
+  "Defectus L7 (H)": {
+    "name": "DEFECTUS",
+    "level": 7,
+    "category": "Human",
+    "hp": 70,
+    "xp": 1350,
+    "shift": 3,
+    "treasure": "Roll on BST2 +4D6 GC",
+    "interrupt": "Leather Plate on 2s, and 4s -3 damage / Push Aside on Secondary 3s 4s and 5s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "QUICK THRUST",  "formula": "2D6 +6 damage" },
+      { "primary": 5, "secondary": 5, "name": "MIGHTY CLEAVE", "formula": "2D6 +8 damage" }
+    ],
+    "flavour": "The Defectus once sought the legendary status, longing to be a hero, but they fell short. Their bitterness drove them in the darkness where their skills afforded them a place amongst the lost.",
+    "mishap": "The Defectus puts both hands on their sword and runs out of breath. They miss their next round.",
+    "prime": "The Defectus spins, throwing weight forward their blade clips you. Lose 2D6 +10 HP.",
+    "image": "Defectus L7 (H).png"
+  },
+  "Haxa L7 (H)": {
+    "name": "HAXA",
+    "level": 7,
+    "category": "Human",
+    "hp": 60,
+    "xp": 1200,
+    "shift": 4,
+    "treasure": "Some herbs in a pouch roll on HST1",
+    "interrupt": "Dark Shimmer on 1s, 3s 4s and 6s -3 damage / Sudden Mist on Secondary 2s and 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 3, "name": "BLACK BOLT",   "formula": "2D6 +5 damage" },
+      { "primary": 6, "secondary": 5, "name": "RAKING CLAWS", "formula": "2D6 +4 damage" }
+    ],
+    "flavour": "The Haxa have been twisted by Primordial magic which they channel and use to sustain their life force. They can unleash this when threatened or when they wish to disappear into the darkness.",
+    "mishap": "The Haxa wildly flays at you and stumbles forward. You counter, its side exposed causing 2D6 +2 damage.",
+    "prime": "The Haxa clenches their fists and a dark wave projects outwards to wash over you. Lose 10 HP.",
+    "image": "Haxa L7 (H).png"
+  },
+  "Night Umbra L7 (H)": {
+    "name": "NIGHT UMBRA",
+    "level": 7,
+    "category": "Human",
+    "hp": 60,
+    "xp": 1050,
+    "shift": 3,
+    "treasure": "Ebony bead necklace",
+    "interrupt": "Ebony Skin on Primary 1s, 4s and 6s -3 damage / Wing Swoop on Secondary 3s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 1, "name": "WING BASH",  "formula": "2D6 +3 damage" },
+      { "primary": 4, "secondary": 2, "name": "EBONY FIST", "formula": "2D6 +2 damage" }
+    ],
+    "flavour": "Cursed by Intuneric the Night Umbra are thieves of holy relicts transformed into gargoyle like statues. They cannot fly or talk, and are trapped in a shell of ebony to only be released by death.",
+    "mishap": "The Umbra catches their heavy wings and cannot attack next turn as a result. It also loses 6 HP.",
+    "prime": "The Umbra brings its wings down in a crossing fashion, to slash you twice. Take D6 +3 and D3 +4 damage.",
+    "image": "Night Umbra L7 (H).png"
+  },
+  "Pen Tamer L7 (H)": {
+    "name": "PEN TAMER",
+    "level": 7,
+    "category": "Human",
+    "hp": 60,
+    "xp": 1650,
+    "shift": 3,
+    "treasure": "Roll on PT3 and a pouch of 4D6 GC",
+    "interrupt": "Spiked Armour on Primary 3s, 4s and 5s -3 damage / Palm Block on Secondary 1s, 2s and 5s -3 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 6, "name": "HEAVY PUNCH", "formula": "2D6 +4 damage" },
+      { "primary": 4, "secondary": 1, "name": "CHAIN LASH",  "formula": "2D6 +3 damage" }
+    ],
+    "flavour": "The Pen Tamer is second only to The Keeper. They manage the cells and cages, organise feeding and bond with the creatures. They have a power over beasts that is gifted by Muratayine.",
+    "mishap": "The Pen Tamer is slow and they swing but lose their momentum and you can counter for 2D6 damage.",
+    "prime": "The Pen Tamer grips your shoulders and pulls hard, tearing at your chest muscles. Lose 2D6 +3 HP.",
+    "image": "Pen Tamer L7 (H).png"
+  },
+  "Shudder Fasa L7 (H)": {
+    "name": "SHUDDER FASA",
+    "level": 7,
+    "category": "Human",
+    "hp": 65,
+    "xp": 1250,
+    "shift": 3,
+    "treasure": "Roll on BST2",
+    "interrupt": "Violent Jolt on 2s, 4s 5s and 6s -3 damage / Leathery Skin on Secondary 2s, 4s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "CLAMPING BITE", "formula": "2D6 +5 damage" },
+      { "primary": 5, "secondary": 5, "name": "SHUDDER GRIP",  "formula": "2D6 +4 damage + special attack - Drain 2 HP next turn" }
+    ],
+    "flavour": "Scarred and torn by faculty magic the Shudder Fasa lurk in the depths of the dungeon. Their bodies are sustained by the faculty magic but shake violently as if torn between realms.",
+    "mishap": "Taken by a wild shaking the creature falls backwards and crawls away. It does not attack next turn.",
+    "prime": "The Shudder Fasa grips your shoulders and faculty magic shudders through you. Lose 12 HP.",
+    "image": "Shudder Fasa L7 (H).png"
+  },
+  "The Keeper L7 (H)": {
+    "name": "THE KEEPER",
+    "level": 7,
+    "category": "Human",
+    "hp": 65,
+    "xp": 1850,
+    "shift": 4,
+    "treasure": "Roll on PT3 +2 and PT4",
+    "interrupt": "Hulking Body on Primary 2s, 3s, 4s and 5s -3 damage / Raised Forearm on Secondary 3s, 4s and 5s -3 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "DOUBLE SLAP", "formula": "2D6 +7 damage" },
+      { "primary": 6, "secondary": 5, "name": "HEFTY CLUB",  "formula": "2D6 +4 damage" }
+    ],
+    "flavour": "The Keeper runs Level 7. These tough beings rule through fear and revel in unleashing their beasts upon the surface world. They are brutal but covered in old wounds from handling the animals.",
+    "mishap": "The Keeper raises a mighty arm but an old claw wound opens and splits, dripping blood. They lose 2D6 HP.",
+    "prime": "The Keeper laughs as they break through to place a huge hand on your throat and squeeze. Lose 3D6 HP.",
+    "image": "The Keeper L7 (H).png"
   }
 }
