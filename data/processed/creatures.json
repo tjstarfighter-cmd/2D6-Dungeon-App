@@ -749,5 +749,237 @@
     "mishap": "A large chunk of the creature's arm falls away as it swings causing it D6 damage.",
     "prime": "The creature stumbles and throws its weight at you, knocking you aside. Lose 2 HP.",
     "image": "Zombie L2 (U).png"
+  },
+  "Afflicted L3 (H)": {
+    "name": "AFFLICTED",
+    "level": 3,
+    "category": "Human",
+    "hp": 17,
+    "xp": 85,
+    "shift": 1,
+    "treasure": "Roll on PT2",
+    "interrupt": "Tough Skin on Primary 1s, 2s, 5s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "SPLINTERED NAILS", "formula": "D3 +1 damage" },
+      { "primary": 6, "secondary": 4, "name": "BONY KNUCKLE",     "formula": "D3 +3 damage" }
+    ],
+    "flavour": "Sometimes experimenting with Metamorphic magic can warp the body as well as the mind resulting in the Afflicted. No threat to the Order they attack those who they do not recognise.",
+    "mishap": "Their crazed attack leaves them open allowing you to strike low and cause 2D6 damage to an exposed leg.",
+    "prime": "The Afflicted pulls a sharp bone from their less and flicks it at you. It sticks in your shoulder. Lose 4 HP.",
+    "image": "Afflicted L3 (H).png"
+  },
+  "Ashen Fext L3 (U)": {
+    "name": "ASHEN FEXT",
+    "level": 3,
+    "category": "Undead",
+    "hp": 18,
+    "xp": 130,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Tough Hide on Primary 3s, 4s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 2, "name": "BLUNTED BLADE", "formula": "D6 -1 damage" },
+      { "primary": 6, "secondary": 5, "name": "EXTENDED JAW",  "formula": "D3 +1 damage" }
+    ],
+    "flavour": "Ashen Souls are undead touched by Maduva yet their bodies are preserved and filled with metamorphic energy as they flux between death and life, the imbalance driving them insane.",
+    "mishap": "The creature seems paralysed. Their Interrupt stats have no effect in the next round of combat.",
+    "prime": "The Fext raises a whirling hand forming a circular shield. You lose 2 Shift in the next round of combat.",
+    "image": "Ashen Fext L3 (U).png"
+  },
+  "Basal Initiate L3 (H)": {
+    "name": "BASAL INITIATE",
+    "level": 3,
+    "category": "Human",
+    "hp": 15,
+    "xp": 75,
+    "shift": 1,
+    "treasure": "Roll on PT2 +1",
+    "interrupt": "Side Step on Primary 3s and 5s -2 damage / Heat Shield on Secondary 4s -3 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "FIRE GLOBE",   "formula": "D6 damage" },
+      { "primary": 4, "secondary": 5, "name": "LEATHER WHIP", "formula": "D3 +1 damage" }
+    ],
+    "flavour": "The Basal Initiates were once Infernal Monks who have been drawn into the study of Primordial magic. They have one goal in the maniacal studies and that is to become a Reveled Axiom.",
+    "mishap": "The initiate tries to draw upon their magic but falls giving you a chance to throw a weapon.",
+    "prime": "The initiate clicks their fingers and fire bursts from the ground all around you. Lose 2D6 HP.",
+    "image": "Basal Initiate L3 (H).png"
+  },
+  "Faraviata L3 (U)": {
+    "name": "FARAVIATA",
+    "level": 3,
+    "category": "Undead",
+    "hp": 21,
+    "xp": 120,
+    "shift": 2,
+    "treasure": "Roll on BST2+2",
+    "interrupt": "Sudden Swoop Secondary 1s and 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 1, "name": "FREEZING CLAWS", "formula": "D6 +1 damage" },
+      { "primary": 5, "secondary": 1, "name": "LOCKED STARE",   "formula": "D3 damage + special attack - Next round deduct 1 shift" }
+    ],
+    "flavour": "The Faraviata are warped humans who have been drained of life through infernal worship. Yet they return to reinhabit their previous bodies and are now animalian, bestial, hungry for blood.",
+    "mishap": "The creature gulps up a rat and sinks in its fangs. Chance presented you swipe doing D6 damage.",
+    "prime": "The Faraviata leaps forward past your guard and sinks its teeth into your neck. Lose D6 HP.",
+    "image": "Faraviata L3 (U).png"
+  },
+  "Ghost L3 (U)": {
+    "name": "GHOST",
+    "level": 3,
+    "category": "Undead",
+    "hp": 15,
+    "xp": 85,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Static Fusion on Primary 2s and 3s -2 damage / Phased Arm on Secondary 6's -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 5, "name": "SPECTRAL TOUCH", "formula": "D6 -1 damage" },
+      { "primary": 5, "secondary": 4, "name": "COLD BLAST",     "formula": "D6 -2 damage" }
+    ],
+    "flavour": "Ghosts appear in the form of their past life surround by white astral energies, that channels their ferocity into the whole. They viciously want revenge on all the living.",
+    "mishap": "The rise up in the air and seem to be trying to shielding their attack. They lose the next turn.",
+    "prime": "The ghost raises its glowing hands and fires a bolt of energy at you. Lose 3 HP.",
+    "image": "Ghost L3 (U).png"
+  },
+  "Grey Anchorite L3 (H)": {
+    "name": "GREY ANCHORITE",
+    "level": 3,
+    "category": "Human",
+    "hp": 13,
+    "xp": 60,
+    "shift": 1,
+    "treasure": "Roll on RPT2",
+    "interrupt": "Wild Dodge on Primary 1s and 6s -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 2, "name": "BRIGHT FLASH", "formula": "D3 damage" },
+      { "primary": 6, "secondary": 5, "name": "QUICK PUNCH",  "formula": "D3 +1 damage" }
+    ],
+    "flavour": "Although Grey Anchorites do many of the chores in the infernal levels they are also aspirational and have a wild fervour. But they lack the talent to progress and will often remain in the grey.",
+    "mishap": "They become tangled in their grey robes and miss the next round of combat as they free themselves.",
+    "prime": "They cast a scream of sparks that wash across you, stinging as they touch your skin. Lose D6 +1 HP.",
+    "image": "Grey Anchorite L3 (H).png"
+  },
+  "Mummy L3 (U)": {
+    "name": "MUMMY",
+    "level": 3,
+    "category": "Undead",
+    "hp": 15,
+    "xp": 90,
+    "shift": 2,
+    "treasure": "Roll on BST2",
+    "interrupt": "Senseless Body on Primary 1s, and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "SAVAGE BASH", "formula": "D6 damage" },
+      { "primary": 6, "secondary": 1, "name": "BODY BARREL", "formula": "D6 -2 damage" }
+    ],
+    "flavour": "Many of the bodies in the crypt have been embalmed and, now risen, roam the dark halls as rigid mummies. It turns and senses you, the dry corpse visible beneath the strips of cloth.",
+    "mishap": "One of the pieces of cloth becomes tangled and it trips, hitting its head on a ledge. It loses 3 HP.",
+    "prime": "The mummy seems less affected by your weapon. You have -2 damage on your next hit.",
+    "image": "Mummy L3 (U).png"
+  },
+  "Oldfang Pillarist L3 (H)": {
+    "name": "OLDFANG PILLARIST",
+    "level": 3,
+    "category": "Human",
+    "hp": 17,
+    "xp": 95,
+    "shift": 1,
+    "treasure": "Roll on PT2 +1 and POT2",
+    "interrupt": "Breast Plate on Primary 5s and 6s -2 damage / Forearm Block on Secondary 2s -1 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 2, "name": "HEAVY SWING",   "formula": "D6 +2 damage" },
+      { "primary": 6, "secondary": 5, "name": "GLANCING BLOW", "formula": "D3 +1 damage" }
+    ],
+    "flavour": "Once Red Guard the Oldfangs have taken on the role of command as time takes its toll. But they are still as tough as always and formidable opponents, despite being somewhat slower.",
+    "mishap": "The Oldfang pauses and backs away and seems to rest against the wall. They miss the next turn.",
+    "prime": "The Oldfang unexpectedly twirls and thrusts arcs down towards you. You cant not avoid it. Lose 2D3 HP.",
+    "image": "Oldfang Pillarist L3 (H).png"
+  },
+  "Puppeter L3 (H)": {
+    "name": "PUPPETEER",
+    "level": 3,
+    "category": "Human",
+    "hp": 16,
+    "xp": 110,
+    "shift": 1,
+    "treasure": "Roll on PT2 +2 + a golden ring worth 2D6",
+    "interrupt": "Control Movement on Primary 2s, 3s and 4s -1 damage + special defence - the Puppeteer controls your next attack reducing the damage by 2.",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "DARK MIMIC", "formula": "D6 damage" }
+    ],
+    "flavour": "Puppeteers for the Infernal Order recruiting and bringing in new blood to the dungeon. They manipulate the Psyche Orbit and control those who they deem unworthy.",
+    "mishap": "They seem to focus on you but feel nothing, their magic fails. You charge them causing D6 damage.",
+    "prime": "You sense the magic grip you and turn and smash your head into the wall. Lose D6 HP.",
+    "image": "Puppeter L3 (H).png"
+  },
+  "Shadow Blade L3 (H)": {
+    "name": "SHADOW BLADE",
+    "level": 3,
+    "category": "Human",
+    "hp": 12,
+    "xp": 95,
+    "shift": 1,
+    "treasure": "Roll on PT2 +2D6 GC",
+    "interrupt": "Dodge Backwards on Primary 1s and 6s -2 damage + special defense - the Shadow Blade lashes out as they dodge back and catches you. Lose 1 HP.",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "DAGGER STAB",    "formula": "D6 -1 damage" },
+      { "primary": 6, "secondary": 3, "name": "CARTWHEEL KICK", "formula": "D3 +1 damage" }
+    ],
+    "flavour": "Some thieves and brigands are chosen by the Infernal Order and are trained to draw upon the Faculty Orbit. They use this magic to hone their dexterous skills and serve as spies and assassins.",
+    "mishap": "The Shadow Blade turns and throws their dagger but it sticks in the wall. They miss the next turn.",
+    "prime": "They punch you and a blade shoots from their wrist striking deep cutting you deeply. Lose D3 +2 HP.",
+    "image": "Shadow Blade L3 (H).png"
+  },
+  "Stone Maiden L3 (U)": {
+    "name": "STONE MAIDEN",
+    "level": 3,
+    "category": "Undead",
+    "hp": 30,
+    "xp": 90,
+    "shift": 1,
+    "treasure": "No Treasure",
+    "interrupt": "Stone Skin on Primary 3s, 4s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 3, "name": "STONE FIST", "formula": "D6 damage" }
+    ],
+    "flavour": "Stone Maidens are favoured by Grakada and were once women sacrificed by the Infernal Monks and placed in tombs, only to reappear with stoney skin and a lust for life.",
+    "mishap": "The Maiden becomes slowed and stonelike. They lose 1 shift for the next round.",
+    "prime": "The Maiden fires two shards from her open palm. Both hit. Lose D3 and D3 HP.",
+    "image": "Stone Maiden L3 (U).png"
+  },
+  "Tomb Raider L3 (H)": {
+    "name": "TOMB RAIDER",
+    "level": 3,
+    "category": "Human",
+    "hp": 15,
+    "xp": 95,
+    "shift": 1,
+    "treasure": "Roll on BST2 and BT2 +2 and +2D6 GC",
+    "interrupt": "Low Duck on Primary 4s and 5s -2 damage / Forearm Block on Secondary 1s and 2s -1 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 1, "name": "CUTLASS SLASH", "formula": "D6 damage" },
+      { "primary": 3, "secondary": 6, "name": "GRIP TWIST",    "formula": "D3 damage" }
+    ],
+    "flavour": "There are a few people who dare to venture into the crypts in search of treasure. They are more than happy to recover the treasure from those who get in their way. They draw a knife and attack.",
+    "mishap": "Hampered by their booty the Tomb Raider loses 1 Shift for the next round of combat.",
+    "prime": "They pull out a spiked chain and flick it at you. It loops around and lashes your arm. Lose 2 HP.",
+    "image": "Tomb Raider L3 (H).png"
+  },
+  "Undead Bear L3 (U)": {
+    "name": "UNDEAD BEAR",
+    "level": 3,
+    "category": "Undead",
+    "hp": 25,
+    "xp": 85,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Senseless Hide on Primary 2s, and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 3, "name": "SAVAGE CLAWS", "formula": "D6 damage" },
+      { "primary": 5, "secondary": 6, "name": "BODY BARGE",   "formula": "D3 +2 damage" }
+    ],
+    "flavour": "Bears that escape the baiters flee into the crypts only to be fed on by the Faraviata and once drained of blood are reanimated as undead bears, their fur bleached white by death.",
+    "mishap": "The undead bear tries to barge you but slips and tumbles to the ground, missing the next round.",
+    "prime": "Long claws snap the straps on your armour. It must be repaired before it can be used again.",
+    "image": "Undead Bear L3 (U).png"
   }
 }
