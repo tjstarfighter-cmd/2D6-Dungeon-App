@@ -1071,5 +1071,131 @@
     "mishap": "It seems to want to destroy a piece of furniture in its rage and misses the next round.",
     "prime": "The Zordian Shade pounces and jumps high across the room, to land on top of you. Lose D6 HP.",
     "image": "Zordian Shade L4 (U).png"
+  },
+  "Ascunde L5 (H)": {
+    "name": "ASCUNDE",
+    "level": 5,
+    "category": "Human",
+    "hp": 32,
+    "xp": 350,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Jump Backwards on Primary 2s and 3s -3 damage / Bone Spikes on Secondary 1s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "SPIKED FIST", "formula": "D6 +4 damage" },
+      { "primary": 5, "secondary": 6, "name": "SAVAGE BITE", "formula": "D3 +1 damage + special attack - Bleed - lose 4 HP next round" }
+    ],
+    "flavour": "The Ascunde are desperate beings who scavenge meat from the carcases used to feed the beasts on level 7. They are left to hide in the shadows as they often clean and store the bones from sight.",
+    "mishap": "The Ascunde backs away waving its arms, covering from the fight. You gain an extra attack next round.",
+    "prime": "The Ascunde slashes both hands down upon your shoulders. Causing 8 damage.",
+    "image": "Ascunde L5 (H).png"
+  },
+  "Efflux Crear L5(H)": {
+    "name": "EFFLUX CREAR",
+    "level": 5,
+    "category": "Human",
+    "hp": 28,
+    "xp": 500,
+    "shift": 2,
+    "treasure": "Roll on RPT4",
+    "interrupt": "Psychic Shield on Primary 4s and 6s -2 damage / Sudden Fear on Secondary 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 2, "name": "MENTAL BLAST", "formula": "D6 +4 damage" },
+      { "primary": 3, "secondary": 3, "name": "STATIC SHARD", "formula": "D6 +3 damage" }
+    ],
+    "flavour": "When the Efflux Crear are not absorbing themselves in pure Psyche energy they are often employed to probe people's minds for the Infernal Order's Suppression Council.",
+    "mishap": "The Efflux Crear seems to lose concentration, for a moment. They lose 2 Shift points on the next attack.",
+    "prime": "A wave of fire erupts from the temple of the Efflux Crear, engulfing you. Lose 2D6 HP.",
+    "image": "Efflux Crear L5(H).png"
+  },
+  "Mordell Axiom L5 (H)": {
+    "name": "MORDEEL AXIOM",
+    "level": 5,
+    "category": "Human",
+    "hp": 50,
+    "xp": 650,
+    "shift": 1,
+    "treasure": "Roll on RPT4",
+    "interrupt": "Primordial Barrier on Primary 5s and 6s -4 damage / Fire Screen on Secondary 3s and 4s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 6, "name": "FIRE STORM",  "formula": "D3 +4 damage" },
+      { "primary": 6, "secondary": 1, "name": "METEOR HAIL", "formula": "D6 +3 damage" }
+    ],
+    "flavour": "These most feared figures are warped by the Primordial Orbit. Consumed and reshaped by this base magic they seek to further their influence and lead many of the sacrificial ceremonies.",
+    "mishap": "The Mordeel launches a storm of fire but you are able to duck into cover so take no damage this turn.",
+    "prime": "You stagger backwards as a great rush erupts from your mouth. You fight to breathe. Lose 2D6 HP.",
+    "image": "Mordell Axiom L5 (H).png"
+  },
+  "Murind L5 (H)": {
+    "name": "MURIND",
+    "level": 5,
+    "category": "Human",
+    "hp": 28,
+    "xp": 300,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Leathery Skin on Primary 3s, 4s 5s and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "FLAYING CLAWS", "formula": "D6 +5 damage" },
+      { "primary": 5, "secondary": 6, "name": "SAVAGE BITE",   "formula": "D6" }
+    ],
+    "flavour": "Like the Ascunde the Murind exist on scraps and leftovers, but they have been touched by Maduva and now exist near to death, gifted tough skin and kept alive in a state of grim rapture by their diet.",
+    "mishap": "The Murind raises its arms and screams dropping its guard, allowing you to swing and do 2D6 damage.",
+    "prime": "The Murind raises a hand and a stream of black tar shoots forth. It strikes you causing 2D6 damage.",
+    "image": "Murind L5 (H).png"
+  },
+  "Raptured Shimbay L5 (H)": {
+    "name": "RAPTURED SHIMBAY",
+    "level": 5,
+    "category": "Human",
+    "hp": 40,
+    "xp": 500,
+    "shift": 2,
+    "treasure": "Roll on RPT4",
+    "interrupt": "Ethereal Shield on Primary 2s and 6s -3 damage / Quick Sway on Secondary 2s and 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 2, "name": "TRANSFORMED HAND", "formula": "D6 +4 damage" },
+      { "primary": 4, "secondary": 5, "name": "ENERGY BLAST",     "formula": "D6 +3 damage" }
+    ],
+    "flavour": "A few Infernal Monks focus their study on the Metamorph Sphere. Many die unable to control this powerful magic or worse become Afflicted. A few though show aptitude and become Shimbay.",
+    "mishap": "The Shimbay pauses and raises its hands as it draws energy from the air. You strike for 2D3 damage.",
+    "prime": "It points at your arm. If you have hand or arm armour it melts off your arm and is destroyed.",
+    "image": "Raptured Shimbay L5 (H).png"
+  },
+  "Terra Magna L5 (H)": {
+    "name": "TERRA MAGNA",
+    "level": 5,
+    "category": "Human",
+    "hp": 30,
+    "xp": 450,
+    "shift": 2,
+    "treasure": "Roll on PT2 +1",
+    "interrupt": "Plate Armour on Primary 1s, 4s and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 4, "name": "MORNINGSTAR BASH", "formula": "D6 +4 damage" },
+      { "primary": 3, "secondary": 5, "name": "SIDE KICK",        "formula": "D3 +3 damage" }
+    ],
+    "flavour": "Sent out by The Keeper the Terra Magna scout out creatures for the Menagerie. They are experienced trackers and worthy fighters. When they find their prey they return and seek out the Pen Tamer.",
+    "mishap": "They swing towards you but the weapon flies from their hand. Allowing you to jab them for D6 +4 Damage.",
+    "prime": "You look down and flinch as a trap clamps around your foot. Lose 2D6 HP as you quickly free yourself.",
+    "image": "Terra Magna L5 (H).png"
+  },
+  "Vudelian Brawler L5 (H)": {
+    "name": "VUDELIAN BRAWLER",
+    "level": 5,
+    "category": "Human",
+    "hp": 35,
+    "xp": 450,
+    "shift": 2,
+    "treasure": "Roll on PT2 +2 + 2D6 GC",
+    "interrupt": "Forearm Block on Primary 2s and 3s -2 damage / Leather Straps on Secondary 4s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "SLAM",        "formula": "D6 +3 damage" },
+      { "primary": 3, "secondary": 1, "name": "MIGHTY BLOW", "formula": "D3 +4 damage" }
+    ],
+    "flavour": "The Infernal Order bribe wrestlers and fighters with the promise of power and then use magic from the Faculty Orbit to sculpt these beings into muscular thugs who serve to guard their sanctum.",
+    "mishap": "Bulky and slow the brawler swings but misses and you are able to land a quick kick doing D6 damage.",
+    "prime": "The brawler manages to lock its arms around you and squeezes. Lose D6 HP before you break free.",
+    "image": "Vudelian Brawler L5 (H).png"
   }
 }
