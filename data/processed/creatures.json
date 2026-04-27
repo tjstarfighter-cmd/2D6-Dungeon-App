@@ -1539,5 +1539,77 @@
     "mishap": "The Rubicund appears to writhe in pain, and glow red. They do not attack next round and lose 20 HP.",
     "prime": "The Rubicund glows red and a wave of heat washes over you destroying two of your potions. You choose.",
     "image": "Rubicund L9 (H).png"
+  },
+  "Blood Lord L10 (H)": {
+    "name": "BLOOD LORD",
+    "level": 10,
+    "category": "Human",
+    "hp": 100,
+    "xp": 4000,
+    "shift": 4,
+    "treasure": "Roll on L10ST",
+    "interrupt": "Red Haze on Primary 1s, 2s, 3s, 4s, 5s and 6s -7 damage",
+    "manoeuvres": [
+      { "primary": 1, "secondary": 3, "name": "BURNING VEINS", "formula": "3D6 +5 damage" },
+      { "primary": 3, "secondary": 1, "name": "BLOOD WHIP",    "formula": "3D6 +6 damage" }
+    ],
+    "flavour": "The Blood Lord draws their power from the very presence of blood. Channelling Muratayine and metamorphic magic they help transform the fiends in the dungeon into more powerful beasts.",
+    "mishap": "They scream with outrage as they misjudge your movement allowing you to counter. They lose 3D6 HP.",
+    "prime": "The Blood Lord raises a hand and you feel burning inside as they slowly close their fist. Lose 20 HP.",
+    "image": "Blood Lord L10 (H).png"
+  },
+  "Ferric Lord L10 (M)": {
+    "name": "FERRIC LORD",
+    "level": 10,
+    "category": "Monster",
+    "hp": 110,
+    "xp": 5000,
+    "shift": 4,
+    "treasure": "Roll on L10ST",
+    "interrupt": "Iron Skin Primary 1s, 2s, 3s, 5s and 6s -8 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 4, "name": "IRON HAMMER", "formula": "3D6 +8 damage" },
+      { "primary": 5, "secondary": 1, "name": "MIGHTY KICK", "formula": "3D6 +9 damage" }
+    ],
+    "flavour": "The Ferric Lord is an iron statue animated by faculty magic. Sculpted in the form of Grakada's son it was accidentally brought to life by the god when her son was executed for war crimes.",
+    "mishap": "The Ferric Lord raises its hands and out of the dark above lightning strikes it. It loses 3D6 +5 HP.",
+    "prime": "The Ferric Lord pulls a long metal spear from his back and throws it at you. Take 3D6 +12 damage.",
+    "image": "Ferric Lord L10 (M).png"
+  },
+  "Mire Lord L10 (M)": {
+    "name": "MIRE LORD",
+    "level": 10,
+    "category": "Monster",
+    "hp": 120,
+    "xp": 6000,
+    "shift": 4,
+    "treasure": "Roll on L10ST",
+    "interrupt": "Swirling Shield Primary 1s, 2s, 4s and 6s -10 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 2, "name": "GIANT CLAWS",       "formula": "3D6 +7 damage" },
+      { "primary": 6, "secondary": 1, "name": "CRUSHING EMBRACE", "formula": "3D6 +10 damage" }
+    ],
+    "flavour": "The Mire Lord lived in the ground long before the dungeon was built. They are made of sludgy, grey matter imbued with primordial magic, blessed by Grakada, a looming horror of the swamp and bog.",
+    "mishap": "The Mire Lord stomps hard and the earth swirls up around it. They do not attack next round.",
+    "prime": "The Mire Lord projects a vision into your head. You cannot move. It strikes you with force. Lose 20 HP.",
+    "image": "Mire Lord L10 (M).png"
+  },
+  "Nether Lord L10 (H)": {
+    "name": "NETHER LORD",
+    "level": 10,
+    "category": "Human",
+    "hp": 130,
+    "xp": 7000,
+    "shift": 4,
+    "treasure": "Roll on L10ST + The Lord Pendants",
+    "interrupt": "Phasing Form 1s, 2s, 3s, 4s, 5s and 6s -10 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "GOLDEN TENDRILS", "formula": "3D6 +10 damage" },
+      { "primary": 4, "secondary": 5, "name": "EXPLOSIVE ORBS",  "formula": "3D6 +12 damage" }
+    ],
+    "flavour": "The Nether Lord is the master of the dungeon. They are beings who have learned to balance the four orbits of magic, so that they stand in the centre, and can channel uninhibited power.",
+    "mishap": "The Nether Lord simply laughs at your efforts allowing you a free attack. Try your hardest you try to hit them again.",
+    "prime": "The Nether Lord draws sparking globes from the darkness. They burn your skin. Lose 25 HP.",
+    "image": "Nether Lord L10 (H).png"
   }
 }
