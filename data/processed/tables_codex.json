@@ -12475,5 +12475,193 @@
         "DESCRIPTION AND EFFECT": "Secret Vault - Standing on its own in the centre of this room is a large iron chest. It is locked (+4 lock). If you can pick the lock roll on CT4 +3."
       }
     ]
+  },
+  "LPT": {
+    "title": "Liberating Prisoners Table",
+    "rollIdentifier": "ROLL",
+    "notes": "From Core Rules. Roll D6 once per liberated prisoner — references like 'L1PR' / 'L2PR' in other tables mean to roll on this table 1 or 2 times respectively. Roll values 3 and 4 share a single outcome.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "DESCRIPTION": "You hear nothing more about the prisoner."
+      },
+      {
+        "ROLL": 2,
+        "DESCRIPTION": "The father of the prisoner approaches you outside the tavern. He hands over a pouch of 6D6 SC and thanks you."
+      },
+      {
+        "ROLL": "3-4",
+        "DESCRIPTION": "You hear that the prisoner was a pious worshipper of a random god. Roll on GOT1 and gain a Favour Point for that god."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION": "The prisoner finds you and gifts you some herbs. Roll on HST1."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION": "The prisoner was from a rich family. A representative approaches you and gives you a pouch of 4D6 GC as thanks."
+      }
+    ]
+  },
+  "MBT": {
+    "title": "Market Bartering Table",
+    "rollIdentifier": "ROLL",
+    "notes": "From Core Rules. Roll 2D6 with applicable bartering modifiers when selling loot in town.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": "2-4",
+        "DESCRIPTION": "Taken to the cleaners. You lose 50% of the sell price of your loot (rounded up)."
+      },
+      {
+        "ROLL": "5-6",
+        "DESCRIPTION": "You come out thinking you did well, but when you add it up, you find you have lost 10% of the sell price (rounded up)."
+      },
+      {
+        "ROLL": "7-8",
+        "DESCRIPTION": "You manage to achieve the sell price of the loot."
+      },
+      {
+        "ROLL": "9-14",
+        "DESCRIPTION": "You did well and stood strong on a couple of deals. You add 10% of the sell price of the loot (rounded up)."
+      },
+      {
+        "ROLL": "15+",
+        "DESCRIPTION": "Masterful in the moment you convince the traders of the additional worth. Gain 20% of the sell price (rounded up)."
+      }
+    ]
+  },
+  "HBT": {
+    "title": "Herbalist Table",
+    "rollIdentifier": "HERB",
+    "notes": "From Core Rules. Reference table — buy and sell prices for herbs at town herbalists. Prices are per 1 dose.",
+    "flavorText": null,
+    "data": [
+      { "HERB": "Dankoma Stems",     "BUY": "7gc",  "SELL": "1gc" },
+      { "HERB": "Ilios Petals",      "BUY": "12gc", "SELL": "2gc" },
+      { "HERB": "Kathoto Spines",    "BUY": "3gc",  "SELL": "2gc" },
+      { "HERB": "Malako Leaves",     "BUY": "10gc", "SELL": "4gc" },
+      { "HERB": "Scarlet Orievatus", "BUY": "15gc", "SELL": "5gc" },
+      { "HERB": "Zoumerous Leaves",  "BUY": "5gc",  "SELL": "2gc" }
+    ]
+  },
+  "TET": {
+    "title": "Tavern Exploits Table",
+    "rollIdentifier": "ROLL",
+    "notes": "From Core Rules. Roll 2D6 for events while staying at the tavern between dungeon runs.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION": "Word around the tavern is that the dungeons are infested. When you encounter any small rooms (six squares or fewer) on the same level where you re-enter the dungeon, you also encounter a patrol."
+      },
+      {
+        "ROLL": "3-4",
+        "DESCRIPTION": "The ale is flowing and you drink a little too much. You wake up with a hangover. Lose all SC and 2 HP before you re-enter the dungeon."
+      },
+      {
+        "ROLL": "5-6",
+        "DESCRIPTION": "The tavern is very quiet this evening, but it does allow you to talk to Freda tending bar. She talks about some of the characters who have been in lately, including one group talking about finding another entrance to the dungeon and a distinctive stone that marks the spot. When you enter the dungeon again, you may exit that level one additional time (rather than pushing on to the next level before you can find another exit shaft)."
+      },
+      {
+        "ROLL": "7-9",
+        "DESCRIPTION": "You have a pleasant evening but nothing useful is discussed or wisdom shared."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION": "You catch up with old Glen. He laughs as he talks about his exploits in the underworld. You listen intently to some of the same old stories. He talks about one particular stone that seems familiar. You may select the room type for the first new room you encounter when you re-enter the dungeon."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION": "You're lucky, Freda has made some wholesome broth. You devour a large bowl of it and feel great when you wake the next day. Gain 2 temporary HP above your baseline."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION": "You listen to the talk in the tavern and the mood is buoyant. People say there have been no raids in a couple of weeks, and that the enemy is low in numbers. On the level where you re-enter the dungeon, there are no patrols. If instructed to roll for one, ignore it."
+      }
+    ]
+  },
+  "AWT": {
+    "title": "Arm Wrestle Table",
+    "rollIdentifier": "ROLL",
+    "notes": "From Core Rules. Roll 2D6 with applicable modifiers for arm wrestling at the tavern.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": "2-4",
+        "DESCRIPTION": "The crowd around your table laughs at your defeat as your arm is slammed down by a large brute with bulging muscles. It seems to have raised your shoulder. Lose 2 HP, and 5 GC (or equivalent) if you have it."
+      },
+      {
+        "ROLL": "5-6",
+        "DESCRIPTION": "You're so preoccupied with trying to beat a lean woman with thick weights that you don't notice a thief cut your pouch free and steal 10 GC (or equivalent coins) if you have it. You lose the round when you realise your belt suddenly feels lighter."
+      },
+      {
+        "ROLL": "7-8",
+        "DESCRIPTION": "You manage to win a few rounds before a broad veteran rolls up and beats you all too quickly. He smiles, flips you 1 GC and says, \"Next time kid.\""
+      },
+      {
+        "ROLL": "9-10",
+        "DESCRIPTION": "It is a good night. You beat three tough-looking sailors and call it quits, deciding you have done well and shouldn't push your luck. You feel strong and confident that your quest in the dungeon will go well tomorrow. Gain 4 temporary HP above your baseline."
+      },
+      {
+        "ROLL": "11-12",
+        "DESCRIPTION": "You are doing well and the crowd cheers you on, but you have pulled a muscle. During the break, a man comes up to you and gives you a healing salve you rub onto your forearm. He has backed you to win and wants to see a return on his investment. Alas, you fail in the final but still feel the effects of the salve. Gain 8 HP above your baseline."
+      },
+      {
+        "ROLL": "13+",
+        "DESCRIPTION": "You progress deep into the arm wrestling tournament and smash the final with a fine victory. You stand upon the table, triumphant, fellow drunk revellers cheering your name. You have proven to yourself that you have a keen focus. Gain 1 Discipline permanently. You can only do this once in the Arm Wrestling competition. If it happens again, gain 2D6 GC."
+      }
+    ]
+  },
+  "YLR": {
+    "title": "Your Legendary Reward",
+    "rollIdentifier": "ROLL",
+    "notes": "From Core Rules. D6 list of legendary artefacts awarded at game's end (e.g., for defeating the Nether Lord).",
+    "flavorText": null,
+    "data": [
+      { "ROLL": 1, "DESCRIPTION": "The Crown of Verifica" },
+      { "ROLL": 2, "DESCRIPTION": "The Spell Book of Detinere" },
+      { "ROLL": 3, "DESCRIPTION": "Puternic's Spectral Armour" },
+      { "ROLL": 4, "DESCRIPTION": "The Helm of Zebor" },
+      { "ROLL": 5, "DESCRIPTION": "Dumnezeu's Golden Idol" },
+      { "ROLL": 6, "DESCRIPTION": "The Wand of Dretas" }
+    ]
+  },
+  "HRT": {
+    "title": "Herbal Remedies Table",
+    "rollIdentifier": "MEDICINE",
+    "notes": "From Core Rules. Reference table — recipes for crafting herbal remedies from harvested ingredients.",
+    "flavorText": null,
+    "data": [
+      {
+        "MEDICINE": "Chewed Malako",
+        "RECIPE_AND_EFFECT": "Malako Leaves – chewed. Heals 1 HP."
+      },
+      {
+        "MEDICINE": "Healing Balm",
+        "RECIPE_AND_EFFECT": "Crushed Ilios Petals and Malako Leaves – applied to wound. Heals 10 HP. Can be used once per room."
+      },
+      {
+        "MEDICINE": "Medicated Bandage",
+        "RECIPE_AND_EFFECT": "Cut Dankoma Stems and Scarlet Orievatus – added to bandage and applied to wound. Requires cloth. Heals 20 HP. Can be used once per room."
+      },
+      {
+        "MEDICINE": "Health Paste",
+        "RECIPE_AND_EFFECT": "Crushed Scarlet Orievatus, Ilios Petals, and Zoumerous Leaves. Requires a solid container. Makes 3 doses, no need to roll. Each heals 10 HP per dose. Can be used once per room."
+      },
+      {
+        "MEDICINE": "Soothing Oil",
+        "RECIPE_AND_EFFECT": "Squeezed Kathoto Spines and crushed Zoumerous Leaves. Requires a container that can hold liquid. Heals all fresh damage caused by fire in the last two rooms you were in."
+      },
+      {
+        "MEDICINE": "Drying Powder",
+        "RECIPE_AND_EFFECT": "Crushed Dankoma Stems and Ilios Petals – creates a light powder that absorbs water quickly. Requires a container. Removes Soaked status."
+      },
+      {
+        "MEDICINE": "Sterilising Powder",
+        "RECIPE_AND_EFFECT": "Crushed Dankoma Stems and Scarlet Orievatus – creates a dense powder that cleans off blood. Requires a container. Removes Bloodied status."
+      }
+    ]
   }
 }
