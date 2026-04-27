@@ -13,9 +13,11 @@ import { use } from "react";
 
 import type { TablesCodex } from "@/types/tables";
 import type { CardsIndex } from "@/types/cards";
+import type { CreaturesIndex } from "@/types/creatures";
 
 let _tables: Promise<TablesCodex> | null = null;
 let _cards: Promise<CardsIndex> | null = null;
+let _creatures: Promise<CreaturesIndex> | null = null;
 let _rules: Promise<string> | null = null;
 
 function tablesPromise(): Promise<TablesCodex> {
@@ -36,6 +38,15 @@ function cardsPromise(): Promise<CardsIndex> {
   return _cards;
 }
 
+function creaturesPromise(): Promise<CreaturesIndex> {
+  if (!_creatures) {
+    _creatures = import("@game-data/creatures.json").then(
+      (m) => m.default as unknown as CreaturesIndex,
+    );
+  }
+  return _creatures;
+}
+
 function rulesPromise(): Promise<string> {
   if (!_rules) {
     _rules = import("@game-data/core_rules.md?raw").then((m) => m.default);
@@ -53,6 +64,11 @@ export function useCardsData(): CardsIndex {
   return use(cardsPromise());
 }
 
+/** Suspense-aware getter for the Creatures stat block JSON. */
+export function useCreaturesData(): CreaturesIndex {
+  return use(creaturesPromise());
+}
+
 /** Suspense-aware getter for the Core Rules Markdown. */
 export function useRulesData(): string {
   return use(rulesPromise());
@@ -64,4 +80,5 @@ export function useRulesData(): string {
  */
 export const preloadTables = tablesPromise;
 export const preloadCards = cardsPromise;
+export const preloadCreatures = creaturesPromise;
 export const preloadRules = rulesPromise;

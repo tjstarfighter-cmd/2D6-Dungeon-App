@@ -12,6 +12,10 @@ export interface EnemyState {
   manoeuvres: string;
   interrupt: string;
   notes: string;
+  /** The encounter round in which this enemy already fired their Interrupt
+   *  Stat. Per Core Rules, "a creature can only use one Interrupt per round,
+   *  even if both match." */
+  interruptUsedRound?: number;
 }
 
 export interface Encounter {
