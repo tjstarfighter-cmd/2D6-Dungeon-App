@@ -502,5 +502,252 @@
     "mishap": "Caught in two minds, an inexperienced fighter, the handler hesitates and misses their next attack.",
     "prime": "The handler whoops and cracks their whip. Like a flash you feel it lash your cheek and lose 1 HP.",
     "image": "Handler L1 (H).png"
+  },
+  "Adept L2 (H)": {
+    "name": "ADEPT",
+    "level": 2,
+    "category": "Human",
+    "hp": 10,
+    "xp": 70,
+    "shift": 2,
+    "treasure": "Roll on PT2+2 and POT3",
+    "interrupt": "Quick Block on Secondary 2s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 5, "name": "STAFF THRUST", "formula": "D6 -1 damage" }
+    ],
+    "flavour": "Adepts are the trusted managers of the dungeon, organising the staff and minions. They paint red slashes on their faces, wear grey robes and carry short staffs.",
+    "mishap": "The Adept seems to be strained and falls back. You gain +1 Shift on the next attack.",
+    "prime": "They pull a small vial free and fling it. It strikes and you seem to slow down. -1 Shift for the next round.",
+    "image": "Adept L2 (H).png"
+  },
+  "Amaurotic L2 (H)": {
+    "name": "AMAUROTIC",
+    "level": 2,
+    "category": "Human",
+    "hp": 14,
+    "xp": 44,
+    "shift": 1,
+    "treasure": "Roll on PT1",
+    "interrupt": "Sonic Block on Primary 1s, 2s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "TWISTING PROD", "formula": "D6 damage" }
+    ],
+    "flavour": "Blinded and insane the Amaurotic have a heightened sense of hearing. Guided by Nevazator they wander down to the crypt levels to avoid the persecution of domain guards.",
+    "mishap": "The Amaurotic catches the wall with their staff, jarring their wrist, losing 3 HP.",
+    "prime": "They shoot their staff forward through your guard striking your chest. Lose 3 HP",
+    "image": "Amaurotic L2 (H).png"
+  },
+  "Banished L2 (H)": {
+    "name": "BANISHED",
+    "level": 2,
+    "category": "Human",
+    "hp": 9,
+    "xp": 34,
+    "shift": 1,
+    "treasure": "Roll on BST1 -2",
+    "interrupt": "Scurry Away on Secondary 1s, 4s, 5s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "WILD SCRATCH", "formula": "D6 -1 damage" }
+    ],
+    "flavour": "Banished from the Domain level to the crypt levels, for heinous crimes, these tortured beings are renowned grisly cannibals, desperate but unable to escape the domain of the dead.",
+    "mishap": "They cower away from your attack suddenly scared, shrinking back. You +2 Shift in the next round.",
+    "prime": "The Banished dives to the ground, grabs your leg and sink in their teeth. Lose 2 HP.",
+    "image": "Banished L2 (H).png"
+  },
+  "Baric Knight L2 (H)": {
+    "name": "BARIC KNIGHT",
+    "level": 2,
+    "category": "Human",
+    "hp": 18,
+    "xp": 88,
+    "shift": 2,
+    "treasure": "Roll on PT2+2 +3D6 GC",
+    "interrupt": "Shoulder Guards on Primary 1s -2 damage / Helm on Secondary 1s -1 damage / Banded Chestplate on Secondary 2s and 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 3, "name": "CURVING SLASH", "formula": "D6 damage" },
+      { "primary": 6, "secondary": 4, "name": "PRECISE STAB",  "formula": "D6 -1 damage" }
+    ],
+    "flavour": "Part of the Baric Order, the well armoured Baric Knights, are a group of trained warriors who serve the Overlord and follow an oath to protect the subterranean world that which is above.",
+    "mishap": "Slowed by their armour the knight stumbles and does not attack this turn as they gain their balance.",
+    "prime": "A mighty blow comes down from the Knight's blade, destroying one random piece of armour (not plate).",
+    "image": "Baric Knight L2 (H).png"
+  },
+  "Brown Bear L2 (A)": {
+    "name": "BROWN BEAR",
+    "level": 2,
+    "category": "Animal",
+    "hp": 14,
+    "xp": 52,
+    "shift": 1,
+    "treasure": "A set of fangs without becoming bloodied",
+    "interrupt": "Paw Swipe on Primary 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 3, "name": "RIGHT CLAWS", "formula": "D6 damage" },
+      { "primary": 4, "secondary": 4, "name": "LEFT CLAWS",  "formula": "D6 damage" }
+    ],
+    "flavour": "Often hunted and trapped these aggressive creatures are used in terrible bear baiting events in the dungeon. They are trained to attack anyone but their master.",
+    "mishap": "The bear throws its body forward, stumbles and you catch it with your weapon causing D6 damage.",
+    "prime": "The bear lands on top of you and bites your shoulder causing D6 damage. You roll free.",
+    "image": "Brown Bear L2 (A).png"
+  },
+  "Giant Rat L2 (A)": {
+    "name": "GIANT RAT",
+    "level": 2,
+    "category": "Animal",
+    "hp": 7,
+    "xp": 12,
+    "shift": 1,
+    "treasure": "A rat tail without becoming bloodied",
+    "interrupt": "Jump Away on Secondary 4s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "VICIOUS SCRATCH", "formula": "D3 -1 damage" },
+      { "primary": 6, "secondary": 5, "name": "BITE",            "formula": "D6 -3 damage" }
+    ],
+    "flavour": "The rats in the crypt levels have been affected by the grim soup of magic and toxins that pollute the many dark places. Lusting for fresh meat they attack when they see you come.",
+    "mishap": "The rat dives forward but misses and slides across the space. You lash out and do 3 HP damage.",
+    "prime": "The rat jumps and swings a clawed paw, catching your chin, drawing blood. You lose 2 HP.",
+    "image": "Giant Rat L2 (A).png"
+  },
+  "Heedless L2 (H)": {
+    "name": "HEEDLESS",
+    "level": 2,
+    "category": "Human",
+    "hp": 13,
+    "xp": 48,
+    "shift": 1,
+    "treasure": "Roll on PT2+1 +2D6 GC",
+    "interrupt": "Leather Armour on Secondary 1s, 2s, 5s and 6s -2 damage",
+    "manoeuvres": [
+      { "primary": 5, "secondary": 5, "name": "BATON STRIKE", "formula": "D6 +1 damage" }
+    ],
+    "flavour": "Heedless are hardy folk who spend time in the crypt levels of the dungeon searching for loved ones or lost treasure, avoiding the undead and sleeping in empty sarcophagi.",
+    "mishap": "Their baton slips from their hand. Gain an extra attack while they recover it from the ground.",
+    "prime": "The Heedless swings into a frenzy, gaining +2 Shift and +2 damage on their next attack.",
+    "image": "Heedless L2 (H).png"
+  },
+  "Mercenary L2 (H)": {
+    "name": "MERCENARY",
+    "level": 2,
+    "category": "Human",
+    "hp": 15,
+    "xp": 45,
+    "shift": 1,
+    "treasure": "Roll on PT2 +1 +3D6 SC",
+    "interrupt": "Breastplate on Primary 2s and and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 5, "name": "SWORD SWIPE", "formula": "D6 -2 damage" },
+      { "primary": 1, "secondary": 3, "name": "SAVAGE BLOW", "formula": "D6 damage" }
+    ],
+    "flavour": "These well armoured, hired hands have embedded themselves in the running of the dungeon, but remain independent. They are skilled warriors and know it.",
+    "mishap": "Too confident, their attack is casual allowing you to swipe their side causing D3 damage.",
+    "prime": "Quick with their sword the Mercenary spins and pushes forward quickly with a jab. Lose D3 HP.",
+    "image": "Mercenary L2 (H).png"
+  },
+  "Mystic L2 (H)": {
+    "name": "MYSTIC",
+    "level": 2,
+    "category": "Human",
+    "hp": 9,
+    "xp": 74,
+    "shift": 1,
+    "treasure": "Roll on PT2 -1 and POT3",
+    "interrupt": "Ethereal Body on Secondary 2s, 3s, 4s and 5s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "LIFE DRAIN",    "formula": "D6 +1 damage" },
+      { "primary": 4, "secondary": 3, "name": "SWIRLING WHIP", "formula": "D6 -2 damage" }
+    ],
+    "flavour": "One of Intuneric's servants, the Mystic, draws upon the unseen and the darkness. They seem to shimmer as if phasing in and out of reality and cast wisps of smoke from their hands.",
+    "mishap": "The Mystic falls to their knees and screams. They are prone and you swing hard causing D6 damage.",
+    "prime": "A swirling mass of black chums around the mystic, forms a spear and strikes you. Lose D6 HP.",
+    "image": "Mystic L2 (H).png"
+  },
+  "Overlord L2 (H)": {
+    "name": "OVERLORD",
+    "level": 2,
+    "category": "Human",
+    "hp": 21,
+    "xp": 130,
+    "shift": 1,
+    "treasure": "Roll on PT2 +3 +3D6 GC",
+    "interrupt": "Padded Robes on Primary 2s -1 damage / Forearm Block on Secondry 4s and 5s -2 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "TWO FIST SLAM", "formula": "D6 damage" },
+      { "primary": 3, "secondary": 6, "name": "BEAR HUG",      "formula": "D6 -2 damage + special attack - random potion is destroyed (once per combat)" }
+    ],
+    "flavour": "The Overlord runs the top two levels of the dungeon, the Baric Knights carrying out duties on their behalf. The Overlord is a tough adversary, who is never afraid to get their hands dirty.",
+    "mishap": "The Overlord stumbles on a piece of furniture, their great bulk a hinderance so cannot attack this turn.",
+    "prime": "The Overlord manages to grip your elbow with their massive hand and twists it. Take D6 damage.",
+    "image": "Overlord L2 (H).png"
+  },
+  "Skeleton Warrior L2 (U)": {
+    "name": "SKELETON WARRIOR",
+    "level": 2,
+    "category": "Undead",
+    "hp": 10,
+    "xp": 40,
+    "shift": 1,
+    "treasure": "Roll on BST1",
+    "interrupt": "Body Void on Primary 3s and 4s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "SWORD THRUST", "formula": "D6 -1 damage" },
+      { "primary": 5, "secondary": 5, "name": "DUSTY BOOT",   "formula": "D6 -3 damage" }
+    ],
+    "flavour": "The skeleton rises up its the black eye sockets empty voids. This animated warrior is held together by a dark magic and their singular purpose is to kill the living. It advances.",
+    "mishap": "The armour on the skeleton makes it top heavy and it trips. You kick it hard for D3 damage.",
+    "prime": "The skeleton peels off a chunk of armour, flings it fast and high and it hits you. Lose D3 HP.",
+    "image": "Skeleton Warrior L2 (U).png"
+  },
+  "Sporal Rapnel L2 (F)": {
+    "name": "SPORAL RAPNEL",
+    "level": 2,
+    "category": "Fungal",
+    "hp": 15,
+    "xp": 50,
+    "shift": 1,
+    "treasure": "Handful of spores",
+    "interrupt": "Spore Screen on Primary 3s -1 damage / Tough Hide on Secondary 1s and 6s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "SPORE PROJECTILE", "formula": "D6 -1 damage" },
+      { "primary": 5, "secondary": 5, "name": "HEAD BASH",        "formula": "D6 -1 damage" }
+    ],
+    "flavour": "From a pulsing mass of fungi rises a large head, as if a giant sunflower. It has a central mouth, throbbing with red spores, surrounded by green tentacles. It rattles as if a snake and attacks.",
+    "mishap": "Part of the Sporal Rapnel base rips free as it tries to swing, causing it D6 damage as it writhes.",
+    "prime": "The head of the creature pulls back vibrating as a mass of spores shoots free to blast you. Lose D6 HP.",
+    "image": "Sporal Rapnel L2 (F).png"
+  },
+  "The Vanished L2 (U)": {
+    "name": "THE VANISHED",
+    "level": 2,
+    "category": "Undead",
+    "hp": 12,
+    "xp": 30,
+    "shift": 1,
+    "treasure": "Roll on PT2-2",
+    "interrupt": "Dark Aura on Secondary 4s and 6s -2 damage / Head Mask on Primary 1s -1 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "DAGGER STAB", "formula": "D3 damage" },
+      { "primary": 4, "secondary": 6, "name": "SIDE KICK",   "formula": "D6 -3 damage" }
+    ],
+    "flavour": "The Vanished are rumoured to be the wayward souls who have disappeared from the surface and end up corrupted by the same dark magic that animates the dead. They hide in the shadows.",
+    "mishap": "Black puss bursts from under its mask, making it fall back screaming and miss the next round.",
+    "prime": "The Vanished reaches down, grabs a stone and throws it, glancing your head. Lose 2 HP.",
+    "image": "The Vanished L2 (U).png"
+  },
+  "Zombie L2 (U)": {
+    "name": "ZOMBIE",
+    "level": 2,
+    "category": "Undead",
+    "hp": 12,
+    "xp": 38,
+    "shift": 1,
+    "treasure": "Roll on BST1",
+    "interrupt": "Lifeless Corpse on Secondary 1s, 2s and 6s -1 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 3, "name": "CLAWED HAND", "formula": "D6 +2 damage" }
+    ],
+    "flavour": "The zombie turns in your direction, the flesh loose on its face, a blank terror suspended in the white globes that are its eyes. It moans and lopes towards you.",
+    "mishap": "A large chunk of the creature's arm falls away as it swings causing it D6 damage.",
+    "prime": "The creature stumbles and throws its weight at you, knocking you aside. Lose 2 HP.",
+    "image": "Zombie L2 (U).png"
   }
 }
