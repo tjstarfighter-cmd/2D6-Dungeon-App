@@ -1503,5 +1503,41 @@
     "mishap": "The Minotaur charges low and catches its horns. It's exposed so you swing to cut it for 3D6 damage.",
     "prime": "The beast flips you into the air. One random armour piece falls off. It cannot be used again in this combat.",
     "image": "Minotaur L8 (M).png"
+  },
+  "Jade Diviner L9 (H)": {
+    "name": "JADE DIVINER",
+    "level": 9,
+    "category": "Human",
+    "hp": 85,
+    "xp": 3200,
+    "shift": 3,
+    "treasure": "Roll on L10ST + 2 HQ Emeralds",
+    "interrupt": "Shimmer Shield on Primary 1s, 2s, 3s and 5s -5 damage / Horn Swing on Secondary 1s, 3s and 5s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "EMERALD SHARD",   "formula": "2D6 +8 damage" },
+      { "primary": 5, "secondary": 5, "name": "GREEN LIGHTNING", "formula": "2D6 +6 damage + special attack - Shock -1 Shift next round" }
+    ],
+    "flavour": "The Jade Diviner, once of the Order, has been cursed by Maduva for their lust for gems. Their eyes are taken and replaced with emeralds and in the same action they are gifted strange powers.",
+    "mishap": "For a moment their eyes go black and their magical sight vanishes. You lunge in and cause 3D6 damage.",
+    "prime": "Two bolts of green fire from the Jade Diviner's eyes and strike you in the chest. Lose 15 HP.",
+    "image": "Jade Diviner L9 (H).png"
+  },
+  "Rubicund L9 (H)": {
+    "name": "RUBICUND",
+    "level": 9,
+    "category": "Human",
+    "hp": 95,
+    "xp": 3400,
+    "shift": 3,
+    "treasure": "Roll on L10ST",
+    "interrupt": "Red Scales on Primary 1s, 2s, 3s and 6s -4 damage / High Kick on Secondary 1s and 5s -6 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 2, "name": "HEAT BLADE", "formula": "2D6 +5 damage" },
+      { "primary": 5, "secondary": 5, "name": "LAVA BURST", "formula": "2D6 +10 damage" }
+    ],
+    "flavour": "Rubicund are cursed by Muratayine for torturing their worshippers. Their skin is covered in red scales that are hot to the touch. Their blood is warped into lava giving them magical abilities.",
+    "mishap": "The Rubicund appears to writhe in pain, and glow red. They do not attack next round and lose 20 HP.",
+    "prime": "The Rubicund glows red and a wave of heat washes over you destroying two of your potions. You choose.",
+    "image": "Rubicund L9 (H).png"
   }
 }
