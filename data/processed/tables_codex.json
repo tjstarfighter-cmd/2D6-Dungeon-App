@@ -11523,5 +11523,957 @@
         "UNIQUE": "YES"
       }
     ]
+  },
+  "AIT": {
+    "title": "AIT - ADVENTURER INFECTED TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you find yourself, due to the effect of an encounter, in the state of being infected. You can choose this from the table or roll 2D6 if more random. Table covers rolls 2-12 (11 entries).",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "Your vision has become hazy and you feel sick. Your skin has turned a grey colour. While you recover you lose 10 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "You feel a scratch on your neck. It begins to swell, you topple over and vomit. You must eat and rest. Lose 6 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You feel unwell after the encounter. Lose a 1 HP per level of Adventurer."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You glance down at your arm where you were touched and see a green swelling you have to lance. Lose 4 HP."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "You feel slightly hot after the encounter and begin to sweat. Rest up and eat something. Lose 2 HP and 1 ration."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "You check for scratches. If you have some water, you clean up. Otherwise you do a rush job and lose 4 HP."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "You look over your hands in case of scratches and find nothing."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "You examine where you took a few knocks and find there is nothing to worry about."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Your body feels itchy after the encounter but this soon subsides with no ill effects."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "It's not as bad as you thought. Gain 2 HP."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Strangely you feel invigorated after the encounter as if a god has blessed you for the deed. Gain 10 HP."
+      }
+    ]
+  },
+  "ANDT": {
+    "title": "ANDT - ADVENTURER NEAR DEATH TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you are on 1 or 2 HP only after combat. This table is very much about when an Adventurer is near death and gives you more of a fighting chance when applicable. Roll 2D6 for this table. Rows 7-12 are god-specific FP heals (each god grants 2 HP per FP spent, repeatable up to FP available).",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "There is nothing you can do, your wounds are serious. You are near death."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "If you have some rags and sticks you can splint your wound and heal 1 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You take a few moments to dab the wound, but you are very sore. Heal 1 HP."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You spend a bit of time tending to the wound and are able to stop the bleeding. Heal 2 HP."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "You are able to hurriedly pull together enough clean fabric to patch up some of your wounds. Heal 4 HP."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "Grakada looks upon you with pity. You may spend 1 Grakada FP to heal 2 HP. You can spend as many FP as you have."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "Intuneric looks upon you with pity. You may spend 1 Intuneric FP to heal 2 HP. You can spend as many FP as you have."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "Nevazator looks upon you with pity. You may spend 1 Nevazator FP to heal 2 HP. You can spend as many FP as you have."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Murataynie looks down on you. You may spend 1 Murataynie FP to heal 2 HP. You can spend as many FP as you have."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "Maduva looks upon you with pity. You may spend 1 Maduva FP to heal 2 HP. You can spend as many FP as you have."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Radacina looks upon you with pity. You may spend 1 Radacina FP to heal 2 HP. You can spend as many FP as you have."
+      }
+    ]
+  },
+  "CIET": {
+    "title": "CIET - CAVE IN EVENT TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when there are any signs of damage to the room you just entered (this will be in the room description). Encounter anything in the room first and then roll for the cave in. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "You are stunned to sense shaking and see the walls collapse in. You take a pummelling. Lose 10 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "An ominous speech greets you as you explore the room. Rubble tumbles down on your back. Lose 2 large items and 4 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You raise your arms as rocks tumble in. If you have a shield, it affords you some protection. Lose 2 HP. Otherwise lose 8 HP."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "The ceiling is bowing. You see it topple and drop. Roll a D6 and add your shift. 8 or below you're caught, lose 6 HP."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "One of the walls buckles pulling some of the ceiling down. Roll a D6 and add your shift. 7 or lower it catches you, lose 4 HP."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "The ceiling here seems to shift and then collapses inwards. You jump back and avoid the rock and earth."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "The ceiling above you moans and a thick timber snaps to burst through catching you slightly. Lose 2 HP."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "You jump aside as the walls and ceiling collapse inwards trapping you. Lose 1 ration or 4 HP as you dig yourself free."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Dust bellows upwards and you rush out of the way as loose rubble falls to litter the floor. You find one exit is blocked."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The ceiling shifts and collapses, but it slowly crumbles and you're able to avoid it, sustaining no injury."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "The wall topples over, pulling rubble down. Afterwards you find a concealed compartment in the wall. Roll on SECT1."
+      }
+    ]
+  },
+  "CIRT": {
+    "title": "CIRT - CAVE IN RESCUE TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you find a dead end room and there has been no creature encountered in the space. Encounter the room before rolling. Roll 2D6 for this table. Rows 10-12 reference L1PR / L2PR (presumed Player Rescue table — not yet captured in this codex).",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "Someone's trapped in the rubble and you go to help. As soon as you do they break free and attack. Roll on the level patrol table."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "You approach slowly and see an enemy scrambling free. Roll on the level patrol table and defend yourself. They have -5 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You spot an arm and shift a load of rocks, but it's a guard and with their last action they slice you with a knife. Lose 4 HP."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You quickly start moving stones when you spot a foot. The person beneath is near death. There is nothing you can do."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "A supporting strut has toppled over, bringing stone down. You think you spot some clothing but it turns out to be nothing."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "There is a massive mound of rubble here. You see a foot sticking out but when you check it is just a boot."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "Half a wall has fallen in here. You are surprised to hear a noise coming from within but after a search you find nothing."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "You uncover a person who is long dead. You search them and find some Ilios Petals and Kathoto Spines in a pouch."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "There is a person trapped here. They are badly injured. If you have some bandages they survive and escape. L1PR."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "There is a person trapped here. You shift some of the larger rocks and they break free and thank you. L1PR."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Rock and rubble has come down from the ceiling. Trapped beneath are 2 forms. You manage to free them. L2PR."
+      }
+    ]
+  },
+  "CLST": {
+    "title": "CLST - CLOSET SPACES TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when there is a 2x2 space on the map next to a room. This 2x2 space must be completely surrounded and considered a void on the map. Draw a 2x2 room adjoining the room — it is a closet large enough to walk into. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The closet doors burst open. Roll on the patrol table for the level. They were waiting to surprise you and they attack first."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "You open the doors to this empty space to a thwip. Roll a D6 and add your Shift. On a 6 or lower the dart hits you. Lose 4 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You open the doors to a grim sight. A man hangs there and is long dead. There is nothing more in the space."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You open the doors and a dog burst out and escapes. You find in the room 2 mud caked potatoes."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "Brushing back the dust you find the door. Inside on shelving is a collection of jars. In one are some pickled onions."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "You open the double doors and find a dusty space full of cobwebs. There is nothing here."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "You spot a door in the wall. Inside are some stacked boxes. All are empty apart from one, which holds a length of rope."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "The space is cluttered. In amongst it you find 2 goblets worth 20 SC each and an empty potion bottle."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "This is a storage space of some kind. On a shelf is some wrapped cheese. Gain 1 ration and a potion. Roll on POT2."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "You force the closet doors open and are surprised to find a chest in the room. Roll on CT2."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "You open the door and are surprised to see two people bound and gagged. You free them and they escape. L2PR."
+      }
+    ]
+  },
+  "CDPT": {
+    "title": "CDPT - CREATURE DRINKS A POTION",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when an enemy you are fighting has lost half their HP. They miss a round of combat as they drink the potion. Only humanoid enemies can drink potions. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The combatant drinks a potion and breathes fire at you. You duck back but take 2D6 damage."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "The combatant drinks a potion and shoots ice shards at you. You dodge but take D6 +3 damage."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "Your enemy pulls out a yellow potion and quaffs it healing 20 HP."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "Your enemy pulls out a green potion and quaffs it healing 10 HP."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "Your foe draws a potion and drinks it. They become a blur and gain an extra attack."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "Your enemy whips out a vial and drinks the blue liquid. It gains +1 to damage for this combat."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "Your foe pulls out a potion and drinks it. They seem to glow. They take 2 less damage per hit for the rest of the combat."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "Your enemy draws a potion, drinks and smashes it. You can tell magic will not affect them."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Your foe quaffs a clear potion and takes up a more balanced posture. They +1 Shift for the rest of the combat."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The combatant drinks a potion and chokes. It must have been poorly mixed. They lose 3 HP."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Your foe takes out a small vial, screams in triumph and swallows it down. They shudder and collapse dead."
+      }
+    ]
+  },
+  "CNDT": {
+    "title": "CNDT - CREATURE NEAR DEATH TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when a humanoid creature has been reduced to zero HP (not a regular death) and is dying. At this moment they may reveal a quest hook. Roll 2D6 for this table. Rows 5-10 are god-symbol quests (Grakada, Intuneric, Nevazator, Maduva, Murataynie, Radacina).",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "\"The missing crown\". They talk about a hatch in a statue. Add Hatch quest. Next time you find a hatch roll D6. 1-2= You find a golden crown worth 50 GC instead of the table result. If you fail you may try five more times."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "\"Karo betrayed me\". They talk of a human who betrayed them. Add Karo quest. When you next fight a human, roll a D6. 1-2= it is Karo. They lose a Shift point as you have been told their name."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "\"Mind the trap\". They seem repentant and talk about a stone trap. Add Stone Trap quest. If you encounter a trap that uses stone you recognise the layout as they described it and can avoid it with no consequences."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "\"I believe in Grakada\". They hand you a symbol of the god as they die. Add Grakada's Symbol Quest. Next time you are able to make an offering to Grakada you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "\"I believe in Intuneric\". They hand you a symbol of the god as they die. Add Intuneric's Symbol Quest. Next time you are able to make an offering to Intuneric you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "\"I believe in Nevazator\". They hand you a symbol of the god as they die. Add Nevazator's Symbol Quest. Next time you are able to make an offering to Nevazator you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "\"I believe in Maduva\". They hand you a symbol of the god as they die. Add Maduva's Symbol Quest. Next time you are able to make an offering to Maduva you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "\"I believe in Murataynie\". They hand you a symbol of the god as they die. Add Murataynie's Symbol Quest. Next time you can make an offering to Murataynie you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "\"I believe in Radacina\". They hand you a symbol of the god as they die. Add Radacina's Symbol Quest. Next time you are able to make an offering to Radacina you offer up the symbol, receive 3 FP and complete the quest."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "\"Add this to it\". They seem repentant and pass you a strange herb. Add Extra Ingredient Quest. If you find a potion of healing you can add this ingredient to it and heal a further 15 HP to complete the quest."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "\"Please rescue Gren\". They talk about a prisoner, give you a key. If you find a prisoner who is locked up roll a D6. 1-3= You have found Gren and can open the lock. You explain their captor repented. L1PR."
+      }
+    ]
+  },
+  "CRET": {
+    "title": "CRET - CREATURE RETREAT TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when the creature you are fighting is at less than 25% Health Points and it is their turn to hit. The enemy performs an action that may either help them or hinder them. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The creature ducks, rolls and escapes your reach. As they do another creature of the same type enters the room. Fight both."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "The creature dodges and backs out of reach. It grabs a vase and throws it at your head. Take D6 +4 damage."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "The creature pulls back and you kill it with a jab but not before it slashes back. Take D6 +2 damage."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "The creature releases a potion bomb. There is a burst of fire and you take D6 damage. The fight continues on."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "The creature shows signs of wanting to escape but changes their mind and the fight continues as they attack again."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "The creature tries to run but you shove it and gain an extra attack. The fight continues."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "The creature is weaken, pulling away slightly. It misses its next attack."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "The creature tries to pull back from the fight but you push forward and attack again. They miss a round."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "The creature passes out from the pain allowing you to finish it off with one final blow."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The creature is terrified, flinching in pain, appearing panicked, allowing you to strike it dead."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "The creature pulls away and stumbles backwards, falling as it does, allowing you to finish it off."
+      }
+    ]
+  },
+  "DEET": {
+    "title": "DEET - DEAD END EVENT TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you roll a dead end corridor that is five squares or longer and have the encounter at the end of the passage. It is a dead end and you do not always have to roll on this table. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "You reach the dead end and see why it was abandoned. The ceiling has fallen in and as you go to leave more tumbles down. Lose 10 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "At the end of the passage is a figure leaning against the wall. Roll on the level patrol table and face them."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "There is a lantern hanging from the wall here. There are some picks leaning to one side. The tunnel is incomplete."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "There are supporting beams here that have come down. You back away this area is clearly unsafe."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "There is a small metal burner at the end of the corridor, with a stool beside it. The lit wood casts long shadows."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "At first you think there is something there, some rubble obscuring your view, but on closer inspection it's nothing."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "The end has been made into a cell. It is a drawn woman. The lock looks strong (+3 lock). If you can pick it you liberate 1 prisoner."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "You notice the corridor slopes down and a pool of clear water has formed at the end. There are some fish in it. Gain 1 ration."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "There is a body at the end. Some poor old adventurer has expired. You search his body and find some Scarlet Orievatus leaves."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The end of the passage has been made into a storage area. You search 3 crates and find some items. Roll on WIT1, MIT2 and ART2."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Some loot has been stashed at the end of the corridor. There is a tea chest and a chest. Roll on TCT1 and CT1."
+      }
+    ]
+  },
+  "DPQT": {
+    "title": "DPQT - DEAD PRISONER QUESTS TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you come across a dead prisoner either through rolling on a table or in the description of the room. There is a note on the body. Encounter anything in the room before rolling. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The note mentions a magic user and a secret wand. Add Secret Wand quest. If you come across an enemy who uses magic, roll a D6. 1-2= You find a secret wand on the person. Roll on MWT1. Otherwise, you keep looking."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "The note talks of a lost relative. There is a dagger with a crest. Add Crest quest. The next time you search a Sarcophagus roll a D6. 1-2= You find your lost relative and are able to return the dagger. Gain 2 FP of any God. Otherwise keep checking."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "The note talks of lost treasure in a lost room. Add Lost Room quest. If you find a void on the map with no entrance roll a D6. 1-2= You find some rubble of a door. You open it and inside find a chest. Roll on CT2. Otherwise keep looking."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "The note talks of a Herb Stash. Add Herb Stash quest. When you encounter a Hall of any type roll a D6. 1-2= You discover a loose stone and behind it a bag containing two herbs. Roll twice on HST1. Otherwise, you keep checking."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "On the piece of paper is a diagram of a trap. Add Trap Diagram quest. When you encounter a trap that snares you can recognise the layout from the paper and pass it unscathed. The quest is completed."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "On the note is a name drawn on a hooded figure. Add Robed Rune quest. If you face a robed figure in a combat, you crush the paper, drawing on the runes power and do an extra D6 damage on the first successful hit. It's then completed."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "The note talks of some stolen jewellery. Add Jewellery Stash quest. When you come across a fountain roll a D6. 1-3= You find a hidden ledge underneath and on it a collection of jewellery worth 50 GC. Otherwise, you can keep checking."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "The note talks of a hidden Ruby. Add Ruby Quest. Next time you defeat someone of the Infernal Order roll a D6. 1-2= You have found Hxater. He has a pendant hidden in his clothing. It is a HQ Ruby. Otherwise, keep checking."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "The note shows some words translated into your language. Add Translation quest. The next time you find some text you cannot read you compare the words. Roll a D6. 1-3= Means you understand some of it. Gain 1 Discipline this level."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The note is attached to half a scroll. Add Half Scroll quest. If you face a magic user of level 4 or above and survive roll a D6. 1-3= They have the other half. You can combine them. Roll on SCT4 to find out what it is. Otherwise keep looking."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "The parchment shows three runes. Add Three Rune quest. These are magical runes and if placed on an altar and blood is poured over them, they will enchant one piece of armour. You will become bloodied during and after the ritual. Roll on ENAT1."
+      }
+    ]
+  },
+  "FVT": {
+    "title": "FVT - FORCED VISION TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you face a creature who appears to have some form of mental or psychic power. Use this via their attacks or as a description. Makes the fight harder. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The creature forces a terrible vision of blood and death into your mind, that ripples through your body. Lose 10 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "The enemy forces an illusion of flashing lightning into your brain and you tumble back and lose 7 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "A vision of a crowd of people appears before you, confusing you. It runs from the enemy who strikes you for 5 HP damage."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "Grey clouds surround your vision making it difficult to see and your head spins. Lose 2 HP and miss the next round."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "The creature projects a vision into your brain that makes you see double. You do 5 points less damage with your next hit."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "Blackness fills your vision as your enemy forces your mind into a dark place. You have -2 shift on your next attack."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "The creature forces the image of a huge bear into your mind and you cower away. It fades and you miss the next round."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "The creature tries to project the image of a spear flying at you but it fades before it hits you and you continue the fight."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "The creature attempts to force an image of your death into your head but you look on with disbelief and continue the fight."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The foe tries to make itself invisible to your mind but you see through the mental camouflage and deliver the killing blow."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "The enemy tries to inject your mind with sharp pain but you are able to rebound it back on them delivering the killing blow."
+      }
+    ]
+  },
+  "GINT": {
+    "title": "GINT - GOD INTERVENTION TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you have taken the killing blow from an enemy or have failed your Recovery from Unconsciousness roll. This is a last ditch attempt to save your adventurer — the god reaches down to help or looks on with pity. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "As you stumble backwards, blood pouring from your wound, you look up and see the anger of Murataynie as a great beast appears and consumes you."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "You collapse to your knees and look up to see the air full of Maduva's bones, all of which are beating out a death toll. They come tumbling down and crush you and your enemy."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "The pain runs through your body as you feel death near. You look around, your foe before you and there is Intuneric, a swirling black mass who consumes you both."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "For a second a divine power looks on but then there is nothing but death."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "As the killing blow strikes you feel a surge of power and the damage you sustained from the blow is transferred to your enemy instead, saving you from death."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "As you feel unconsciousness surround you see the glimmer of a flickering light. A divine power gifts you one more chance and you stand ready for another round. Gain 10 HP."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "Blood smashes your face as the hit lands true. However, you do not die and instead see the vision of a robed figure before you touching your head. You stand again with 15 HP."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "As you take the killing blow you welcome death. Instead, a god reaches down and restarts your heart. You have 15 HP and as you stand your foe is struck by an electric bolt and loses 10 HP."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "You feel the steel rob you of your life and for a second coldness grips you, but from the ground roots rise up and animate you as Radacina bids you fight on with half your HP restored. +2 FP."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "As you take the last blow, you feel unconsciousness overtake you and, in the darkness, you see Nevazator guiding you to the light. You wake, roll and rise with half your HP restored. +2 FP."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "You fall on your side, the pain intense as the ground shifts and sucks you down. Within you hear Grakada's whisper and you are released to rise, rejuvenated with half your HP restored. +2 FP."
+      }
+    ]
+  },
+  "HCCT": {
+    "title": "HCCT - HIDDEN CHEST COMPARTMENT TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you loot a chest and it is empty. Perhaps the loot has been hidden in a secret compartment. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "You find the compartment and quickly open it. But a snake shoots out and bites your hand before slithering off. Lose 6 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "As you slide open the secret compartment a gas is released and you fall back inhaling most of it but lose 4 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "You smack your palm on the bottom of the chest and find it hollow. Alas, you flip the panel and it is empty."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You are able to prise open a panel and find some old but edible chunks of cheese, but not enough for a ration."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "You pull up a fake bottom and inside find some cluttered objects including a potion bottle, some twine and a glass orb."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "You tap the side and a panel flips open. Inside is a pouch containing some Dankomas Stems and Ilios petals."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "You knock twice on the side of the chest and a door opens. Inside someone has stashed a pouch. Roll on PT2."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "It is clear to see there is a panel at the bottom, you carefully open it. Inside is a bag. Roll on BT2."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "It takes a while but you eventually manage to slide back a panel. In it wrapped in silk are 2 LQ gems. Roll twice on GMT1."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "Concealed in the lid is a small compartment. You force it open and find inside a potion wrapped in cotton. Roll on POT2."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "You flip up an ebony panel to reveal a velvet lined compartment. Resting on the soft material is a Staff of Claws."
+      }
+    ]
+  },
+  "INPT": {
+    "title": "INPT - INNATE POWER TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when an enemy is losing the fight (bad rolls or a mighty injury). They pull their dignity together and call upon some innate power that is fully unexpected. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The creature for a second writhes as it mutters something and suddenly a lightning bolt shoots from its hands. Lose 20 HP."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "Heat prickles the air. Your enemy appears to glow as a fireball erupts from their palm. Lose 10 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "On the next successful hit the creature electrocutes you for an extra 5 damage."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "The creature seems to shudder as armour plates appear across its skin. -2 extra damage from any hits on the foe."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "A green glow surrounds the enemy and they gain 10 HP as they heal."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "The creature summons up some hidden speed, lunges forward and gains an extra attack."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "They pull back, hold a hand to their head and heal themselves for 15 HP. They miss a round of combat also."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "Their arms appear double jointed. Next time they miss an attack roll they can roll again."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "The creature's arms splay wide as a large tentacle rips open its chest killing them. It lashes you and falls limp. Lose 5 HP."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "The creature seems to try and control a surge of power and in an instant is covered in ice, frozen to death."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Out of nowhere, as if possessed by a higher power, the creature rises off the ground and explodes."
+      }
+    ]
+  },
+  "MUCT": {
+    "title": "MUCT - MUSHROOM CONSUMPTION TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when you find a mushroom through searching a space or it is turned up as some loot. Not all mushrooms are the same and can have different effects, good or bad. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "The magic in the mushroom does not sit well. Madness fills your mind. You destroy all your potions before you recover."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "The mushroom tastes foul and makes you feel sick instantly. It was a mistake. Lose 10 HP."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "Eating the mushroom is pleasurable but soon after you feel sick and vomit. Lose 5 HP."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "You consume the mushroom and feel dizzy. Next combat -1 shift. It wears off after."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "It tastes nice but soon you regret eating it and feel sick. Lose 2 HP."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "The mushroom seems to have no effect at all."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "You chew on the rubbery mushroom and it releases a warming sensation. Gain 2 HP."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "The mushroom is tasty and unexpectedly fills you up. You do not need to eat a ration when you go down to the next level."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Surprised you see the room grow bigger and feel elated. Energy pulses through you. Gain 20 HP."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "You feel electricity charge through you once it is eaten. In the next combat do an extra 5 damage per successful hit."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "You feel a deep knowledge wash over you. This was a sacred food. Roll on GOT1 and gain 2 FP for that god."
+      }
+    ]
+  },
+  "RMRT": {
+    "title": "RMRT - RARE MEDICAL REMEDIES TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. A selection of rare medical remedies that can be added to the game if more options are wanted. Each has a description and ingredients to source. Pick one to attempt or roll a D6 for random selection. NOT a 2D6 outcome table — entries 1-6 are recipes, not random results.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "NAME": "Oil of Repair",
+        "EFFECT": "Restores one damaged piece of armour to a new condition.",
+        "INGREDIENTS": "1) Water 2) Fat from an animal 3) Hemp 4) Thread 5) Potion of Finesse 6) Kathoto Spines 7) Dankoma Stems"
+      },
+      {
+        "ROLL": 2,
+        "NAME": "Blinding Ointment",
+        "EFFECT": "A remedy that is used against an enemy. When thrown in their eyes it blinds them for three rounds of a combat. The enemy is -3 Shift.",
+        "INGREDIENTS": "1) Crushed Beetles 2) Sand 3) Scarlet Orievatus Leaves 4) Kathoto Spines"
+      },
+      {
+        "ROLL": 3,
+        "NAME": "Golden Elixir",
+        "EFFECT": "Restores all your Health Points and 10 HP above the base line.",
+        "INGREDIENTS": "1) Water 2) Ilios Petals 3) Dankoma Stems 4) Zoumerous Leaves 5) Scarlet Orievatus 6) Kathoto Spines 7) Malako Leaves"
+      },
+      {
+        "ROLL": 4,
+        "NAME": "Callus Doll",
+        "EFFECT": "Anointed with the owner's blood, will absorb 20 damage or one fatal attack.",
+        "INGREDIENTS": "1) Cloth 2) Thead 3) Straw 4) Small sharp piece of metal 5) Your blood 6) Kathoto Spines 7) Zoumerous Leaves"
+      },
+      {
+        "ROLL": 5,
+        "NAME": "Radiant Seaweed",
+        "EFFECT": "You feel gills growing on your neck. If there is water in the room and you are wet you gain +2 Shift on your first turn of combat. You lose the gills when you become dry.",
+        "INGREDIENTS": "1) Water 2) A plant found growing in water 3) Potion of Finesse 4) Zoumerous Leaves"
+      },
+      {
+        "ROLL": 6,
+        "NAME": "Paste of Slow Healing",
+        "EFFECT": "Once applied it heals D6 HP per room for 3 rooms.",
+        "INGREDIENTS": "1) Animal Fat 2) Ilios Petals 3) Scarlet Orievatus 4) Malako Leaves"
+      }
+    ]
+  },
+  "RAPT": {
+    "title": "RAPT - RARE POTIONS TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Use these potions as you like and when you wish. They are optional. Pick or roll a D6 for random selection. NOT a 2D6 outcome table — entries 1-6 are recipe/loot items.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "NAME": "Potion of Full Health",
+        "EFFECT": "Restores all your Health Points."
+      },
+      {
+        "ROLL": 2,
+        "NAME": "Potion of Ethereal Visage",
+        "EFFECT": "You become hard to hit as your body becomes partially translucent. The enemy -1 Shift Point for 1 whole combat."
+      },
+      {
+        "ROLL": 3,
+        "NAME": "Potion of Giant Size",
+        "EFFECT": "You grow to double your height and cause double damage for one combat."
+      },
+      {
+        "ROLL": 4,
+        "NAME": "Potion of Astral Projection",
+        "EFFECT": "You have an out of body experience and gain +1 to any searches in the next room. You can also open one locked door."
+      },
+      {
+        "ROLL": 5,
+        "NAME": "Potion of Whirlwind",
+        "EFFECT": "You get 5 attacks per round for 1 whole combat."
+      },
+      {
+        "ROLL": 6,
+        "NAME": "Potion of Mirror Image",
+        "EFFECT": "Projects 5 images of yourself for the combat. The enemy must roll a 1 on a D6, as a separate roll, as well as making a successful hit roll if they roll a 1. Lasts for 2 rounds."
+      }
+    ]
+  },
+  "RAST": {
+    "title": "RAST - RARE SCROLLS TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Use these scrolls as you like and when you wish. They are optional. Pick or roll a D6 for random selection. NOT a 2D6 outcome table — entries 1-6 are recipe/loot items.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 1,
+        "NAME": "Scroll of Shrinking",
+        "EFFECT": "Targets a limb on the enemy, shrinking it, causing 10 HP, nullifying any related interrupt."
+      },
+      {
+        "ROLL": 2,
+        "NAME": "Scroll of Thieving Trait",
+        "EFFECT": "Steal a Manoeuvre from an enemy for one combat. You lose it once the combat is over. The foe cannot use it during combat."
+      },
+      {
+        "ROLL": 3,
+        "NAME": "Scroll of the Fake God",
+        "EFFECT": "You take on the visage of a god and the enemy bows low allowing you to strike causing 3D6 damage."
+      },
+      {
+        "ROLL": 4,
+        "NAME": "Scroll of Sudden Blast",
+        "EFFECT": "A burning wind does 15 HP damage to all enemies in the room. Lasts for 1 whole combat."
+      },
+      {
+        "ROLL": 5,
+        "NAME": "Scroll of Life Leach",
+        "EFFECT": "Steal 10 HP from your enemy and add it to your own."
+      },
+      {
+        "ROLL": 6,
+        "NAME": "Scroll of Animate",
+        "EFFECT": "If there is a statue in the room it comes to life and attacks the foe, swinging once before crumbling, causing 3D6 damage."
+      }
+    ]
+  },
+  "SERT": {
+    "title": "SERT - SECRET ROOMS TABLE",
+    "rollIdentifier": "ROLL",
+    "notes": "Optional table. Can be applied when (like the Closet Spaces table) the space for the room must be completely surrounded and considered a void on the map that cannot be accessed. Generate the dead end room as normal, on a new exit for the room. Roll 2D6 for this table.",
+    "flavorText": null,
+    "data": [
+      {
+        "ROLL": 2,
+        "DESCRIPTION AND EFFECT": "Secret Sanctum - As soon as you open the door you feel terrible heat wash over you. There are three INFERNAL MONKS here who run and attack."
+      },
+      {
+        "ROLL": 3,
+        "DESCRIPTION AND EFFECT": "Secret Resting Post - Resting on a stool by a burner is a humanoid. They stand when they see you. Roll on the level patrol. You must fight."
+      },
+      {
+        "ROLL": 4,
+        "DESCRIPTION AND EFFECT": "Secret Laboratory - As you enter you disturb two APOTHECARIES working at a table. You must fight them. If you survive, roll on POT2 and POT3."
+      },
+      {
+        "ROLL": 5,
+        "DESCRIPTION AND EFFECT": "Secret Crypt - There is a sarcophagus here. If you open it roll on L4UN and fight the undead. If you survive, roll on SLT2."
+      },
+      {
+        "ROLL": 6,
+        "DESCRIPTION AND EFFECT": "Secret Shrine - There is a small stone universal shrine here. It is a holy place and if you call the favour of the gods here you -1 from the roll."
+      },
+      {
+        "ROLL": 7,
+        "DESCRIPTION AND EFFECT": "Secret Pantry - Someone has taken the time to conceal a pantry with shelving. It is abandoned but on one shelf are some pickles. Gain 1 ration."
+      },
+      {
+        "ROLL": 8,
+        "DESCRIPTION AND EFFECT": "Secret Storage - There are some crates in this room. They are covered in dust. Roll on TCT1 twice."
+      },
+      {
+        "ROLL": 9,
+        "DESCRIPTION AND EFFECT": "Secret Quarters - You slowly open the door and find a simple bed and a cupboard. You search the space. Roll on BT2 and TAT1."
+      },
+      {
+        "ROLL": 10,
+        "DESCRIPTION AND EFFECT": "Secret Portal - There a churning portal here that can take you back to town once. You may return to town an additional time on this level."
+      },
+      {
+        "ROLL": 11,
+        "DESCRIPTION AND EFFECT": "Secret Library - The walls are lined with books and scrolls. You rummage through and find two unusual scrolls. Roll on SCT3 and SCT4."
+      },
+      {
+        "ROLL": 12,
+        "DESCRIPTION AND EFFECT": "Secret Vault - Standing on its own in the centre of this room is a large iron chest. It is locked (+4 lock). If you can pick the lock roll on CT4 +3."
+      }
+    ]
   }
 }

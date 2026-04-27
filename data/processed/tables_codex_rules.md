@@ -128,3 +128,25 @@ One of the treasures you find upon the Nether Lord's body is the **Lord's
 Pendants**. These are valuable items of solid gold and worth 200gc, but are
 also evidence of your success. You show these at the town as the crowds
 applaud your success.
+
+---
+
+## Optional Tables
+
+Several useful tables follow that were stretch goals in the original campaign.
+These pose options for particular situations such as encountering a dead end
+or discovering a secret compartment in a chest. They are not compulsory to the
+core rules but are official optional tables that can add more narrative, fun
+and loot! It is recommended not to overuse these as there are limited entries
+and it may become repetitive to do so. Throwing one or two in per level would
+work nicely. Each table has a short description of when they might be used in
+the game. These are guidelines but feel free to use them as you want.
+
+It is recommended to use these tables for levels 1 to 5 but they can be used
+at deeper levels.
+
+The rare items tables were also created through a collaborative stream with
+supporters of the project on the 4th July 2023 at our YouTube channel (search
+Toby Lancaster). We would like to thank all those who attended and James,
+Jonny, Kasak, Jim, Todd, Scott, Javier, Wade and Dragon for their imaginative
+contributions.
