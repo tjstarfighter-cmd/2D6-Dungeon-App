@@ -1197,5 +1197,131 @@
     "mishap": "Bulky and slow the brawler swings but misses and you are able to land a quick kick doing D6 damage.",
     "prime": "The brawler manages to lock its arms around you and squeezes. Lose D6 HP before you break free.",
     "image": "Vudelian Brawler L5 (H).png"
+  },
+  "Earth Croc L6 (A)": {
+    "name": "EARTH CROC",
+    "level": 6,
+    "category": "Animal",
+    "hp": 65,
+    "xp": 850,
+    "shift": 3,
+    "treasure": "Four teeth",
+    "interrupt": "Scaly Hide on Primary 1s, 2s, 5s and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 1, "name": "CRUSHING BITE", "formula": "2D6 +1 damage" },
+      { "primary": 4, "secondary": 6, "name": "TAIL SWING",    "formula": "2D3 +4 damage" }
+    ],
+    "flavour": "Earth Crocs dig deep burrows into soft earth where they settle into cold underground pools. They are then captured at the order of The Keeper to be released into city sewers and water systems.",
+    "mishap": "The Earth Croc barrels into a pillar and slides away, causing no damage this round and missing next.",
+    "prime": "The Earth Croc claps its teeth around your body breaking one piece of random armour (not plate).",
+    "image": "Earth Croc L6 (A).png"
+  },
+  "Infernal Cardinal L6 (H)": {
+    "name": "INFERNAL CARDINAL",
+    "level": 6,
+    "category": "Human",
+    "hp": 50,
+    "xp": 950,
+    "shift": 1,
+    "treasure": "Roll on RPT4, SCT2 and SCT3",
+    "interrupt": "Pyre Shield on Primary 1s, 2s and 4s -3 damage / Floating Embers on Secondary 2s, 3s and 4s -2 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 6, "name": "BLADE CLEAVE", "formula": "2D6 +1 damage" },
+      { "primary": 6, "secondary": 1, "name": "LASH OF FLAME", "formula": "D6 +5 damage" }
+    ],
+    "flavour": "The Infernal Cardinal rules levels 5 and 6 of the dungeon. These dark humanoids have mastered the many orbits of magic but twisted it into an infernal haze of power that is all consuming.",
+    "mishap": "The cardinal seems to burn with flame but is unable to aim this powerful weapon. It misses the next round.",
+    "prime": "The cardinal reaches out, clenches its fist and you feel intense heat flood your body. Lose 2D6 HP.",
+    "image": "Infernal Cardinal L6 (H).png"
+  },
+  "Mortley Fly L6 (I)": {
+    "name": "MORTLEY FLY",
+    "level": 6,
+    "category": "Insect",
+    "hp": 45,
+    "xp": 750,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Quick Hover on Primary 1s, 2s and 6s -4 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 3, "name": "MOUTH JAB",   "formula": "2D6 +1 damage" },
+      { "primary": 5, "secondary": 5, "name": "REDEYE AURA", "formula": "2D6 + special attack - Runes cannot be used against the fly next round." }
+    ],
+    "flavour": "Through the manipulation of Primordial magic the Mordeel Axiom are able to breed these foul beasts from mutated maggots that they nurture in their morgue pits. They emerge as huge flying insects.",
+    "mishap": "The Mortley Fly rises up but its wings catch the ceiling and it falls, clattering into the floor, losing 2D6 HP.",
+    "prime": "The Mortley Fly rises above you and vomits a hot acid that burns your skin. Lose 2D6 +5 HP.",
+    "image": "Mortley Fly L6 (I).png"
+  },
+  "Scale Hound L6 (A)": {
+    "name": "SCALE HOUND",
+    "level": 6,
+    "category": "Animal",
+    "hp": 50,
+    "xp": 800,
+    "shift": 2,
+    "treasure": "A set of fangs without becoming bloodied",
+    "interrupt": "Tough Skin on Primary 2s, 4s and 6s -3 damage",
+    "manoeuvres": [
+      { "primary": 4, "secondary": 1, "name": "HEAVY BARGE",    "formula": "2D6 +2 damage" },
+      { "primary": 5, "secondary": 5, "name": "CRAZED MAULING", "formula": "3D3 +2 damage" }
+    ],
+    "flavour": "Scale Hounds are the result of the experiments with Metamorphic magic. They are lizards and dogs blended and transformed into large powerful beasts by Raptured Shimbays.",
+    "mishap": "The Scale Hound seems to shimmer, a dog and then lizard appear, writhing then join, causing 2D6 damage.",
+    "prime": "The beast rears and takes you with his paws, long broken claws tearing at you. Take 2D6 damage.",
+    "image": "Scale Hound L6 (A).png"
+  },
+  "Scuttle Cow L6 (I)": {
+    "name": "SCUTTLE COW",
+    "level": 6,
+    "category": "Insect",
+    "hp": 50,
+    "xp": 850,
+    "shift": 2,
+    "treasure": "No Treasure",
+    "interrupt": "Scuttle Barge on Primary 3s, and 5s -3 damage / Hard Carapace on Secondary 4s, 5s and 6s -2 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 3, "name": "SHARP MANDIBLES", "formula": "2D6 +3 damage" },
+      { "primary": 6, "secondary": 4, "name": "MANY KICKS",      "formula": "2D6 +1 damage" }
+    ],
+    "flavour": "Scuttle Cows were found deep in the earth by the Terra Magnus. Through selective breeding and Infernal rituals they grow larger and are released upon the surface when numbers peaked.",
+    "mishap": "The beast is almost too large for the space. It struggles to attack and misses the next turn.",
+    "prime": "The Scuttle Cow turns and rolls into you. You cannot avoid it as it knocks you down. Lose D6 +4 HP.",
+    "image": "Scuttle Cow L6 (I).png"
+  },
+  "Summoned Flayer L6 (M)": {
+    "name": "SUMMONED FLAYER",
+    "level": 6,
+    "category": "Monster",
+    "hp": 55,
+    "xp": 900,
+    "shift": 1,
+    "treasure": "2 HQ rubies plucked from its temple",
+    "interrupt": "Scaly Hide on Primary 3s, 4s and 6s -3 damage / Wiry Body on Secondary 1s, 2s and 3s -2 damage",
+    "manoeuvres": [
+      { "primary": 2, "secondary": 2, "name": "TENTACLE LASH", "formula": "2D6 +6 damage" },
+      { "primary": 5, "secondary": 5, "name": "SAVAGE BITE",   "formula": "D3 +6 damage" }
+    ],
+    "flavour": "Rituals carried out by the Infernal Order can result in summoning swirling clouds of primordial magic. Overtime these grow and seethe until from within this dark portal a Flayer might emerge.",
+    "mishap": "The Flayer lashes its long tentacles at you but becomes entangled. You strike causing D6 damage.",
+    "prime": "The Flayer grips you and spews black smoke into your eyes. You cannot avoid it as it knocks you out. You have no Shift.",
+    "image": "Summoned Flayer L6 (M).png"
+  },
+  "Vibralect L6 (I)": {
+    "name": "VIBRALECT",
+    "level": 6,
+    "category": "Insect",
+    "hp": 60,
+    "xp": 950,
+    "shift": 3,
+    "treasure": "No Treasure",
+    "interrupt": "Carapace Strips on Primary 1s, and 6s -2 damage / Whipping Arms on Secondary 3s and 4s -3 damage",
+    "manoeuvres": [
+      { "primary": 3, "secondary": 5, "name": "MULTI LASH",   "formula": "2D3 +3 damage" },
+      { "primary": 6, "secondary": 1, "name": "ELECTRIC ZAP", "formula": "2D6 + special attack - Deduct 1 HP per round - cumulative" }
+    ],
+    "flavour": "Charged with electrical energy from the Faculty Orbit of magic, these giant insects have burrowed upwards from deep down, lured by the Pen Tamer who's scent driven concoctions act as bait.",
+    "mishap": "The Vibralect seems to fizz as the electric energy cuts out. It cannot use its ELECTRIC ZAP for 2 rounds.",
+    "prime": "Bolts of lightning erupt from the creature's antennae and strike your limbs. Lose 2D6 +6 HP.",
+    "image": "Vibralect L6 (I).png"
   }
 }
