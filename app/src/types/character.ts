@@ -2,6 +2,9 @@
 // (see docs/2D6 Dungeon Cards/2D6 Character Sheet.png and Sheet 2 + Backpack).
 // Stored in localStorage; exportable/importable as JSON.
 
+export type RunMode = "mapAnchored" | "lookup";
+export const DEFAULT_RUN_MODE: RunMode = "mapAnchored";
+
 export interface ManoeuvreSlot {
   name: string;
   diceSet: string;     // e.g. "⚂ ⚃" — preserved as written
@@ -70,9 +73,11 @@ export interface Character {
   sideQuests: string;
   favour: Record<string, number>;  // god name -> Favour Points
   backpack: Backpack;
-  // Optional reference to a future Map epic — reserved so saves don't
-  // need migration when the map view ships.
-  currentRun?: { mapId?: string };
+  // Per-run state. `mode` is the shell mode for this run:
+  //   'mapAnchored' — sheet sidebar + map main + overlay launchers (default)
+  //   'lookup'      — sheet sidebar + nav between views (at-home physical-paper play)
+  // Field is optional so existing saves don't need migration.
+  currentRun?: { mapId?: string; mode?: RunMode };
   createdAt: string;
   updatedAt: string;
 }

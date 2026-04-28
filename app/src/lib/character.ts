@@ -1,4 +1,4 @@
-import type { Character } from "@/types/character";
+import { DEFAULT_RUN_MODE, type Character, type RunMode } from "@/types/character";
 
 // The six subterranean gods, in the order they appear on the physical sheet.
 // Names match the card folder filenames in docs/2D6 Dungeon Cards/God Cards/.
@@ -20,6 +20,11 @@ export const LARGE_ITEM_SLOTS = 10;
 /** Rules: HP baseline = 10 × level. Used by the "set baseline from level" affordance. */
 export function baselineHpForLevel(level: number): number {
   return Math.max(1, level) * 10;
+}
+
+/** Read the current run's shell mode, falling back to the default for legacy saves. */
+export function getRunMode(character: Character | null | undefined): RunMode {
+  return character?.currentRun?.mode ?? DEFAULT_RUN_MODE;
 }
 
 /** Build a fresh character with the rules' starting values. */
@@ -52,6 +57,7 @@ export function createCharacter(name = "New Adventurer"): Character {
     liberatedPrisoners: 0,
     sideQuests: "",
     favour: Object.fromEntries(GODS.map((g) => [g, 0])),
+    currentRun: { mode: DEFAULT_RUN_MODE },
     backpack: {
       largeItems: Array(LARGE_ITEM_SLOTS).fill(""),
       smallItems: "",

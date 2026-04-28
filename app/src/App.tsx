@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { Layout } from "@/components/Layout";
+import { ShellRoot } from "@/components/ShellRoot";
 
 // Each view is its own chunk so the first paint doesn't pay for
 // react-markdown / remark-gfm / rehype-slug (Rules) up front.
@@ -48,7 +48,7 @@ export default function App() {
 
       <Route path="spike/draw" element={<Lazy><SpikeDraw /></Lazy>} />
 
-      <Route element={<Layout />}>
+      <Route element={<ShellRoot />}>
         <Route index element={<Lazy><SheetView /></Lazy>} />
         <Route path="combat" element={<Lazy><CombatView /></Lazy>} />
         <Route path="tables" element={<Lazy><TablesView /></Lazy>} />

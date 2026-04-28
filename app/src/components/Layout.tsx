@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { ShellPicker } from "@/components/ShellPicker";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
@@ -74,7 +75,8 @@ export function Layout() {
             <span className="font-semibold">2D6 Dungeon</span>
           </div>
           <HeaderSearch />
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ShellPicker />
             <ThemeToggle />
           </div>
         </header>
