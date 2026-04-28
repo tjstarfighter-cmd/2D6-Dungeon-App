@@ -15,7 +15,7 @@
 
 /* eslint-env serviceworker */
 
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const CACHE_NAME = `2d6d-${CACHE_VERSION}`;
 // SHELL_URL must match the deployed base. For GitHub Pages this is the
 // project subpath; for root deploys it's "/".

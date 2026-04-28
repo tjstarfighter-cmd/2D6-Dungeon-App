@@ -12,6 +12,8 @@ const navItems = [
   { to: "/map", label: "Map" },
   { to: "/search", label: "Search" },
   { to: "/present", label: "Present" },
+  // Phase 0 spike — remove once the new map ships.
+  { to: "/spike/draw", label: "Spike" },
 ];
 
 function HeaderSearch() {
