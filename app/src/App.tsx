@@ -21,6 +21,9 @@ const PresentCard = lazy(() => import("@/views/present/Card"));
 const PresentTable = lazy(() => import("@/views/present/Table"));
 const PresentRoll = lazy(() => import("@/views/present/Roll"));
 
+// Phase 0 throwaway: dot-grid drawing spike. Chrome-less, full-bleed.
+const SpikeDraw = lazy(() => import("@/views/SpikeDraw"));
+
 function Loader() {
   return (
     <div className="p-6 text-sm text-zinc-500" role="status" aria-live="polite">
@@ -42,6 +45,8 @@ export default function App() {
       <Route path="present/card/:id" element={<Lazy><PresentCard /></Lazy>} />
       <Route path="present/table/:id" element={<Lazy><PresentTable /></Lazy>} />
       <Route path="present/roll" element={<Lazy><PresentRoll /></Lazy>} />
+
+      <Route path="spike/draw" element={<Lazy><SpikeDraw /></Lazy>} />
 
       <Route element={<Layout />}>
         <Route index element={<Lazy><SheetView /></Lazy>} />
