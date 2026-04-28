@@ -5,7 +5,7 @@ import type { CardCategory, CardKind, CardRecord } from "@/types/cards";
  * Filenames contain spaces / parens, so we URI-encode the basename.
  */
 export function cardImageUrl(filename: string): string {
-  return `/cards/${encodeURIComponent(filename)}`;
+  return `${import.meta.env.BASE_URL}cards/${encodeURIComponent(filename)}`;
 }
 
 export const KIND_LABELS: Record<CardKind, string> = {

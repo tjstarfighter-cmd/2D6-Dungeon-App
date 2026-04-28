@@ -10,6 +10,25 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="2D6 Dungeon" />
     <title>2D6 Dungeon Companion</title>
+    <script>
+      // GitHub Pages SPA fallback: 404.html redirects deep-links here with
+      // the original path encoded in the query string. Restore it to the URL
+      // bar so React Router can route normally.
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) { return s.replace(/~and~/g, "&"); })
+            .join("?");
+          window.history.replaceState(
+            null,
+            "",
+            l.pathname.slice(0, -1) + decoded + l.hash,
+          );
+        }
+      })(window.location);
+    </script>
   </head>
   <body>
     <div id="root"></div>

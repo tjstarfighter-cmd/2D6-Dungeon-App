@@ -9,18 +9,21 @@
 //   a new SW version evicts the old cache.
 //
 // Bump CACHE_VERSION when you ship a breaking change to the shell.
+//
+// Scope is determined by the SW's location: when served from
+// /2D6-Dungeon-App/sw.js it controls /2D6-Dungeon-App/*.
 
 /* eslint-env serviceworker */
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAME = `2d6d-${CACHE_VERSION}`;
-const SHELL_URL = "/index.html";
+// SHELL_URL must match the deployed base. For GitHub Pages this is the
+// project subpath; for root deploys it's "/".
+const SHELL_URL = new URL("./", self.registration.scope).pathname;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) =>
-      // Best-effort precache: just the shell. Failure is non-fatal — the
-      // network-first navigation handler will populate it on first visit.
       cache.add(SHELL_URL).catch(() => undefined),
     ),
   );
