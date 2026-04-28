@@ -16,10 +16,21 @@ const ROOT = resolve(APP, "..");
 
 const SRC_INDEX = join(ROOT, "data", "processed", "cards_index.json");
 const DEST_DIR = join(APP, "public", "cards");
+const DOCS_DIR = join(ROOT, "docs");
 
 if (!existsSync(SRC_INDEX)) {
   console.error(`Card index not found: ${SRC_INDEX}`);
   process.exit(1);
+}
+
+// Source PDFs/card images live in `docs/`, which is gitignored. Skip
+// gracefully on CI builds (or any clone without the source assets) so the
+// deploy can proceed without card art rather than hard-failing.
+if (!existsSync(DOCS_DIR)) {
+  console.log(
+    "sync-card-assets: docs/ not present, skipping (no source assets in this checkout).",
+  );
+  process.exit(0);
 }
 
 mkdirSync(DEST_DIR, { recursive: true });
