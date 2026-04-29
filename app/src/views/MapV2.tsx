@@ -191,15 +191,37 @@ function NewMapPicker({
   onCreate: (opts: { name?: string; gridW?: number; gridH?: number }) => void;
 }) {
   const [name, setName] = useState("New Map");
-  const [w, setW] = useState(25);
-  const [h, setH] = useState(25);
+  // String state so the user can clear the field while typing without it
+  // snapping back to 1. Parsed and clamped at commit time.
+  const [wStr, setWStr] = useState("25");
+  const [hStr, setHStr] = useState("25");
+  const [notice, setNotice] = useState<string | null>(null);
+
+  function parseDim(s: string): number {
+    const n = parseInt(s, 10);
+    if (!Number.isFinite(n) || n < 1) return 25;
+    return n;
+  }
+
   function commit(opts: { gridW: number; gridH: number }) {
+    const wantW = Math.round(opts.gridW);
+    const wantH = Math.round(opts.gridH);
+    const cappedW = clamp(wantW, 1, MAX_GRID);
+    const cappedH = clamp(wantH, 1, MAX_GRID);
+    if (wantW > MAX_GRID || wantH > MAX_GRID) {
+      setNotice(
+        `Capped at ${MAX_GRID} × ${MAX_GRID} (you asked for ${wantW} × ${wantH}).`,
+      );
+    } else {
+      setNotice(null);
+    }
     onCreate({
       name: name.trim() || "New Map",
-      gridW: clamp(Math.round(opts.gridW), 1, MAX_GRID),
-      gridH: clamp(Math.round(opts.gridH), 1, MAX_GRID),
+      gridW: cappedW,
+      gridH: cappedH,
     });
   }
+
   return (
     <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/50">
       <div className="flex flex-wrap items-end gap-2">
@@ -210,8 +232,8 @@ function NewMapPicker({
           <NumberField
             min={1}
             max={MAX_GRID}
-            value={w}
-            onChange={(e) => setW(Number(e.target.value) || 1)}
+            value={wStr}
+            onChange={(e) => setWStr(e.target.value)}
             className="w-20"
           />
         </Field>
@@ -219,12 +241,17 @@ function NewMapPicker({
           <NumberField
             min={1}
             max={MAX_GRID}
-            value={h}
-            onChange={(e) => setH(Number(e.target.value) || 1)}
+            value={hStr}
+            onChange={(e) => setHStr(e.target.value)}
             className="w-20"
           />
         </Field>
-        <Button variant="primary" onClick={() => commit({ gridW: w, gridH: h })}>
+        <Button
+          variant="primary"
+          onClick={() =>
+            commit({ gridW: parseDim(wStr), gridH: parseDim(hStr) })
+          }
+        >
           Create
         </Button>
       </div>
@@ -244,6 +271,11 @@ function NewMapPicker({
         ))}
         <span className="text-xs text-zinc-500">Cap {MAX_GRID} × {MAX_GRID}.</span>
       </div>
+      {notice && (
+        <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
+          {notice}
+        </p>
+      )}
     </div>
   );
 }
@@ -1025,10 +1057,10 @@ function MapV2Editor({
                       {/* Halo for legibility against wall colors */}
                       <text
                         x={cx}
-                        y={cy - CELL * 0.55}
+                        y={cy - CELL * 0.65}
                         textAnchor="middle"
                         className="fill-white dark:fill-zinc-950"
-                        fontSize={CELL * 0.4}
+                        fontSize={CELL * 0.55}
                         fontWeight={700}
                         stroke="currentColor"
                         strokeWidth={3}
@@ -1038,10 +1070,10 @@ function MapV2Editor({
                       </text>
                       <text
                         x={cx}
-                        y={cy - CELL * 0.55}
+                        y={cy - CELL * 0.65}
                         textAnchor="middle"
                         className="fill-zinc-900 dark:fill-zinc-100"
-                        fontSize={CELL * 0.4}
+                        fontSize={CELL * 0.55}
                         fontWeight={700}
                       >
                         {label}
