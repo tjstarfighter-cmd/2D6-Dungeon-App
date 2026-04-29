@@ -195,7 +195,6 @@ function NewMapPicker({
   // snapping back to 1. Parsed and clamped at commit time.
   const [wStr, setWStr] = useState("25");
   const [hStr, setHStr] = useState("25");
-  const [notice, setNotice] = useState<string | null>(null);
 
   function parseDim(s: string): number {
     const n = parseInt(s, 10);
@@ -203,22 +202,19 @@ function NewMapPicker({
     return n;
   }
 
+  // Live cap warning — the picker unmounts as soon as we call onCreate, so a
+  // notice driven by commit-time state would render to a dead component.
+  // Computing it from current input means the user sees the warning *before*
+  // they click Create.
+  const wantW = parseDim(wStr);
+  const wantH = parseDim(hStr);
+  const overCap = wantW > MAX_GRID || wantH > MAX_GRID;
+
   function commit(opts: { gridW: number; gridH: number }) {
-    const wantW = Math.round(opts.gridW);
-    const wantH = Math.round(opts.gridH);
-    const cappedW = clamp(wantW, 1, MAX_GRID);
-    const cappedH = clamp(wantH, 1, MAX_GRID);
-    if (wantW > MAX_GRID || wantH > MAX_GRID) {
-      setNotice(
-        `Capped at ${MAX_GRID} × ${MAX_GRID} (you asked for ${wantW} × ${wantH}).`,
-      );
-    } else {
-      setNotice(null);
-    }
     onCreate({
       name: name.trim() || "New Map",
-      gridW: cappedW,
-      gridH: cappedH,
+      gridW: clamp(Math.round(opts.gridW), 1, MAX_GRID),
+      gridH: clamp(Math.round(opts.gridH), 1, MAX_GRID),
     });
   }
 
@@ -271,9 +267,10 @@ function NewMapPicker({
         ))}
         <span className="text-xs text-zinc-500">Cap {MAX_GRID} × {MAX_GRID}.</span>
       </div>
-      {notice && (
+      {overCap && (
         <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-          {notice}
+          Will be capped at {MAX_GRID} × {MAX_GRID} — you asked for {wantW} ×{" "}
+          {wantH}.
         </p>
       )}
     </div>
