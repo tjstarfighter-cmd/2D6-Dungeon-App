@@ -11,9 +11,6 @@ const navItems = [
   { to: "/rules", label: "Rules" },
   { to: "/notes", label: "Notes" },
   { to: "/map", label: "Map" },
-  // Phase 2 in-progress map rewrite — remove this entry and route /map at it
-  // once Phase 3 migration ships.
-  { to: "/mapv2", label: "Map v2" },
   { to: "/search", label: "Search" },
   { to: "/present", label: "Present" },
   // Phase 0 spike — remove once the new map ships.

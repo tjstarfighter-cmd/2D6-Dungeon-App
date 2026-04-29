@@ -12,8 +12,7 @@ const CardsView = lazy(() => import("@/views/Cards"));
 const RulesView = lazy(() => import("@/views/Rules"));
 const NotesView = lazy(() => import("@/views/Notes"));
 const SearchView = lazy(() => import("@/views/Search"));
-const MapView = lazy(() => import("@/views/Map"));
-const MapV2View = lazy(() => import("@/views/MapV2"));
+const MapView = lazy(() => import("@/views/MapV2"));
 
 // Presenter views render outside Layout — chrome-less, full-bleed for OBS.
 const PresentIndex = lazy(() => import("@/views/present/Index"));
@@ -60,7 +59,6 @@ export default function App() {
         <Route path="notes" element={<Lazy><NotesView /></Lazy>} />
         <Route path="search" element={<Lazy><SearchView /></Lazy>} />
         <Route path="map" element={<Lazy><MapView /></Lazy>} />
-        <Route path="mapv2" element={<Lazy><MapV2View /></Lazy>} />
         <Route path="*" element={<Lazy><SheetView /></Lazy>} />
       </Route>
     </Routes>
