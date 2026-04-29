@@ -2,7 +2,7 @@ import { Fragment } from "react";
 
 import type { Character } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
-import { useMaps } from "@/hooks/useMaps";
+import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
 import {
   GODS,
@@ -35,7 +35,7 @@ export default function SheetView() {
   const { characters, active, create, update, remove, setActive, replaceAll } =
     useCharacters();
   const { notes, replaceAll: replaceAllNotes } = useNotes();
-  const { maps, replaceAll: replaceAllMaps } = useMaps();
+  const { maps, replaceAll: replaceAllMaps } = useMapsV2();
 
   function patchActive(patch: Patch) {
     if (!active) return;

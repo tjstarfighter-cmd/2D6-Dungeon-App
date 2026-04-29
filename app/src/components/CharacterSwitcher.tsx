@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 import type { Character } from "@/types/character";
-import type { MapDoc } from "@/types/map";
+import type { MapDocV2 } from "@/types/mapv2";
 import type { Note } from "@/types/notes";
 import { Button } from "@/components/ui";
 import {
@@ -14,12 +14,12 @@ import {
 interface Props {
   characters: Character[];
   notes: Note[];
-  maps: MapDoc[];
+  maps: MapDocV2[];
   active: Character | null;
   onSelect: (id: string) => void;
   onCreate: () => void;
   onDelete: (id: string) => void;
-  onReplaceAll: (characters: Character[], notes: Note[], maps: MapDoc[]) => void;
+  onReplaceAll: (characters: Character[], notes: Note[], maps: MapDocV2[]) => void;
 }
 
 export function CharacterSwitcher({

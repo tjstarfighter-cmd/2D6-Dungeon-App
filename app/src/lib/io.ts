@@ -1,8 +1,12 @@
 import type { Character } from "@/types/character";
-import type { MapDoc } from "@/types/map";
+import type { MapDocV2 } from "@/types/mapv2";
 import type { Note } from "@/types/notes";
 
-const EXPORT_VERSION = 3;
+// Bumped to 4 with the dot-grid map rewrite: the maps field is now
+// MapDocV2[] (walls + regions, schema:2). Backups from versions <=3
+// carried v1 rectangle-based MapDoc[]; importers drop those with an
+// explicit error rather than silently losing them.
+const EXPORT_VERSION = 4;
 
 interface ExportPayload {
   format: "2d6d-export";
@@ -10,14 +14,14 @@ interface ExportPayload {
   exportedAt: string;
   characters: Character[];
   notes: Note[];
-  maps: MapDoc[];
+  maps: MapDocV2[];
 }
 
 /** Serialise a backup blob containing characters + notes + maps. */
 export function serialiseBackup(
   characters: Character[],
   notes: Note[],
-  maps: MapDoc[],
+  maps: MapDocV2[],
 ): string {
   const payload: ExportPayload = {
     format: "2d6d-export",
@@ -33,14 +37,16 @@ export function serialiseBackup(
 export interface ImportResult {
   characters: Character[];
   notes: Note[];
-  maps: MapDoc[];
+  maps: MapDocV2[];
   errors: string[];
 }
 
 /**
  * Parse an export blob. Tolerant: accepts a bare characters array
  * (legacy v1), a v1 wrapper (no notes), a v2 wrapper (no maps), or
- * a v3 wrapper with everything.
+ * a v3+ wrapper with everything. Pre-v4 maps (rectangle-based) are
+ * dropped with a per-map error since the dot-grid rewrite has no
+ * automatic converter.
  */
 export function parseImport(text: string): ImportResult {
   const errors: string[] = [];
@@ -112,18 +118,36 @@ export function parseImport(text: string): ImportResult {
     notes.push(n);
   });
 
-  const maps: MapDoc[] = [];
+  const maps: MapDocV2[] = [];
   (mapsRaw as unknown[]).forEach((item, i) => {
     if (!item || typeof item !== "object") {
       errors.push(`Map ${i}: not an object`);
       return;
     }
-    const m = item as MapDoc;
+    const m = item as Partial<MapDocV2> & { rooms?: unknown };
     if (typeof m.id !== "string" || typeof m.name !== "string") {
       errors.push(`Map ${i}: missing required fields (id, name)`);
       return;
     }
-    maps.push(m);
+    // Reject v1 (rectangle) maps — the rewrite has no auto-converter.
+    if (Array.isArray(m.rooms) && !Array.isArray(m.walls)) {
+      errors.push(
+        `Map "${m.name}" (${i}): legacy v1 (rectangle) format — not imported. Phase 3 of the rewrite skipped the v1→v2 migration; recreate it in the new editor if needed.`,
+      );
+      return;
+    }
+    if (
+      !Array.isArray(m.walls) ||
+      !Array.isArray(m.regions) ||
+      typeof m.gridW !== "number" ||
+      typeof m.gridH !== "number"
+    ) {
+      errors.push(
+        `Map "${m.name}" (${i}): not a v2 map (missing walls / regions / gridW / gridH).`,
+      );
+      return;
+    }
+    maps.push(m as MapDocV2);
   });
 
   return { characters, notes, maps, errors };
