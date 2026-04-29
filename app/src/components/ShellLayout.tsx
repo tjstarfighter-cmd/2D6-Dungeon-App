@@ -337,6 +337,19 @@ function BottomBar({
       >
         + note
       </button>
+      {/* Phase 2 in-progress map — remove once /map is replaced. */}
+      <NavLink
+        to="/mapv2"
+        className={({ isActive }) =>
+          `whitespace-nowrap rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
+            isActive
+              ? "border-amber-500 bg-amber-500 text-zinc-900"
+              : "border-amber-400 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-950 dark:text-amber-200 dark:hover:bg-amber-900"
+          }`
+        }
+      >
+        Map v2
+      </NavLink>
     </nav>
   );
 }
