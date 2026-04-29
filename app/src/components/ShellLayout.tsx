@@ -305,6 +305,17 @@ function BottomBar({
       aria-label="Quick actions"
       className="flex shrink-0 items-center gap-1 overflow-x-auto border-t border-zinc-200 bg-white px-2 py-2 dark:border-zinc-800 dark:bg-zinc-900"
     >
+      {/* Map is the primary view in mapAnchored mode (and a normal route in
+          lookup mode), so it always navigates rather than opening an overlay
+          like the other bottom-bar items. */}
+      <NavLink
+        to="/map"
+        className={({ isActive }) =>
+          `${itemBase} ${isActive ? itemActive : itemIdle}`
+        }
+      >
+        Map
+      </NavLink>
       {bottomActions.map((action) =>
         mode === "lookup" ? (
           <NavLink
