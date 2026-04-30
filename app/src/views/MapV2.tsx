@@ -106,7 +106,7 @@ export default function MapV2View() {
         <Card>
           <p className="text-sm text-zinc-500">
             No map yet. Click <strong>+ New map</strong> to start a dot-grid
-            dungeon. Phase 2 — feature-flagged at <code>/mapv2</code>.
+            dungeon.
           </p>
         </Card>
       ) : (
@@ -825,7 +825,7 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_18rem]">
+    <div className="grid gap-4 xl:grid-cols-[1fr_18rem]">
       <Card>
         <header className="mb-3 flex flex-wrap items-end gap-2">
           <Field label="Name" className="grow min-w-[10rem]">

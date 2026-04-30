@@ -6,8 +6,9 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 
-const inputBase =
-  "block w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500";
+const inputStyle =
+  "rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500";
+const inputBase = `block w-full ${inputStyle}`;
 
 const btnBase =
   "inline-flex items-center justify-center rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700";
@@ -144,7 +145,7 @@ export function Stepper({
         value={value}
         aria-label={ariaLabel}
         onChange={(e) => onChange(clamp(Number(e.target.value)))}
-        className={`${inputBase} text-center ${width}`}
+        className={`${inputStyle} text-center ${width}`}
       />
       <button
         type="button"

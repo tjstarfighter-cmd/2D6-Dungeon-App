@@ -43,9 +43,9 @@ export default function TablesView() {
 
   return (
     <section className="mx-auto max-w-7xl">
-      <div className="grid gap-4 md:grid-cols-[18rem_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
         {/* List */}
-        <div className="space-y-3 md:sticky md:top-0 md:max-h-[calc(100vh-7rem)] md:self-start md:overflow-auto md:pr-2">
+        <div className="space-y-3 lg:sticky lg:top-0 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-auto lg:pr-2">
           <input
             type="search"
             placeholder={`Search ${allKeys.length} tables…`}
