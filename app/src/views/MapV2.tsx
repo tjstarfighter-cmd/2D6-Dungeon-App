@@ -825,8 +825,8 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[1fr_18rem]">
-      <Card>
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
+      <Card className="min-w-0">
         <header className="mb-3 flex flex-wrap items-end gap-2">
           <Field label="Name" className="grow min-w-[10rem]">
             <TextField
