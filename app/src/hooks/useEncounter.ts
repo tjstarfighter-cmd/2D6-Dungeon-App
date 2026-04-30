@@ -63,9 +63,17 @@ function makeEnemy(name = "Enemy", maxHp = 10): EnemyState {
   };
 }
 
+export interface StartEncounterOpts {
+  /** v2 map region tilesHash. Stored on the encounter so the End-combat
+   *  dialog can offer "mark cleared?" for the room the fight happened in. */
+  roomId?: string;
+  /** Snapshot of the region's label at start time. */
+  roomLabel?: string;
+}
+
 export interface UseEncounterResult {
   encounter: Encounter | null;
-  start: (characterId: string) => void;
+  start: (characterId: string, opts?: StartEncounterOpts) => void;
   end: () => void;
   addEnemy: (init?: Partial<EnemyState>) => void;
   removeEnemy: (enemyId: string) => void;
@@ -77,17 +85,22 @@ export interface UseEncounterResult {
 export function useEncounter(): UseEncounterResult {
   const encounter = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
-  const start = useCallback((characterId: string) => {
-    const e: Encounter = {
-      id: newId("enc"),
-      characterId,
-      enemies: [makeEnemy()],
-      round: 1,
-      active: true,
-      startedAt: new Date().toISOString(),
-    };
-    setStore(e);
-  }, []);
+  const start = useCallback(
+    (characterId: string, opts?: StartEncounterOpts) => {
+      const e: Encounter = {
+        id: newId("enc"),
+        characterId,
+        enemies: [makeEnemy()],
+        round: 1,
+        active: true,
+        startedAt: new Date().toISOString(),
+        roomId: opts?.roomId,
+        roomLabel: opts?.roomLabel,
+      };
+      setStore(e);
+    },
+    [],
+  );
 
   const end = useCallback(() => {
     setStore(null);

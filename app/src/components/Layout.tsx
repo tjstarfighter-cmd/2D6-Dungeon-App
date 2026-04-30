@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { OverlayProvider, type OverlayApi } from "@/components/OverlayContext";
 import { ShellPicker } from "@/components/ShellPicker";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -42,6 +43,11 @@ function HeaderSearch() {
 }
 
 export function Layout() {
+  const navigate = useNavigate();
+  // Classic shell has no overlays — "open Combat" just navigates to /combat.
+  const overlayApi: OverlayApi = {
+    openCombat: () => navigate("/combat"),
+  };
   return (
     <div className="flex min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <aside className="hidden w-56 shrink-0 border-r border-zinc-200 bg-white p-4 md:block dark:border-zinc-800 dark:bg-zinc-900">
@@ -102,7 +108,9 @@ export function Layout() {
         </nav>
 
         <main className="flex-1 overflow-auto p-4 md:p-6">
-          <Outlet />
+          <OverlayProvider value={overlayApi}>
+            <Outlet />
+          </OverlayProvider>
         </main>
       </div>
     </div>

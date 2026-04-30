@@ -12,6 +12,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useCharacters } from "@/hooks/useCharacters";
 import { getRunMode } from "@/lib/character";
 import type { RunMode } from "@/types/character";
+import { OverlayProvider, type OverlayApi } from "@/components/OverlayContext";
 import { ShellPicker } from "@/components/ShellPicker";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -434,6 +435,12 @@ export function ShellLayout() {
     }
   }
 
+  // Bridge for descendant views that want to summon Combat without knowing
+  // which shell they're in (e.g. MapV2's "Start combat in this room").
+  const overlayApi: OverlayApi = {
+    openCombat: () => openOverlay("combat"),
+  };
+
   return (
     <div className="flex min-h-full flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <header className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">
@@ -450,15 +457,17 @@ export function ShellLayout() {
 
       <PhoneVitalsStrip onOpenDrawer={() => setDrawerOpen(true)} />
 
-      <div className="flex min-h-0 flex-1">
-        <main className="relative flex min-w-0 flex-1 flex-col overflow-auto p-4 md:p-6">
-          <Outlet />
-          {overlay && (
-            <ViewOverlay view={overlay} onClose={() => setOverlay(null)} />
-          )}
-        </main>
-        <SheetSidebar />
-      </div>
+      <OverlayProvider value={overlayApi}>
+        <div className="flex min-h-0 flex-1">
+          <main className="relative flex min-w-0 flex-1 flex-col overflow-auto p-4 md:p-6">
+            <Outlet />
+            {overlay && (
+              <ViewOverlay view={overlay} onClose={() => setOverlay(null)} />
+            )}
+          </main>
+          <SheetSidebar />
+        </div>
+      </OverlayProvider>
 
       <BottomBar
         mode={mode}

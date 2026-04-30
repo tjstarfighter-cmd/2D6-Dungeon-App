@@ -7,7 +7,10 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
+import { useCharacters } from "@/hooks/useCharacters";
+import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2 } from "@/hooks/useMapsV2";
+import { useOverlayApi } from "@/components/OverlayContext";
 import {
   Button,
   Card,
@@ -286,6 +289,10 @@ function MapV2Editor({
   map: MapDocV2;
   onUpdate: (patch: Partial<MapDocV2>) => void;
 }) {
+  const { active: activeCharacter } = useCharacters();
+  const { encounter, start: startEncounter } = useEncounter();
+  const { openCombat } = useOverlayApi();
+
   const [tool, setTool] = useState<Tool>("draw");
   const [exitType, setExitType] = useState<ExitType>("door");
   const [scale, setScale] = useState(1);
@@ -1126,6 +1133,25 @@ function MapV2Editor({
             info={selectedInfo}
             onPatch={(patch) => patchRegion(selectedInfo.hash, patch)}
             onDeselect={() => setSelectedHash(null)}
+            combatLabel={
+              encounter
+                ? `Resume combat · Round ${encounter.round}`
+                : "Start combat here"
+            }
+            combatDisabled={!activeCharacter}
+            onStartCombat={() => {
+              if (!activeCharacter) return;
+              if (!encounter) {
+                startEncounter(activeCharacter.id, {
+                  roomId: selectedInfo.hash,
+                  roomLabel:
+                    selectedInfo.meta?.label ||
+                    selectedInfo.meta?.type ||
+                    undefined,
+                });
+              }
+              openCombat();
+            }}
           />
         ) : (
           <Card title="Region">
@@ -1229,10 +1255,16 @@ function RegionDetailPanel({
   info,
   onPatch,
   onDeselect,
+  combatLabel,
+  combatDisabled,
+  onStartCombat,
 }: {
   info: RegionInfo;
   onPatch: (patch: Partial<Omit<RegionMeta, "tilesHash">>) => void;
   onDeselect: () => void;
+  combatLabel: string;
+  combatDisabled: boolean;
+  onStartCombat: () => void;
 }) {
   const m = info.meta;
   return (
@@ -1243,6 +1275,18 @@ function RegionDetailPanel({
       action={<Button onClick={onDeselect}>✕</Button>}
     >
       <div className="space-y-3">
+        <Button
+          variant="primary"
+          onClick={onStartCombat}
+          disabled={combatDisabled}
+          title={
+            combatDisabled
+              ? "Pick or create a character on the Sheet first."
+              : undefined
+          }
+        >
+          ⚔ {combatLabel}
+        </Button>
         <Field label="Label (shown above the pin)">
           <TextField
             value={m?.label ?? ""}

@@ -26,4 +26,16 @@ export interface Encounter {
   active: boolean;
   startedAt: string;
   endedAt?: string;
+  /** Optional pointer to the v2 map region this encounter happens in.
+   *  Set when combat is started from "Start combat in this room" on the
+   *  map; used by the End-combat dialog to offer "mark cleared?" and to
+   *  show a room-context badge in the header. The string is the region's
+   *  tilesHash from MapDocV2; if walls reshape and the hash drifts, the
+   *  prompt skips the mark-cleared step rather than touching the wrong
+   *  region. */
+  roomId?: string;
+  /** Snapshot of the room's label at start time. Used as the display name
+   *  in the end-combat prompt so the user sees "Mark Library cleared?"
+   *  even if the region is currently labelless or has been renamed. */
+  roomLabel?: string;
 }
