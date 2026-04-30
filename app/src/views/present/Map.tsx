@@ -1,18 +1,25 @@
+import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { useMaps } from "@/hooks/useMaps";
-import type { ExitType, MapDoc, MapExit, Room } from "@/types/map";
+import { useMapsV2 } from "@/hooks/useMapsV2";
+import {
+  detectRegions,
+  regionCentroidTile,
+  tilesHash,
+} from "@/lib/mapv2";
+import { wallSetFromList, type MapDocV2 } from "@/types/mapv2";
+import type { ExitType } from "@/types/map";
 
 const CELL = 24;
 
 /**
- * Full-bleed presenter render of a saved Map. No editing chrome.
- * Auto-fits the map to the viewport via SVG viewBox + preserveAspectRatio.
+ * Full-bleed presenter render of a saved Map (v2 dot-grid model).
+ * No editing chrome. Auto-fits via SVG viewBox + preserveAspectRatio.
  * Updates live as the editor changes the map (shared external store).
  */
 export default function PresentMap() {
   const { id } = useParams();
-  const { maps } = useMaps();
+  const { maps } = useMapsV2();
   const map = maps.find((m) => m.id === id);
 
   if (!map) {
@@ -25,14 +32,17 @@ export default function PresentMap() {
     );
   }
 
+  const exitCount = map.walls.reduce((n, w) => (w.exit ? n + 1 : n), 0);
+
   return (
     <main className="fixed inset-0 flex flex-col bg-zinc-950 text-zinc-100">
       <header className="flex items-center justify-between border-b border-zinc-800 px-4 py-2 text-sm">
         <div>
           <span className="font-semibold">{map.name}</span>
           <span className="ml-3 text-zinc-500">
-            Level {map.level} · {map.ancestry} · {map.rooms.length} rooms ·{" "}
-            {map.exits.length} exits
+            Level {map.level} · {map.ancestry} · {map.gridW}×{map.gridH} ·{" "}
+            {map.regions.length} room note{map.regions.length === 1 ? "" : "s"}{" "}
+            · {exitCount} exit{exitCount === 1 ? "" : "s"}
           </span>
         </div>
         <Link to="/present" className="text-xs text-zinc-400 underline">
@@ -41,7 +51,9 @@ export default function PresentMap() {
       </header>
       <div className="grow p-4">
         <svg
-          viewBox={`0 0 ${map.width * CELL} ${map.height * CELL}`}
+          viewBox={`-${CELL / 2} -${CELL / 2} ${(map.gridW + 1) * CELL} ${
+            (map.gridH + 1) * CELL
+          }`}
           preserveAspectRatio="xMidYMid meet"
           className="size-full"
         >
@@ -53,10 +65,21 @@ export default function PresentMap() {
 }
 
 // ---------------------------------------------------------------------------
-// Read-only render of map contents. Kept inline (vs. shared component) so
+// Read-only render of v2 map contents. Kept inline (vs. shared component) so
 // the editor and presenter can evolve their visuals independently.
 
-function MapSvgContents({ map }: { map: MapDoc }) {
+function MapSvgContents({ map }: { map: MapDocV2 }) {
+  const wallSet = useMemo(() => wallSetFromList(map.walls), [map.walls]);
+  const regions = useMemo(
+    () => detectRegions(wallSet, map.gridW, map.gridH),
+    [wallSet, map.gridW, map.gridH],
+  );
+  const metaByHash = useMemo(() => {
+    const m = new Map<string, (typeof map.regions)[number]>();
+    for (const r of map.regions) m.set(r.tilesHash, r);
+    return m;
+  }, [map.regions]);
+
   return (
     <>
       <defs>
@@ -75,95 +98,143 @@ function MapSvgContents({ map }: { map: MapDoc }) {
         </pattern>
       </defs>
       <rect
-        width={map.width * CELL}
-        height={map.height * CELL}
+        x={-CELL / 2}
+        y={-CELL / 2}
+        width={(map.gridW + 1) * CELL}
+        height={(map.gridH + 1) * CELL}
         fill="url(#present-grid)"
       />
-      {map.rooms.map((r) => (
-        <RoomShape key={r.id} room={r} />
+
+      {/* Region tints — amber for active rooms, grey for cleared. */}
+      {regions.regions.map((tiles, i) => {
+        const hash = tilesHash(tiles);
+        const meta = metaByHash.get(hash);
+        const cleared = !!meta?.cleared;
+        return (
+          <g key={`r${i}`}>
+            {tiles.map(([cx, cy]) => (
+              <rect
+                key={`${cx},${cy}`}
+                x={cx * CELL}
+                y={cy * CELL}
+                width={CELL}
+                height={CELL}
+                fill={cleared ? "#52525b" : "#fbbf24"}
+                fillOpacity={cleared ? 0.35 : 0.65}
+              />
+            ))}
+          </g>
+        );
+      })}
+
+      {/* Walls. */}
+      {map.walls.map((w, i) => (
+        <line
+          key={`w${i}`}
+          x1={w.ax * CELL}
+          y1={w.ay * CELL}
+          x2={w.bx * CELL}
+          y2={w.by * CELL}
+          stroke="#fcd34d"
+          strokeWidth={3}
+          strokeLinecap="round"
+        />
       ))}
-      {map.exits.map((x) => (
-        <ExitShape key={x.id} exit={x} />
-      ))}
+
+      {/* Exits — colored glyph at wall midpoint. */}
+      {map.walls.map((w, i) => {
+        if (!w.exit) return null;
+        const mx = ((w.ax + w.bx) / 2) * CELL;
+        const my = ((w.ay + w.by) / 2) * CELL;
+        const horizontal = w.ay === w.by;
+        const stroke = exitColour(w.exit.type);
+        const dash =
+          w.exit.type === "secret"
+            ? "2 2"
+            : w.exit.type === "portcullis"
+              ? "4 2"
+              : undefined;
+        const halfLen = CELL * 0.32;
+        const x1 = horizontal ? mx - halfLen : mx;
+        const x2 = horizontal ? mx + halfLen : mx;
+        const y1 = horizontal ? my : my - halfLen;
+        const y2 = horizontal ? my : my + halfLen;
+        return (
+          <g key={`e${i}`}>
+            <line
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke={stroke}
+              strokeWidth={6}
+              strokeLinecap="square"
+              strokeDasharray={dash}
+            />
+            <circle cx={mx} cy={my} r={3} fill={stroke} />
+          </g>
+        );
+      })}
+
+      {/* Region labels — at the centroid tile, big enough to read in a video. */}
+      {regions.regions.map((tiles, i) => {
+        const hash = tilesHash(tiles);
+        const meta = metaByHash.get(hash);
+        const label = meta?.label || meta?.type;
+        if (!label) return null;
+        const [cx, cy] = regionCentroidTile(tiles);
+        const x = (cx + 0.5) * CELL;
+        const y = (cy + 0.5) * CELL;
+        return (
+          <g key={`l${i}`} pointerEvents="none">
+            <text
+              x={x}
+              y={y}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fill="#18181b"
+              stroke="#fde68a"
+              strokeWidth={3}
+              paintOrder="stroke"
+              fontWeight={700}
+              fontSize={Math.min(CELL * 0.7, 16)}
+            >
+              {label}
+            </text>
+            <text
+              x={x}
+              y={y}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fill="#18181b"
+              fontWeight={700}
+              fontSize={Math.min(CELL * 0.7, 16)}
+            >
+              {label}
+            </text>
+          </g>
+        );
+      })}
     </>
-  );
-}
-
-function RoomShape({ room }: { room: Room }) {
-  const x = room.x * CELL;
-  const y = room.y * CELL;
-  const w = room.w * CELL;
-  const h = room.h * CELL;
-  return (
-    <g>
-      <rect
-        x={x}
-        y={y}
-        width={w}
-        height={h}
-        // Bright fills against the dark background read well in video.
-        fill={room.cleared ? "#3f3f46" : "#fbbf24"}
-        fillOpacity={room.cleared ? 0.5 : 0.85}
-        stroke={room.cleared ? "#71717a" : "#b45309"}
-        strokeWidth={2}
-      />
-      {(room.label || room.type) && (
-        <text
-          x={x + w / 2}
-          y={y + h / 2}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill="#18181b"
-          fontWeight={700}
-          fontSize={Math.min(CELL * 0.7, 14)}
-          className="select-none"
-        >
-          {room.label ?? room.type}
-        </text>
-      )}
-    </g>
-  );
-}
-
-function ExitShape({ exit }: { exit: MapExit }) {
-  const x = exit.x * CELL;
-  const y = exit.y * CELL;
-  const pad = CELL * 0.25;
-  let x1 = x;
-  let y1 = y;
-  let x2 = x;
-  let y2 = y;
-  switch (exit.side) {
-    case "n": x1 = x + pad; y1 = y; x2 = x + CELL - pad; y2 = y; break;
-    case "s": x1 = x + pad; y1 = y + CELL; x2 = x + CELL - pad; y2 = y + CELL; break;
-    case "w": x1 = x; y1 = y + pad; x2 = x; y2 = y + CELL - pad; break;
-    case "e": x1 = x + CELL; y1 = y + pad; x2 = x + CELL; y2 = y + CELL - pad; break;
-  }
-  const stroke = exitColour(exit.type);
-  const dash = exit.type === "secret" ? "2 2" : exit.type === "portcullis" ? "4 2" : undefined;
-  return (
-    <line
-      x1={x1}
-      y1={y1}
-      x2={x2}
-      y2={y2}
-      stroke={stroke}
-      strokeWidth={6}
-      strokeLinecap="square"
-      strokeDasharray={dash}
-    />
   );
 }
 
 function exitColour(type: ExitType): string {
   switch (type) {
-    case "door": return "#fcd34d";       // amber-300, bright on dark
-    case "open": return "#a1a1aa";
-    case "stone": return "#d4d4d8";
-    case "portcullis": return "#e4e4e7";
-    case "magical": return "#c084fc";
-    case "secret": return "#f87171";
-    default: return "#fcd34d";
+    case "door":
+      return "#fcd34d"; // amber-300, bright on dark
+    case "open":
+      return "#a1a1aa";
+    case "stone":
+      return "#d4d4d8";
+    case "portcullis":
+      return "#e4e4e7";
+    case "magical":
+      return "#c084fc";
+    case "secret":
+      return "#f87171";
+    default:
+      return "#fcd34d";
   }
 }
 

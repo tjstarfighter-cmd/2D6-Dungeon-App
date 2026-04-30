@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useMaps } from "@/hooks/useMaps";
+import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useTablesData, useCardsData } from "@/data/lazy";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -15,7 +15,7 @@ export default function PresentIndex() {
   // dark; user can flip if they really want light.
   const [theme, setTheme] = useTheme();
 
-  const { maps } = useMaps();
+  const { maps } = useMapsV2();
   const tables = useTablesData();
   const cards = useCardsData();
   const [cardQuery, setCardQuery] = useState("");
@@ -80,14 +80,20 @@ export default function PresentIndex() {
             <Empty>No maps yet — create one in the Map view.</Empty>
           ) : (
             <ul className="space-y-2">
-              {maps.map((m) => (
-                <PresenterRow
-                  key={m.id}
-                  to={`/present/map/${m.id}`}
-                  title={m.name}
-                  subtitle={`Level ${m.level} · ${m.ancestry} · ${m.rooms.length} rooms · ${m.exits.length} exits`}
-                />
-              ))}
+              {maps.map((m) => {
+                const exitCount = m.walls.reduce(
+                  (n, w) => (w.exit ? n + 1 : n),
+                  0,
+                );
+                return (
+                  <PresenterRow
+                    key={m.id}
+                    to={`/present/map/${m.id}`}
+                    title={m.name}
+                    subtitle={`Level ${m.level} · ${m.ancestry} · ${m.gridW}×${m.gridH} · ${m.regions.length} room note${m.regions.length === 1 ? "" : "s"} · ${exitCount} exit${exitCount === 1 ? "" : "s"}`}
+                  />
+                );
+              })}
             </ul>
           )}
         </Section>
