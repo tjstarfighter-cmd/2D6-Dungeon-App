@@ -349,6 +349,21 @@ function BottomBar({
       >
         + note
       </button>
+      {/* Present is a chrome-less external surface for OBS — always
+          navigates, never an overlay. Visually muted so it doesn't compete
+          with the in-game bottom-bar items. */}
+      <NavLink
+        to="/present"
+        className={({ isActive }) =>
+          `whitespace-nowrap rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
+            isActive
+              ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+              : "border-zinc-300 bg-white text-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
+          }`
+        }
+      >
+        Present
+      </NavLink>
     </nav>
   );
 }
