@@ -47,7 +47,7 @@ const SNAP_RADIUS = 0.45; // grid units (touch / mouse)
 const SNAP_RADIUS_PEN = 0.3; // tighter snap for stylus precision
 const ERASE_RADIUS = 0.55; // grid units
 
-type Tool = "draw" | "erase" | "exit" | "clearbox";
+type Tool = "pan" | "draw" | "erase" | "exit" | "clearbox";
 
 // Snapshot-based: each wall-modifying action pushes the pre-state walls.
 // In-memory only, so the size cost is acceptable (~80B per wall × ~200 walls
@@ -293,7 +293,7 @@ function MapV2Editor({
   const { encounter, start: startEncounter } = useEncounter();
   const { openCombat } = useOverlayApi();
 
-  const [tool, setTool] = useState<Tool>("draw");
+  const [tool, setTool] = useState<Tool>("pan");
   const [exitType, setExitType] = useState<ExitType>("door");
   const [scale, setScale] = useState(1);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -352,6 +352,14 @@ function MapV2Editor({
     scrollTop: number;
   } | null>(null);
   const inPinchSessionRef = useRef(false);
+
+  // Single-finger pan (Pan tool). Records the last client position so we can
+  // translate scrollLeft/scrollTop by the delta on each pointer move. Manual
+  // because the SVG carries `touch-none` to suppress native gestures during
+  // drawing — the browser's scroll plumbing isn't available here.
+  const panRef = useRef<{ pointerId: number; lastX: number; lastY: number } | null>(
+    null,
+  );
 
   const wallSet = useMemo(() => wallSetFromList(map.walls), [map.walls]);
   // Live wall set: persisted ∪ in-progress adds \ in-progress removes.
@@ -660,10 +668,11 @@ function MapV2Editor({
     if (e.pointerType === "touch") {
       pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (pointersRef.current.size === 2) {
-        // Cancel any in-progress stroke and switch to pinch mode.
+        // Cancel any in-progress stroke or pan and switch to pinch mode.
         strokeRef.current = null;
         setStrokeAdds(new Set());
         setStrokeRemoves(new Set());
+        panRef.current = null;
         inPinchSessionRef.current = true;
         const pts = [...pointersRef.current.values()];
         const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
@@ -687,6 +696,17 @@ function MapV2Editor({
     }
 
     if (e.pointerType === "mouse" && e.button !== 0) return;
+
+    if (tool === "pan") {
+      panRef.current = {
+        pointerId: e.pointerId,
+        lastX: e.clientX,
+        lastY: e.clientY,
+      };
+      e.currentTarget.setPointerCapture(e.pointerId);
+      return;
+    }
+
     const grid = clientToGrid(e);
     if (!grid) return;
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -749,6 +769,21 @@ function MapV2Editor({
       }
     }
 
+    // Single-finger pan via the Pan tool — translate the container's scroll
+    // by the pointer delta on each move.
+    if (panRef.current && panRef.current.pointerId === e.pointerId) {
+      const container = containerRef.current;
+      if (container) {
+        const dx = e.clientX - panRef.current.lastX;
+        const dy = e.clientY - panRef.current.lastY;
+        container.scrollLeft -= dx;
+        container.scrollTop -= dy;
+      }
+      panRef.current.lastX = e.clientX;
+      panRef.current.lastY = e.clientY;
+      return;
+    }
+
     if (rectDrag && tool === "clearbox") {
       const grid = clientToGrid(e);
       if (!grid) return;
@@ -790,6 +825,13 @@ function MapV2Editor({
     } catch {
       // pointer may not have been captured (e.g. cancelled by pinch) — fine.
     }
+
+    // Pan teardown.
+    if (panRef.current && panRef.current.pointerId === e.pointerId) {
+      panRef.current = null;
+      return;
+    }
+
     if (rectDrag && tool === "clearbox") {
       commitRectClear(rectDrag);
       setRectDrag(null);
@@ -1189,18 +1231,30 @@ function ToolPalette({
   onExitType: (t: ExitType) => void;
 }) {
   const tools: { id: Tool; label: string; hint: string }[] = [
+    { id: "pan", label: "Pan", hint: "Drag to move the map. Two-finger pinch to zoom." },
     { id: "draw", label: "Draw", hint: "Drag along dots to lay walls." },
     { id: "erase", label: "Erase", hint: "Tap or drag near a wall to remove it." },
     { id: "exit", label: "Exit", hint: "Tap a wall to attach (or remove) an exit of the selected type." },
     { id: "clearbox", label: "Clear box", hint: "Drag a rectangle to remove every wall inside it." },
   ];
+  // Tools toggle: tapping the active drawing tool drops back to Pan so the
+  // user can move around without dropping into a stroke or erase.
+  function pick(next: Tool) {
+    if (next === "pan") {
+      onTool("pan");
+    } else if (tool === next) {
+      onTool("pan");
+    } else {
+      onTool(next);
+    }
+  }
   return (
     <div className="flex flex-wrap items-center gap-2">
       {tools.map((t) => (
         <button
           key={t.id}
           type="button"
-          onClick={() => onTool(t.id)}
+          onClick={() => pick(t.id)}
           className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
             tool === t.id
               ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"

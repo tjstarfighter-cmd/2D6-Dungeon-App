@@ -77,7 +77,7 @@ export default function RulesView() {
 
   return (
     <section className="mx-auto max-w-7xl">
-      <div className="grid gap-6 md:grid-cols-[16rem_1fr]">
+      <div className="grid gap-6 md:grid-cols-[16rem_minmax(0,1fr)]">
         <Toc
           items={toc}
           activeId={activeId}
@@ -85,7 +85,7 @@ export default function RulesView() {
         />
         <article
           ref={contentRef}
-          className="rounded-lg border border-zinc-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900"
+          className="min-w-0 rounded-lg border border-zinc-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900"
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkCrossLinkTables]}

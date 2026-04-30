@@ -11,6 +11,8 @@ import {
   STATUS_PIPS,
   baselineHpForLevel,
 } from "@/lib/character";
+import { formatDiceSet, parseDiceSet } from "@/lib/combat";
+import { DICE_FACES } from "@/lib/tables";
 import { CharacterSwitcher } from "@/components/CharacterSwitcher";
 import { NotesPanel } from "@/components/NotesPanel";
 import {
@@ -29,6 +31,77 @@ type Patch = Partial<Character>;
 interface SectionProps {
   character: Character;
   onPatch: (patch: Patch) => void;
+}
+
+// Two 1–6 selects rendered side-by-side. Persists as the canonical
+// "⚂ ⚃" glyph string so combat's parser keeps recognising it; an unset
+// die shows as "—" until both values are picked. Old free-text values
+// stay readable thanks to parseDiceSet, which also accepts plain digits.
+function DiceSetField({
+  value,
+  onChange,
+  ariaLabelPrefix,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  ariaLabelPrefix?: string;
+}) {
+  const parsed = parseDiceSet(value);
+  const primary = parsed?.[0] ?? null;
+  const secondary = parsed?.[1] ?? null;
+
+  function commit(p: number | null, s: number | null) {
+    if (p === null || s === null) {
+      // Until both are picked, store empty so parseDiceSet returns null
+      // (combat helper treats unparseable rows as inert).
+      onChange("");
+      return;
+    }
+    onChange(formatDiceSet(p, s));
+  }
+
+  return (
+    <div className="flex items-center gap-1">
+      <DieSelect
+        value={primary}
+        onChange={(n) => commit(n, secondary)}
+        ariaLabel={ariaLabelPrefix ? `${ariaLabelPrefix} primary die` : undefined}
+      />
+      <DieSelect
+        value={secondary}
+        onChange={(n) => commit(primary, n)}
+        ariaLabel={ariaLabelPrefix ? `${ariaLabelPrefix} secondary die` : undefined}
+      />
+    </div>
+  );
+}
+
+function DieSelect({
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  value: number | null;
+  onChange: (next: number) => void;
+  ariaLabel?: string;
+}) {
+  return (
+    <select
+      aria-label={ariaLabel}
+      value={value ?? ""}
+      onChange={(e) => onChange(Number(e.target.value))}
+      className="rounded-md border border-zinc-300 bg-white px-1 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+    >
+      <option value="" disabled>
+        —
+      </option>
+      {[1, 2, 3, 4, 5, 6].map((n) => (
+        <option key={n} value={n}>
+          {DICE_FACES[n - 1]} {n}
+        </option>
+      ))}
+    </select>
+  );
 }
 
 export default function SheetView() {
@@ -248,7 +321,7 @@ function ManoeuvresCard({ character, onPatch }: SectionProps) {
       {character.manoeuvres.length === 0 ? (
         <EmptyRow text="No manoeuvres yet." />
       ) : (
-        <div className="grid grid-cols-[1fr_5rem_1fr_auto] items-center gap-2 text-sm">
+        <div className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm">
           <HeaderCell>Name</HeaderCell>
           <HeaderCell>Dice Set</HeaderCell>
           <HeaderCell>Modifier</HeaderCell>
@@ -260,10 +333,10 @@ function ManoeuvresCard({ character, onPatch }: SectionProps) {
                 onChange={(e) => setRow(i, { name: e.target.value })}
                 placeholder="e.g. Bash"
               />
-              <TextField
+              <DiceSetField
                 value={m.diceSet}
-                onChange={(e) => setRow(i, { diceSet: e.target.value })}
-                placeholder="e.g. ⚂ ⚃"
+                onChange={(next) => setRow(i, { diceSet: next })}
+                ariaLabelPrefix={`Manoeuvre ${i + 1}`}
               />
               <TextField
                 value={m.modifier}
@@ -305,7 +378,7 @@ function ArmourCard({ character, onPatch }: SectionProps) {
       {character.armour.length === 0 ? (
         <EmptyRow text="No armour equipped." />
       ) : (
-        <div className="grid grid-cols-[1fr_5rem_1fr_auto] items-center gap-2 text-sm">
+        <div className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm">
           <HeaderCell>Piece</HeaderCell>
           <HeaderCell>Dice Set</HeaderCell>
           <HeaderCell>Modifier</HeaderCell>
@@ -317,9 +390,10 @@ function ArmourCard({ character, onPatch }: SectionProps) {
                 onChange={(e) => setRow(i, { piece: e.target.value })}
                 placeholder="e.g. Jerkin"
               />
-              <TextField
+              <DiceSetField
                 value={a.diceSet}
-                onChange={(e) => setRow(i, { diceSet: e.target.value })}
+                onChange={(next) => setRow(i, { diceSet: next })}
+                ariaLabelPrefix={`Armour ${i + 1}`}
               />
               <TextField
                 value={a.modifier}

@@ -25,7 +25,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 //     - In mapAnchored mode, ViewOverlay covers main when a bottom-bar
 //       action is open (Combat / Tables / Rules / Cards / Notes)
 //   - Sheet sidebar (right, md+): vitals + run mode toggle + sheet tabs
-//   - Bottom action bar: Combat / Tables / Rules / Cards / Notes / + note
+//   - Bottom action bar: Map / Combat / Tables / Rules / Cards / Notes / Present
 
 // Views reachable from the bottom action bar. In `lookup` mode they navigate;
 // in `mapAnchored` mode they open as overlays over the main area.
@@ -285,14 +285,12 @@ interface BottomBarProps {
   mode: RunMode;
   activeOverlay: ShellOverlayView | null;
   onOpenOverlay: (view: ShellOverlayView) => void;
-  onQuickAddNote: () => void;
 }
 
 function BottomBar({
   mode,
   activeOverlay,
   onOpenOverlay,
-  onQuickAddNote,
 }: BottomBarProps) {
   const itemBase =
     "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors";
@@ -342,20 +340,13 @@ function BottomBar({
           </button>
         ),
       )}
-      <button
-        type="button"
-        onClick={onQuickAddNote}
-        className="ml-auto whitespace-nowrap rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
-      >
-        + note
-      </button>
       {/* Present is a chrome-less external surface for OBS — always
           navigates, never an overlay. Visually muted so it doesn't compete
           with the in-game bottom-bar items. */}
       <NavLink
         to="/present"
         className={({ isActive }) =>
-          `whitespace-nowrap rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
+          `ml-auto whitespace-nowrap rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
             isActive
               ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
               : "border-zinc-300 bg-white text-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
@@ -442,14 +433,6 @@ export function ShellLayout() {
     }
   }
 
-  function quickAddNote() {
-    if (mode === "mapAnchored") {
-      setOverlay("notes");
-    } else {
-      navigate("/notes");
-    }
-  }
-
   // Bridge for descendant views that want to summon Combat without knowing
   // which shell they're in (e.g. MapV2's "Start combat in this room").
   const overlayApi: OverlayApi = {
@@ -488,7 +471,6 @@ export function ShellLayout() {
         mode={mode}
         activeOverlay={overlay}
         onOpenOverlay={openOverlay}
-        onQuickAddNote={quickAddNote}
       />
 
       <SheetDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />

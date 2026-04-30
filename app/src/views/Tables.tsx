@@ -41,6 +41,23 @@ export default function TablesView() {
 
   const active = id ? tables[id] : undefined;
 
+  // Collapsible category groups in the list. Default closed; auto-open the
+  // category containing the active table; force-open all categories while
+  // a search query is non-empty so filtered hits are visible.
+  const searching = query.trim().length > 0;
+  const [openCats, setOpenCats] = useState<Set<string>>(() => new Set());
+  useEffect(() => {
+    if (!id) return;
+    const cat = grouped.find((g) => g.keys.includes(id))?.category;
+    if (!cat) return;
+    setOpenCats((s) => {
+      if (s.has(cat)) return s;
+      const next = new Set(s);
+      next.add(cat);
+      return next;
+    });
+  }, [id, grouped]);
+
   return (
     <section className="mx-auto max-w-7xl">
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
@@ -56,33 +73,57 @@ export default function TablesView() {
           {grouped.length === 0 && (
             <p className="text-sm text-zinc-500">No tables match.</p>
           )}
-          {grouped.map((g) => (
-            <section key={g.category}>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                {g.category}{" "}
-                <span className="font-normal text-zinc-400">({g.keys.length})</span>
-              </h3>
-              <ul>
-                {g.keys.map((k) => (
-                  <li key={k}>
-                    <NavLink
-                      to={`/tables/${k}`}
-                      className={({ isActive }) =>
-                        `block rounded px-2 py-1 text-sm ${
-                          isActive
-                            ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                        }`
-                      }
-                    >
-                      <span className="font-mono text-xs text-zinc-400">{k}</span>{" "}
-                      {tables[k].title.replace(new RegExp(`^${k}\\s*-\\s*`, "i"), "")}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {grouped.map((g) => {
+            const isOpen = searching || openCats.has(g.category);
+            return (
+              <details
+                key={g.category}
+                open={isOpen}
+                onToggle={(e) => {
+                  if (searching) return; // forced open while filtering
+                  const browserOpen = e.currentTarget.open;
+                  setOpenCats((s) => {
+                    const next = new Set(s);
+                    if (browserOpen) next.add(g.category);
+                    else next.delete(g.category);
+                    return next;
+                  });
+                }}
+                className="group"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between rounded px-2 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                  <span className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="text-[0.7em] text-zinc-400 transition-transform group-open:rotate-90">
+                      ▸
+                    </span>
+                    {g.category}
+                    <span className="font-normal text-zinc-400">
+                      ({g.keys.length})
+                    </span>
+                  </span>
+                </summary>
+                <ul className="mt-1">
+                  {g.keys.map((k) => (
+                    <li key={k}>
+                      <NavLink
+                        to={`/tables/${k}`}
+                        className={({ isActive }) =>
+                          `block rounded px-2 py-1 text-sm ${
+                            isActive
+                              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                          }`
+                        }
+                      >
+                        <span className="font-mono text-xs text-zinc-400">{k}</span>{" "}
+                        {tables[k].title.replace(new RegExp(`^${k}\\s*-\\s*`, "i"), "")}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            );
+          })}
         </div>
 
         {/* Detail */}
