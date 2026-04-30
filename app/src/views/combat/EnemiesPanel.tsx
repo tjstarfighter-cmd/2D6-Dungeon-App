@@ -55,7 +55,7 @@ export function EnemiesPanel({
       {enemies.length === 0 && !pickerOpen ? (
         <p className="text-sm text-zinc-500">No enemies. Add one to start.</p>
       ) : (
-        <div className={`grid gap-3 sm:grid-cols-2 ${pickerOpen ? "mt-4" : ""}`}>
+        <div className={`space-y-2 ${pickerOpen ? "mt-4" : ""}`}>
           {enemies.map((e) => (
             <EnemyCard
               key={e.id}

@@ -12,8 +12,10 @@ dist
 dist-ssr
 *.local
 
-# Card images synced from ../docs/ by scripts/sync-card-assets.mjs
-public/cards/
+# Card images live in `public/cards/` and ARE committed so the GitHub
+# Pages deploy can serve them without access to the gitignored docs/
+# source folder. The sync script stays as a convenience for refreshing
+# them locally when source PNGs change.
 
 # Editor directories and files
 .vscode/*
