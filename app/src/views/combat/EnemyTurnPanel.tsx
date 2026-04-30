@@ -19,11 +19,19 @@ import {
   type EnemyManoeuvreOption,
 } from "@/lib/combat";
 import { DICE_FACES } from "@/lib/tables";
+import type { CreatureManoeuvre } from "@/types/creatures";
 
 import { DeflectionPanel } from "./DeflectionPanel";
 import { DiePicker } from "./DiePicker";
+import { ShiftBreakdown } from "./PlayerTurnPanel";
 
-export function EnemyTurnPanel({ characterId }: { characterId: string }) {
+type ListVariant = "idle" | "mishap" | "prime" | "normal";
+
+export function EnemyTurnPanel({
+  characterId,
+}: {
+  characterId: string;
+}) {
   const { active, update } = useCharacters();
   const { encounter, updateEnemy } = useEncounter();
   const creaturesData = useCreaturesData();
@@ -31,23 +39,16 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
   const enemies = encounter?.enemies ?? [];
   const round = encounter?.round ?? 1;
   const outnumberedEnabled = !!encounter?.outnumberedEnabled;
-  // `encounter` is reference-stable from the store until something mutates,
-  // so the filter is effectively gated by structural changes to the enemy
-  // list — no need for useMemo.
   const liveEnemies = enemies.filter((e) => e.hp.current > 0);
-  // Multi-creature turn flow (Core Rules p.26): "you decide the order of the
-  // enemies' attacks." We track per-enemy attackedRound and gate the picker
-  // to enemies still pending this round.
   const pendingEnemies = liveEnemies.filter((e) => e.attackedRound !== round);
   const allAttacked = liveEnemies.length > 0 && pendingEnemies.length === 0;
 
   const [selectedEnemyId, setSelectedEnemyId] = useState<string>(
     pendingEnemies[0]?.id ?? "",
   );
+  // Per-round manual shift override for the attacking enemy.
+  const [manualShift, setManualShift] = useState(0);
 
-  // Keep the selection in sync if the chosen enemy dies, attacks, or
-  // disappears. Auto-advance to the next pending live enemy so the player
-  // works through them one at a time.
   useEffect(() => {
     const stillPending = pendingEnemies.find((e) => e.id === selectedEnemyId);
     if (!stillPending) {
@@ -64,27 +65,18 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
   }, [creaturesData, selectedCardId]);
   const auto = selectedCreature !== null;
 
-  // Dice + manoeuvre + damage state.
   const [primary, setPrimary] = useState<number | null>(null);
   const [secondary, setSecondary] = useState<number | null>(null);
   const [chosen, setChosen] = useState<EnemyManoeuvreOption | null>(null);
   const [rolls, setRolls] = useState<number[]>([]);
   const [manualDamage, setManualDamage] = useState(1);
 
-  // Per Core Rules: Fatigue Die is a deterministic timer (= round, capped at
-  // 6) and grants +1/+2/+3 SP at fatigue 4/5/6 to *both* combatants.
   const fatigueDie = fatigueDieValue(round);
   const fatigueBonus = fatigueShiftBonus(round);
   const fatigueActive = fatigueBonus > 0;
 
-  // Per Core Rules: "You can only deflect damage off one piece of armour
-  // once per attack." We track which single armour piece (by index) the
-  // helper has applied; null means none.
   const [appliedPieceIdx, setAppliedPieceIdx] = useState<number | null>(null);
 
-  // Reset state when the active character or attacking enemy changes. We
-  // don't reset appliedPieceIdx here — the deflections-derived effect below
-  // handles it via the cleared dice cascade.
   useEffect(() => {
     setPrimary(null);
     setSecondary(null);
@@ -93,9 +85,11 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     setManualDamage(1);
   }, [characterId, selectedEnemyId]);
 
-  // Outnumbered (Core Rules p.32, optional): scales by position in the live
-  // enemies list (defeated enemies don't count, since the rule scales with
-  // foes still in play). The first live enemy gets +1, the rest +2.
+  // Reset manual shift override on round / enemy switch.
+  useEffect(() => {
+    setManualShift(0);
+  }, [round, selectedEnemyId]);
+
   const liveIndex = liveEnemies.findIndex((e) => e.id === selectedEnemyId);
   const outnumberedBonus = outnumberedShiftBonus(
     Math.max(0, liveIndex),
@@ -103,10 +97,14 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     outnumberedEnabled,
   );
   const enemyShift = selectedEnemy?.shift ?? 0;
-  const effectiveEnemyShift = enemyShift + fatigueBonus + outnumberedBonus;
+  const effectiveEnemyShift = Math.max(
+    0,
+    enemyShift + fatigueBonus + outnumberedBonus + manualShift,
+  );
 
   const isMishap = primary === 1 && secondary === 1;
   const isPrime = primary === 6 && secondary === 6;
+  const dicePresent = primary !== null && secondary !== null;
 
   const options = useMemo(() => {
     if (!selectedCreature || primary === null || secondary === null) return [];
@@ -119,6 +117,41 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     );
   }, [selectedCreature, primary, secondary, effectiveEnemyShift, isMishap, isPrime]);
 
+  // Always-visible enemy manoeuvre list. When dice aren't entered we synthesize
+  // sentinel options so the list still renders the creature's threat profile.
+  const visibleManoeuvres = useMemo<EnemyManoeuvreOption[]>(() => {
+    if (!auto || !selectedCreature) return [];
+    if (!dicePresent || isMishap) {
+      return selectedCreature.manoeuvres.map((m, i) => ({
+        index: i,
+        manoeuvre: m,
+        cost: dicePresent ? Infinity : 0,
+        exact: false,
+        affordable: false,
+        maxDamage: parseMaxDamage(m),
+      }));
+    }
+    if (isPrime) {
+      return selectedCreature.manoeuvres.map((m, i) => ({
+        index: i,
+        manoeuvre: m,
+        cost: 0,
+        exact: true,
+        affordable: true,
+        maxDamage: parseMaxDamage(m),
+      }));
+    }
+    return options;
+  }, [auto, selectedCreature, dicePresent, isMishap, isPrime, options]);
+
+  const variant: ListVariant = !dicePresent
+    ? "idle"
+    : isMishap
+      ? "mishap"
+      : isPrime
+        ? "prime"
+        : "normal";
+
   // Auto-pick the strongest affordable option as a default.
   useEffect(() => {
     if (chosen) return;
@@ -126,13 +159,11 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     if (best) setChosen(best);
   }, [options, chosen]);
 
-  // Publishers for the /present/roll OBS overlay.
   const {
     publishPending: publishRollPending,
     publishResolved: publishRollResolved,
   } = useCurrentRoll();
 
-  // Enemy D66 publish — fires whenever both dice are set.
   const enemyName = selectedEnemy?.name || "Enemy";
   useEffect(() => {
     if (primary === null || secondary === null) return;
@@ -182,10 +213,6 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     );
   }, [armour, primary, secondary]);
 
-  // Auto-pick the strongest fully-matching piece. Per Core Rules: "if two
-  // pieces of armour match the successful attack Manoeuvre, select the piece
-  // of armour you would prefer to use. This would more than likely be the
-  // one that deducts the most damage." User can override below.
   useEffect(() => {
     if (deflections.length === 0) {
       setAppliedPieceIdx(null);
@@ -203,36 +230,25 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
   }, [deflections]);
 
   const formula = chosen ? parseDamageFormula(chosen.manoeuvre.formula) : null;
-
-  // Don't surface damage from a positive modifier until the dice are rolled.
   const rollsReady = formula ? rollsComplete(rolls, formula) : true;
   const manoeuvreDamage = formula && rollsReady ? applySixRule(rolls, formula.modifier) : 0;
 
-  // Pick which damage value drives the apply button.
   let computedDamage: number;
   if (auto) {
     if (isMishap || isPrime) {
-      // Mishap and Prime effects vary per creature — let the user enter the
-      // resulting damage manually after reading the card text.
       computedDamage = manualDamage;
     } else if (chosen?.affordable) {
       computedDamage = manoeuvreDamage;
     } else {
-      // No reachable manoeuvre — Core Rules say the attack misses.
       computedDamage = 0;
     }
   } else {
     computedDamage = manualDamage;
   }
 
-  // The Apply button should be inert until the chosen manoeuvre's damage
-  // dice have been rolled. Mishap/Prime/manual paths don't go through a
-  // formula, so they're never gated.
   const applyBlocked =
     auto && !isMishap && !isPrime && chosen?.affordable && !!formula && !rollsReady;
 
-  // Core Rules: armour cannot deflect Prime damage even if the dice would
-  // normally match. Otherwise: at most one piece deflects per attack.
   const totalDeflection =
     isPrime || appliedPieceIdx === null
       ? 0
@@ -249,9 +265,6 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     options.length > 0 &&
     !options.some((o) => o.affordable);
 
-  // Enemy damage publish — pending while waiting on dice, resolved once
-  // they're filled in. Skipped for Mishap/Prime/manual paths (those don't
-  // go through a parseable formula).
   const enemyManoeuvreName = chosen?.manoeuvre.name ?? "";
   const enemyFormulaDisplay = formula
     ? `${formula.dice}D${formula.sides}${
@@ -351,15 +364,11 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
     update(active.id, {
       hp: { ...active.hp, current: Math.max(0, active.hp.current - finalDamage) },
     });
-    // Mark this enemy as having taken their turn this round so the picker
-    // advances. Skip if there's no selection (shouldn't happen — the apply
-    // button gates on selection — but be defensive).
     if (selectedEnemyId) {
       updateEnemy(selectedEnemyId, { attackedRound: round });
     }
     clearRoll();
     setManualDamage(1);
-    // appliedPieceIdx clears via the deflections effect when dice go null.
   }
 
   if (!active) return null;
@@ -393,24 +402,10 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
           {liveEnemies.length} enemies attacked. You decide the order.
         </p>
       )}
+
       {pendingEnemies.length === 1 && liveEnemies.length === 1 ? (
-        <p className="text-sm text-zinc-500">
+        <p className="mb-3 text-sm">
           <strong>{selectedEnemy?.name || "Enemy"}</strong> attacks
-          {auto && (
-            <>
-              {" "}· Shift {enemyShift}
-              {(fatigueActive || outnumberedBonus > 0) && (
-                <span className="text-amber-700 dark:text-amber-400">
-                  {" "}(
-                  {fatigueActive && `+ fatigue ${fatigueBonus}`}
-                  {fatigueActive && outnumberedBonus > 0 && " "}
-                  {outnumberedBonus > 0 && `+ outnumbered ${outnumberedBonus}`}
-                  {" → "}
-                  {effectiveEnemyShift})
-                </span>
-              )}
-            </>
-          )}
           {!auto && (
             <span className="text-zinc-500">
               {" "}· manual damage entry
@@ -419,37 +414,54 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
           )}
         </p>
       ) : (
-        <Field label="Attacking enemy">
-          <select
-            value={selectedEnemyId}
-            onChange={(e) => setSelectedEnemyId(e.target.value)}
-            className="block w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-          >
-            {pendingEnemies.map((e) => {
-              const idx = liveEnemies.findIndex((x) => x.id === e.id);
-              const bonus = outnumberedShiftBonus(
-                Math.max(0, idx),
-                liveEnemies.length,
-                outnumberedEnabled,
-              );
-              return (
-                <option key={e.id} value={e.id}>
-                  {e.name || "(unnamed)"} — {e.hp.current}/{e.hp.max} HP
-                  {bonus > 0 && ` (Outnumbered +${bonus})`}
-                </option>
-              );
-            })}
-          </select>
-        </Field>
+        <div className="mb-3">
+          <Field label="Attacking enemy">
+            <select
+              value={selectedEnemyId}
+              onChange={(e) => setSelectedEnemyId(e.target.value)}
+              className="block w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            >
+              {pendingEnemies.map((e) => {
+                const idx = liveEnemies.findIndex((x) => x.id === e.id);
+                const bonus = outnumberedShiftBonus(
+                  Math.max(0, idx),
+                  liveEnemies.length,
+                  outnumberedEnabled,
+                );
+                return (
+                  <option key={e.id} value={e.id}>
+                    {e.name || "(unnamed)"} — {e.hp.current}/{e.hp.max} HP
+                    {bonus > 0 && ` (Outnumbered +${bonus})`}
+                  </option>
+                );
+              })}
+            </select>
+          </Field>
+        </div>
       )}
 
-      <p className="mt-2 text-sm text-zinc-500">
+      {auto && (
+        <ShiftBreakdown
+          base={enemyShift}
+          fatigue={fatigueBonus}
+          fatigueDie={fatigueDie}
+          fatigueLabel="Fatigue"
+          secondaryBonus={outnumberedBonus}
+          secondaryActive={outnumberedBonus > 0}
+          secondaryLabel="Outnumb."
+          manual={manualShift}
+          onManual={setManualShift}
+          total={effectiveEnemyShift}
+        />
+      )}
+
+      <p className="mb-3 text-sm text-zinc-500">
         {auto
           ? "Enter the rolled D66 for the enemy. The helper picks the best Manoeuvre, rolls damage, and applies armour deflection."
           : "Enter the enemy's attack dice for the deflection helper, or just type the damage your character takes if you'd rather do the math yourself."}
       </p>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <DiePicker
           label="Enemy primary"
           value={primary}
@@ -481,22 +493,14 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
               {DICE_FACES[primary - 1]} {DICE_FACES[secondary - 1]}
             </strong>{" "}
             <span className="text-zinc-500">
-              ({primary}, {secondary}) · Shift available: {effectiveEnemyShift}
-              {(fatigueActive || outnumberedBonus > 0) && (
-                <span className="text-amber-700 dark:text-amber-400">
-                  {" "}(base {enemyShift}
-                  {fatigueActive && ` + fatigue ${fatigueBonus}`}
-                  {outnumberedBonus > 0 && ` + outnumbered ${outnumberedBonus}`}
-                  )
-                </span>
-              )}
+              ({primary}, {secondary})
             </span>
           </span>
         )}
       </div>
 
-      {auto && fatigueActive && (
-        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-2 text-sm dark:border-amber-800 dark:bg-amber-950/30">
+      {auto && fatigueActive && variant !== "idle" && (
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-2 text-xs dark:border-amber-800 dark:bg-amber-950/30">
           <span className="font-semibold text-amber-900 dark:text-amber-200">
             Fatigue Die {fatigueDie}
           </span>
@@ -537,12 +541,13 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
         </div>
       )}
 
-      {auto && primary !== null && secondary !== null && !isMishap && !isPrime && (
+      {auto && (
         <EnemyManoeuvreList
-          options={options}
+          options={visibleManoeuvres}
           chosen={chosen}
-          onPick={pickManoeuvre}
+          variant={variant}
           shiftAvailable={effectiveEnemyShift}
+          onPick={pickManoeuvre}
         />
       )}
 
@@ -644,68 +649,100 @@ export function EnemyTurnPanel({ characterId }: { characterId: string }) {
   );
 }
 
+function parseMaxDamage(m: CreatureManoeuvre): number | null {
+  const f = parseDamageFormula(m.formula);
+  return f ? f.dice * f.sides + f.modifier : null;
+}
+
 function EnemyManoeuvreList({
   options,
   chosen,
-  onPick,
+  variant,
   shiftAvailable,
+  onPick,
 }: {
   options: EnemyManoeuvreOption[];
   chosen: EnemyManoeuvreOption | null;
-  onPick: (opt: EnemyManoeuvreOption) => void;
+  variant: ListVariant;
   shiftAvailable: number;
+  onPick: (opt: EnemyManoeuvreOption) => void;
 }) {
   if (options.length === 0) return null;
   return (
-    <div className="mt-3">
-      <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-        Enemy manoeuvre options
-      </h3>
+    <div className="mt-3 space-y-1">
+      <div className="mb-1 flex items-center justify-between">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          Enemy manoeuvres
+        </h3>
+        {variant === "idle" && (
+          <span className="text-xs text-zinc-400">
+            Roll the D66 to see matches
+          </span>
+        )}
+      </div>
       <ul className="space-y-1">
         {options.map((o) => {
           const isPicked = chosen?.index === o.index;
-          const cls = isPicked
-            ? "border-rose-500 bg-rose-50 dark:border-rose-700 dark:bg-rose-950/40"
-            : o.exact
-              ? "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30"
-              : !o.affordable
-                ? "border-zinc-200 bg-zinc-50 opacity-60 dark:border-zinc-800 dark:bg-zinc-950/30"
-                : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900";
+          const exact =
+            variant === "prime" || (variant === "normal" && o.exact);
+          const affordable = variant === "prime" || o.affordable;
+
+          let cls: string;
+          if (variant === "idle") {
+            cls = "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900";
+          } else if (variant === "mishap") {
+            cls = "border-zinc-200 bg-zinc-50 opacity-50 dark:border-zinc-800 dark:bg-zinc-950/30";
+          } else if (isPicked) {
+            cls = "border-rose-500 bg-rose-50 dark:border-rose-700 dark:bg-rose-950/40";
+          } else if (exact) {
+            cls = "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30";
+          } else if (!affordable) {
+            cls = "border-zinc-200 bg-zinc-50 opacity-60 dark:border-zinc-800 dark:bg-zinc-950/30";
+          } else {
+            cls = "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900";
+          }
+
+          const showUse = variant === "prime" || variant === "normal";
+
           return (
             <li key={o.index} className={`rounded-md border p-2 ${cls}`}>
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-semibold">{o.manoeuvre.name}</span>
+                <div className="flex min-w-0 items-baseline gap-2">
+                  <span className="truncate font-semibold">{o.manoeuvre.name}</span>
                   <span className="font-mono text-xs text-zinc-500">
                     {DICE_FACES[o.manoeuvre.primary - 1]}{" "}
                     {DICE_FACES[o.manoeuvre.secondary - 1]}
                   </span>
-                  <span className="text-xs text-zinc-500">{o.manoeuvre.formula}</span>
+                  <span className="truncate text-xs text-zinc-500">
+                    {o.manoeuvre.formula}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  {o.exact ? (
+                <div className="flex shrink-0 items-center gap-2 text-sm">
+                  {variant === "idle" || variant === "mishap" ? null : exact ? (
                     <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-900 dark:bg-amber-800 dark:text-amber-100">
                       EXACT
                     </span>
                   ) : (
                     <span
                       className={`text-xs font-medium ${
-                        o.affordable
+                        affordable
                           ? "text-zinc-600 dark:text-zinc-400"
                           : "text-red-600"
                       }`}
                     >
                       {o.cost} SP
-                      {!o.affordable ? ` (have ${shiftAvailable})` : ""}
+                      {!affordable ? ` (have ${shiftAvailable})` : ""}
                     </span>
                   )}
-                  <Button
-                    onClick={() => onPick(o)}
-                    variant={isPicked ? "primary" : "default"}
-                    disabled={!o.affordable}
-                  >
-                    Use
-                  </Button>
+                  {showUse && (
+                    <Button
+                      onClick={() => onPick(o)}
+                      variant={isPicked ? "primary" : "default"}
+                      disabled={!affordable}
+                    >
+                      Use
+                    </Button>
+                  )}
                 </div>
               </div>
             </li>
