@@ -80,6 +80,21 @@ export interface UseEncounterResult {
   updateEnemy: (enemyId: string, patch: Partial<EnemyState>) => void;
   damageEnemy: (enemyId: string, amount: number) => void;
   nextRound: () => void;
+  setOutnumbered: (enabled: boolean) => void;
+}
+
+// Detect a round-1 kill in a multi-enemy fight and stamp r1Kill so that
+// Fearful Momentum (+2 player Shift in round 2 only) can fire. Used by both
+// damageEnemy and updateEnemy paths since the player can drop an enemy via
+// Quick damage or by editing HP directly.
+function withR1KillDetected(prev: Encounter, next: Encounter): Encounter {
+  if (next.r1Kill || next.round !== 1) return next;
+  const prevAlive = prev.enemies.filter((e) => e.hp.current > 0).length;
+  const nextAlive = next.enemies.filter((e) => e.hp.current > 0).length;
+  if (prevAlive > 1 && nextAlive < prevAlive) {
+    return { ...next, r1Kill: true };
+  }
+  return next;
 }
 
 export function useEncounter(): UseEncounterResult {
@@ -134,9 +149,10 @@ export function useEncounter(): UseEncounterResult {
   const updateEnemy = useCallback(
     (enemyId: string, patch: Partial<EnemyState>) => {
       if (!store) return;
-      setStore({
-        ...store,
-        enemies: store.enemies.map((e) =>
+      const prev = store;
+      const next: Encounter = {
+        ...prev,
+        enemies: prev.enemies.map((e) =>
           e.id === enemyId
             ? {
                 ...e,
@@ -145,16 +161,18 @@ export function useEncounter(): UseEncounterResult {
               }
             : e,
         ),
-      });
+      };
+      setStore(withR1KillDetected(prev, next));
     },
     [],
   );
 
   const damageEnemy = useCallback((enemyId: string, amount: number) => {
     if (!store) return;
-    setStore({
-      ...store,
-      enemies: store.enemies.map((e) =>
+    const prev = store;
+    const next: Encounter = {
+      ...prev,
+      enemies: prev.enemies.map((e) =>
         e.id === enemyId
           ? {
               ...e,
@@ -162,12 +180,18 @@ export function useEncounter(): UseEncounterResult {
             }
           : e,
       ),
-    });
+    };
+    setStore(withR1KillDetected(prev, next));
   }, []);
 
   const nextRound = useCallback(() => {
     if (!store) return;
     setStore({ ...store, round: store.round + 1 });
+  }, []);
+
+  const setOutnumbered = useCallback((enabled: boolean) => {
+    if (!store) return;
+    setStore({ ...store, outnumberedEnabled: enabled });
   }, []);
 
   return {
@@ -179,5 +203,6 @@ export function useEncounter(): UseEncounterResult {
     updateEnemy,
     damageEnemy,
     nextRound,
+    setOutnumbered,
   };
 }

@@ -149,6 +149,39 @@ export function fatigueShiftBonus(round: number): number {
   return 0;
 }
 
+// ---- Multi-creature combat -----------------------------------------------
+
+/**
+ * Outnumbered Shift bonus per Core Rules p.32 (optional difficulty rule).
+ *
+ * The published example (3 thugs → 1st +1, 2nd +2, 3rd +2) yields the rule
+ * "first live enemy +1, every other live enemy +2." A solo enemy gets 0
+ * regardless of the toggle.
+ *
+ * Index is the position in the live-enemies array — defeated enemies
+ * shouldn't shift the count, since the rule scales with foes still in play.
+ */
+export function outnumberedShiftBonus(
+  liveIndex: number,
+  totalLive: number,
+  enabled: boolean,
+): number {
+  if (!enabled) return 0;
+  if (totalLive <= 1) return 0;
+  return liveIndex === 0 ? 1 : 2;
+}
+
+/**
+ * Fearful Momentum bonus per Core Rules p.26: kill an enemy in round 1 of a
+ * multi-creature fight, gain +2 Shift in round 2 only.
+ *
+ * The "multi-creature" gate is enforced upstream when `r1Kill` is set —
+ * useEncounter only flags it when an enemy dies while >1 were alive.
+ */
+export function fearfulMomentumBonus(round: number, r1Kill: boolean): number {
+  return round === 2 && r1Kill ? 2 : 0;
+}
+
 // ---- Enemy interrupts -----------------------------------------------------
 
 export interface InterruptTrigger {

@@ -16,6 +16,11 @@ export interface EnemyState {
    *  Stat. Per Core Rules, "a creature can only use one Interrupt per round,
    *  even if both match." */
   interruptUsedRound?: number;
+  /** The encounter round in which this enemy already took their attack.
+   *  Compared against `encounter.round` to gate the EnemyTurnPanel select
+   *  so the player works through enemies one at a time and can't double-tap
+   *  the same enemy in a multi-creature round. */
+  attackedRound?: number;
 }
 
 export interface Encounter {
@@ -38,4 +43,11 @@ export interface Encounter {
    *  in the end-combat prompt so the user sees "Mark Library cleared?"
    *  even if the region is currently labelless or has been renamed. */
   roomLabel?: string;
+  /** Optional Outnumbered difficulty rule (Core Rules p.32). When true,
+   *  enemies past the first gain extra Shift in EnemyTurnPanel. */
+  outnumberedEnabled?: boolean;
+  /** Set true when any enemy is killed in round 1 of a fight that had
+   *  multiple enemies alive at the time of the kill. Drives Fearful
+   *  Momentum (+2 player Shift in round 2 only) per Core Rules p.26. */
+  r1Kill?: boolean;
 }

@@ -1057,32 +1057,25 @@ function MapV2Editor({
                     pointerEvents="none"
                   />
                   {label && (
-                    <g pointerEvents="none">
-                      {/* Halo for legibility against wall colors */}
-                      <text
-                        x={cx}
-                        y={cy - CELL * 0.65}
-                        textAnchor="middle"
-                        className="fill-white dark:fill-zinc-950"
-                        fontSize={CELL * 0.55}
-                        fontWeight={700}
-                        stroke="currentColor"
-                        strokeWidth={3}
-                        paintOrder="stroke"
-                      >
-                        {label}
-                      </text>
-                      <text
-                        x={cx}
-                        y={cy - CELL * 0.65}
-                        textAnchor="middle"
-                        className="fill-zinc-900 dark:fill-zinc-100"
-                        fontSize={CELL * 0.55}
-                        fontWeight={700}
-                      >
-                        {label}
-                      </text>
-                    </g>
+                    // Single text + canvas-matched halo so labels feel etched
+                    // into the map rather than stamped on top. Earlier version
+                    // stacked white-fill + dark-stroke under a zinc-900 fill,
+                    // producing a three-tone "sticker" against region tints.
+                    <text
+                      x={cx}
+                      y={cy - CELL * 0.65}
+                      textAnchor="middle"
+                      fontSize={CELL * 0.55}
+                      fontWeight={600}
+                      paintOrder="stroke"
+                      strokeWidth={2.5}
+                      strokeLinejoin="round"
+                      className="fill-zinc-900 stroke-zinc-100 dark:fill-zinc-100 dark:stroke-zinc-950"
+                      style={{ letterSpacing: "0.02em" }}
+                      pointerEvents="none"
+                    >
+                      {label}
+                    </text>
                   )}
                 </g>
               );
