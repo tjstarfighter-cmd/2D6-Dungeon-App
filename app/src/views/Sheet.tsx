@@ -1,9 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useMemo, useRef, useState } from "react";
 
-import type { Character } from "@/types/character";
+import type { Character, ManoeuvreSlot } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
+import { preloadTables, useTablesData } from "@/data/lazy";
 import {
   GODS,
   LARGE_ITEM_SLOTS,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/character";
 import { formatDiceSet, parseDiceSet } from "@/lib/combat";
 import { DICE_FACES } from "@/lib/tables";
+import type { TableRow } from "@/types/tables";
 import { CharacterSwitcher } from "@/components/CharacterSwitcher";
 import { NotesPanel } from "@/components/NotesPanel";
 import {
@@ -304,18 +306,28 @@ function IdentityAndStats({ character, onPatch }: SectionProps) {
 // -- Manoeuvres -------------------------------------------------------------
 
 function ManoeuvresCard({ character, onPatch }: SectionProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  // Warm the tables chunk so opening the picker doesn't suspend visibly.
+  useEffect(() => {
+    preloadTables();
+  }, []);
+
   function setRow(i: number, patch: Partial<Character["manoeuvres"][number]>) {
     const next = character.manoeuvres.slice();
     next[i] = { ...next[i], ...patch };
     onPatch({ manoeuvres: next });
   }
-  function add() {
+  function addBlank() {
     onPatch({
       manoeuvres: [
         ...character.manoeuvres,
         { name: "", diceSet: "", modifier: "" },
       ],
     });
+  }
+  function addFromTable(slot: ManoeuvreSlot) {
+    onPatch({ manoeuvres: [...character.manoeuvres, slot] });
   }
   function remove(i: number) {
     onPatch({ manoeuvres: character.manoeuvres.filter((_, idx) => idx !== i) });
@@ -326,15 +338,48 @@ function ManoeuvresCard({ character, onPatch }: SectionProps) {
       title="Manoeuvres"
       collapsible
       action={
-        <Button onClick={add} title="Add a manoeuvre">
-          + Add
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={addBlank} title="Add a blank manoeuvre row">
+            + Custom
+          </Button>
+          <Button
+            variant={pickerOpen ? "primary" : "default"}
+            onClick={() => setPickerOpen((o) => !o)}
+            title="Pick from the Weapon Manoeuvres table"
+          >
+            {pickerOpen ? "Close picker" : "+ From table"}
+          </Button>
+        </div>
       }
     >
+      {pickerOpen && (
+        <Suspense
+          fallback={
+            <p className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+              Loading manoeuvres…
+            </p>
+          }
+        >
+          <ManoeuvrePicker
+            weapon={character.weapon}
+            level={character.level}
+            existing={character.manoeuvres}
+            onPick={(slot) => {
+              addFromTable(slot);
+              setPickerOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
+
       {character.manoeuvres.length === 0 ? (
-        <EmptyRow text="No manoeuvres yet." />
+        !pickerOpen && <EmptyRow text="No manoeuvres yet." />
       ) : (
-        <div className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm">
+        <div
+          className={`grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm ${
+            pickerOpen ? "mt-3" : ""
+          }`}
+        >
           <HeaderCell>Name</HeaderCell>
           <HeaderCell>Dice Set</HeaderCell>
           <HeaderCell>Modifier</HeaderCell>
@@ -364,6 +409,193 @@ function ManoeuvresCard({ character, onPatch }: SectionProps) {
         </div>
       )}
     </Card>
+  );
+}
+
+// Picker drawer that reads WMT1, filters to the character's weapon, and lists
+// Level 1..N manoeuvres (N capped at character level). Roll button picks a
+// random row from the visible pool. Clicking any row appends it to the sheet.
+function ManoeuvrePicker({
+  weapon,
+  level,
+  existing,
+  onPick,
+}: {
+  weapon: string;
+  level: number;
+  existing: ManoeuvreSlot[];
+  onPick: (slot: ManoeuvreSlot) => void;
+}) {
+  const tables = useTablesData();
+  const [selectedWeapon, setSelectedWeapon] = useState(weapon || "");
+  const [rolledKey, setRolledKey] = useState<string | null>(null);
+  const rolledRef = useRef<HTMLLIElement | null>(null);
+
+  const wmt1 = tables.WMT1;
+
+  const weapons = useMemo<string[]>(() => {
+    if (!wmt1) return [];
+    return wmt1.data
+      .map((row) => String(row.WEAPON ?? ""))
+      .filter((w) => w.length > 0);
+  }, [wmt1]);
+
+  // If the character's weapon string matches a table entry case-insensitively,
+  // prefer that over whatever the user last clicked in the picker.
+  const matchedFromCharacter = useMemo(() => {
+    const w = (weapon || "").toLowerCase().trim();
+    if (!w) return "";
+    return weapons.find((x) => x.toLowerCase() === w) ?? "";
+  }, [weapons, weapon]);
+
+  const effectiveWeapon =
+    matchedFromCharacter || selectedWeapon || weapons[0] || "";
+
+  const weaponRow = useMemo(
+    () => wmt1?.data.find((r) => r.WEAPON === effectiveWeapon),
+    [wmt1, effectiveWeapon],
+  );
+
+  // Levels in the table are "Level 1 Manoeuvres", "Level 2 Manoeuvres", …
+  // Cap at character level so a L1 character can't browse L3 tables.
+  const groups = useMemo(() => {
+    if (!weaponRow) return [];
+    const out: { level: number; rows: TableRow[] }[] = [];
+    for (let i = 1; i <= level; i++) {
+      const cell = weaponRow[`Level ${i} Manoeuvres`];
+      if (Array.isArray(cell)) out.push({ level: i, rows: cell as TableRow[] });
+    }
+    return out;
+  }, [weaponRow, level]);
+
+  const flatRows = useMemo(
+    () => groups.flatMap((g) => g.rows.map((r, i) => ({ ...r, _key: `L${g.level}-${i}` }))),
+    [groups],
+  );
+
+  function rollRandom() {
+    if (flatRows.length === 0) return;
+    const pick = flatRows[Math.floor(Math.random() * flatRows.length)];
+    setRolledKey(pick._key as string);
+    // Defer scroll until the highlight class is applied.
+    requestAnimationFrame(() => {
+      rolledRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function pickRow(row: TableRow) {
+    onPick({
+      name: String(row.Manoeuvre ?? ""),
+      diceSet: String(row.Roll ?? ""),
+      modifier: String(row.Damage ?? ""),
+    });
+  }
+
+  if (!wmt1) {
+    return (
+      <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+        Weapon Manoeuvres table (WMT1) not found in this codex.
+      </p>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <label className="inline-flex items-center gap-1 text-sm">
+          <span className="text-zinc-500">Weapon</span>
+          <select
+            value={effectiveWeapon}
+            onChange={(e) => setSelectedWeapon(e.target.value)}
+            disabled={!!matchedFromCharacter}
+            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm disabled:opacity-70 dark:border-zinc-700 dark:bg-zinc-900"
+            title={
+              matchedFromCharacter
+                ? "Driven by the Weapon field on the sheet — change it there to switch tables"
+                : "Pick a weapon to view its manoeuvres"
+            }
+          >
+            {weapons.length === 0 && <option value="">(no weapons)</option>}
+            {weapons.map((w) => (
+              <option key={w} value={w}>
+                {w}
+              </option>
+            ))}
+          </select>
+        </label>
+        <span className="text-xs text-zinc-500">
+          Showing Level 1–{level}
+        </span>
+        <Button
+          onClick={rollRandom}
+          disabled={flatRows.length === 0}
+          title="Roll a random manoeuvre across all visible levels"
+        >
+          🎲 Roll
+        </Button>
+        <span className="ml-auto text-xs text-zinc-500">
+          Click any row to add it
+        </span>
+      </div>
+
+      {groups.length === 0 ? (
+        <p className="text-sm text-zinc-500">
+          No manoeuvres available for {effectiveWeapon || "this weapon"} at
+          Level {level}.
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {groups.map((g) => (
+            <div key={g.level}>
+              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Level {g.level}
+              </h4>
+              <ul className="space-y-1">
+                {g.rows.map((row, i) => {
+                  const key = `L${g.level}-${i}`;
+                  const rolled = rolledKey === key;
+                  const name = String(row.Manoeuvre ?? "");
+                  const dup = existing.some(
+                    (m) => m.name.trim().toLowerCase() === name.toLowerCase(),
+                  );
+                  return (
+                    <li
+                      key={key}
+                      ref={rolled ? rolledRef : undefined}
+                      className={`rounded-md border ${
+                        rolled
+                          ? "border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40"
+                          : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => pickRow(row)}
+                        className="grid w-full grid-cols-[auto_auto_1fr_1fr_auto] items-baseline gap-x-3 gap-y-0.5 px-2 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      >
+                        <span className="font-mono text-base">{String(row.Roll ?? "")}</span>
+                        {rolled && (
+                          <span className="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-900 dark:bg-amber-800 dark:text-amber-100">
+                            Rolled
+                          </span>
+                        )}
+                        <span className={rolled ? "" : "col-start-3"}>
+                          <span className="font-medium">{name}</span>
+                        </span>
+                        <span className="text-xs text-zinc-500">{String(row.Damage ?? "")}</span>
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                          {dup ? "(already added)" : "+ Add"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
