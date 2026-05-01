@@ -41,7 +41,7 @@ import {
 import type { ExitType } from "@/types/map";
 
 const CELL = 24; // pixels per grid cell at 100% zoom
-const MIN_SCALE = 0.5;
+const MIN_SCALE = 0.2;
 const MAX_SCALE = 3.0;
 const ZOOM_STEP = 1.15;
 const SNAP_RADIUS = 0.45; // grid units (touch / mouse)
@@ -505,6 +505,22 @@ function MapV2Editor({
     setScale(1);
   }
 
+  function zoomFit() {
+    const container = containerRef.current;
+    if (!container) return;
+    const svgW = (map.gridW + 1) * CELL;
+    const svgH = (map.gridH + 1) * CELL;
+    const fitW = container.clientWidth / svgW;
+    const fitH = container.clientHeight / svgH;
+    const fit = Math.min(fitW, fitH);
+    if (!Number.isFinite(fit) || fit <= 0) return;
+    setScale(clamp(fit, MIN_SCALE, MAX_SCALE));
+    requestAnimationFrame(() => {
+      container.scrollLeft = 0;
+      container.scrollTop = 0;
+    });
+  }
+
   // ---- Coordinate helpers -------------------------------------------------
 
   function clientToGrid(
@@ -921,13 +937,16 @@ function MapV2Editor({
             ≡ Setup
           </Button>
           <div className="ml-auto flex items-center gap-1">
+            <Button onClick={zoomFit} title="Fit map to screen">
+              Fit
+            </Button>
             <Button onClick={() => zoomBy(1 / ZOOM_STEP)} title="Zoom out">
               −
             </Button>
             <button
               type="button"
               onClick={zoomReset}
-              title="Reset zoom"
+              title="Reset zoom to 100%"
               className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm font-mono dark:border-zinc-700 dark:bg-zinc-800"
             >
               {Math.round(scale * 100)}%
