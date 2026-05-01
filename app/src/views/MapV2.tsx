@@ -83,7 +83,7 @@ export default function MapV2View() {
   const { maps, active, create, update, remove, setActive } = useMapsV2();
 
   return (
-    <section className="mx-auto max-w-7xl space-y-4">
+    <section className="mx-auto min-w-0 max-w-7xl space-y-4">
       {!active ? (
         <>
           <Card>
@@ -895,9 +895,9 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <Card className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <ToolPalette
             tool={tool}
             onTool={setTool}
@@ -958,7 +958,7 @@ function MapV2Editor({
 
         <div
           ref={containerRef}
-          className="mt-3 max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
+          className="mt-3 min-w-0 max-w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <svg
             ref={svgRef}
