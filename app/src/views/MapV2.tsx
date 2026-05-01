@@ -911,9 +911,9 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="min-w-0 space-y-4">
-      <Card className="min-w-0">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
+    <div className="w-full min-w-0 space-y-4 overflow-x-hidden">
+      <Card className="w-full min-w-0 overflow-x-hidden">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2">
           <ToolPalette
             tool={tool}
             onTool={setTool}
