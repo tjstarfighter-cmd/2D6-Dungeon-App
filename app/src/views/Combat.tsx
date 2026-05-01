@@ -258,9 +258,9 @@ function CombatHeader({
         : "bg-rose-500";
   return (
     <Card>
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 grow">
-          <h2 className="flex flex-wrap items-center gap-2 text-xl font-semibold">
+      <header className="space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="flex min-w-0 flex-wrap items-center gap-2 text-xl font-semibold">
             Round {round}
             {roomLabel && (
               <span className="rounded bg-amber-100 px-2 py-0.5 align-middle text-xs font-medium text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
@@ -276,26 +276,31 @@ function CombatHeader({
               </span>
             )}
           </h2>
-          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
-            <span className="font-medium">{characterName}</span>
-            <span className="text-zinc-500">
-              Lvl {characterLevel} · Shift {characterShift} ·{" "}
-              {characterWeapon || "—"}
+          <Button onClick={onNextRound}>End round → {nextRoundNumber}</Button>
+        </div>
+
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
+          <span className="font-medium">{characterName}</span>
+          <span className="text-zinc-500">
+            Lvl {characterLevel} · Shift {characterShift} ·{" "}
+            {characterWeapon || "—"}
+          </span>
+          <span className="ml-auto inline-flex items-center gap-2 tabular-nums">
+            <span className="text-zinc-500">HP</span>
+            <span className="font-mono font-semibold">
+              {characterHpCurrent}/{characterHpBaseline}
             </span>
-            <span className="ml-auto inline-flex items-center gap-2 tabular-nums">
-              <span className="text-zinc-500">HP</span>
-              <span className="font-mono font-semibold">
-                {characterHpCurrent}/{characterHpBaseline}
-              </span>
-              <span className="h-1.5 w-20 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-                <span
-                  className={`block h-full ${hpBarClass}`}
-                  style={{ width: `${hpPct}%` }}
-                />
-              </span>
+            <span className="h-1.5 w-20 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+              <span
+                className={`block h-full ${hpBarClass}`}
+                style={{ width: `${hpPct}%` }}
+              />
             </span>
-          </div>
-          <label className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400">
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <label className="inline-flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400">
             <input
               type="checkbox"
               checked={outnumberedEnabled}
@@ -307,9 +312,6 @@ function CombatHeader({
               (optional, p.32 — extra enemy Shift)
             </span>
           </label>
-        </div>
-        <div className="flex flex-wrap items-end gap-2">
-          <Button onClick={onNextRound}>End round → {nextRoundNumber}</Button>
           <div className="flex items-end gap-1">
             <Field label="XP gained">
               <NumberField
