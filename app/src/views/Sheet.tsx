@@ -184,7 +184,7 @@ function IdentityAndStats({ character, onPatch }: SectionProps) {
     onPatch({ hp: { ...character.hp, ...patch } });
   }
   return (
-    <Card title="Identity & Stats">
+    <Card title="Identity & Stats" collapsible>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Field label="Name" className="sm:col-span-2">
           <TextField
@@ -312,6 +312,7 @@ function ManoeuvresCard({ character, onPatch }: SectionProps) {
   return (
     <Card
       title="Manoeuvres"
+      collapsible
       action={
         <Button onClick={add} title="Add a manoeuvre">
           + Add
@@ -373,6 +374,7 @@ function ArmourCard({ character, onPatch }: SectionProps) {
   return (
     <Card
       title="Armour"
+      collapsible
       action={<Button onClick={add}>+ Add</Button>}
     >
       {character.armour.length === 0 ? (
@@ -433,6 +435,8 @@ function ScrollsCard({ character, onPatch }: SectionProps) {
   return (
     <Card
       title="Magic Scrolls"
+      collapsible
+      defaultOpen={false}
       action={<Button onClick={add}>+ Add</Button>}
     >
       {character.scrolls.length === 0 ? (
@@ -492,6 +496,8 @@ function PotionsCard({ character, onPatch }: SectionProps) {
   return (
     <Card
       title="Magic Potions"
+      collapsible
+      defaultOpen={false}
       action={
         <span className="flex items-center gap-2 text-xs text-zinc-500">
           <span>{character.potions.length} / 5 carried</span>
@@ -536,7 +542,7 @@ function StatusCard({ character, onPatch }: SectionProps) {
     onPatch({ status: { ...character.status, ...patch } });
   }
   return (
-    <Card title="Status Conditions">
+    <Card title="Status Conditions" collapsible>
       <div className="space-y-3 text-sm">
         <div className="flex items-center gap-3">
           <span className="w-20 font-medium text-red-700 dark:text-red-400">
@@ -584,7 +590,7 @@ function ResourcesCard({ character, onPatch }: SectionProps) {
     onPatch({ coins: { ...character.coins, ...patch } });
   }
   return (
-    <Card title="Resources">
+    <Card title="Resources" collapsible defaultOpen={false}>
       <div className="grid grid-cols-3 gap-2">
         <Field label="GC (gold)">
           <NumberField
@@ -643,7 +649,7 @@ function GodsCard({ character, onPatch }: SectionProps) {
     onPatch({ favour: { ...character.favour, [god]: n } });
   }
   return (
-    <Card title="Favour of the Gods">
+    <Card title="Favour of the Gods" collapsible defaultOpen={false}>
       <div className="space-y-2 text-sm">
         {GODS.map((g) => (
           <div key={g} className="flex items-center justify-between gap-2">
@@ -671,7 +677,7 @@ function LegendCard({ character, onPatch }: SectionProps) {
     onPatch({ legendLevels: next });
   }
   return (
-    <Card title="Legend Status (levels cleared)">
+    <Card title="Legend Status (levels cleared)" collapsible defaultOpen={false}>
       <div className="flex flex-wrap gap-2">
         {Array.from({ length: LEGEND_LEVELS }).map((_, i) => {
           const on = character.legendLevels[i];
@@ -709,7 +715,7 @@ function BackpackCard({ character, onPatch }: SectionProps) {
     patchBackpack({ largeItems: next });
   }
   return (
-    <Card title="Backpack">
+    <Card title="Backpack" collapsible>
       <div>
         <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500">
           Large &amp; Heavy Items ({LARGE_ITEM_SLOTS} slots)

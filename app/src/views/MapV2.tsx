@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 
 import { useCharacters } from "@/hooks/useCharacters";
@@ -83,36 +84,38 @@ export default function MapV2View() {
 
   return (
     <section className="mx-auto max-w-7xl space-y-4">
-      <Card>
-        <MapV2Switcher
-          maps={maps}
-          active={active}
-          onSelect={setActive}
-          onCreate={(opts) => create(opts)}
-          onDelete={() => {
-            if (!active) return;
-            if (
-              confirm(
-                `Delete map "${active.name}"? This cannot be undone.`,
-              )
-            ) {
-              remove(active.id);
-            }
-          }}
-        />
-      </Card>
-
       {!active ? (
-        <Card>
-          <p className="text-sm text-zinc-500">
-            No map yet. Click <strong>+ New map</strong> to start a dot-grid
-            dungeon.
-          </p>
-        </Card>
+        <>
+          <Card>
+            <MapV2Switcher
+              maps={maps}
+              active={active}
+              onSelect={setActive}
+              onCreate={(opts) => create(opts)}
+              onDelete={() => {}}
+            />
+          </Card>
+          <Card>
+            <p className="text-sm text-zinc-500">
+              No map yet. Click <strong>+ New map</strong> to start a dot-grid
+              dungeon.
+            </p>
+          </Card>
+        </>
       ) : (
         <MapV2Editor
           map={active}
           onUpdate={(patch) => update(active.id, patch)}
+          maps={maps}
+          onSelectMap={setActive}
+          onCreateMap={(opts) => create(opts)}
+          onDeleteMap={() => {
+            if (
+              confirm(`Delete map "${active.name}"? This cannot be undone.`)
+            ) {
+              remove(active.id);
+            }
+          }}
         />
       )}
     </section>
@@ -285,9 +288,17 @@ function NewMapPicker({
 function MapV2Editor({
   map,
   onUpdate,
+  maps,
+  onSelectMap,
+  onCreateMap,
+  onDeleteMap,
 }: {
   map: MapDocV2;
   onUpdate: (patch: Partial<MapDocV2>) => void;
+  maps: MapDocV2[];
+  onSelectMap: (id: string) => void;
+  onCreateMap: (opts: { name?: string; gridW?: number; gridH?: number }) => void;
+  onDeleteMap: () => void;
 }) {
   const { active: activeCharacter } = useCharacters();
   const { encounter, start: startEncounter } = useEncounter();
@@ -296,6 +307,13 @@ function MapV2Editor({
   const [tool, setTool] = useState<Tool>("pan");
   const [exitType, setExitType] = useState<ExitType>("door");
   const [scale, setScale] = useState(1);
+  // Right-rail content moved into discoverable overlays so the map fills
+  // the page on phone. Setup holds the rare-touch stuff (switcher, name /
+  // level / ancestry, orphaned region notes); rollOpen is a small popover
+  // for the medium-frequency D66 + exits panel.
+  const [setupOpen, setSetupOpen] = useState(false);
+  const [rollOpen, setRollOpen] = useState(false);
+  const regionDetailRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -448,6 +466,16 @@ function MapV2Editor({
     container.addEventListener("wheel", onWheel, { passive: false });
     return () => container.removeEventListener("wheel", onWheel);
   }, []);
+
+  // Auto-scroll the region detail card into view when a pin is tapped, so
+  // the user doesn't have to chase it on phone where the panel sits below
+  // the map.
+  useEffect(() => {
+    if (!selectedHash) return;
+    const el = regionDetailRef.current;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedHash]);
 
   function zoomAtCursor(cursorX: number, cursorY: number, factor: number) {
     const container = containerRef.current;
@@ -867,35 +895,8 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
+    <div className="space-y-4">
       <Card className="min-w-0">
-        <header className="mb-3 flex flex-wrap items-end gap-2">
-          <Field label="Name" className="grow min-w-[10rem]">
-            <TextField
-              value={map.name}
-              onChange={(e) => onUpdate({ name: e.target.value })}
-            />
-          </Field>
-          <Field label="Level">
-            <NumberField
-              min={1}
-              max={10}
-              value={map.level}
-              onChange={(e) =>
-                onUpdate({ level: Number(e.target.value) || 1 })
-              }
-              className="w-20"
-            />
-          </Field>
-          <Field label="Ancestry">
-            <TextField
-              value={map.ancestry}
-              onChange={(e) => onUpdate({ ancestry: e.target.value })}
-              className="w-32"
-            />
-          </Field>
-        </header>
-
         <div className="flex flex-wrap items-center gap-2">
           <ToolPalette
             tool={tool}
@@ -905,6 +906,19 @@ function MapV2Editor({
           />
           <Button onClick={undo} disabled={undoCount === 0} title="Undo last stroke">
             ↶ Undo
+          </Button>
+          <Button
+            onClick={() => setRollOpen((o) => !o)}
+            title="Open the D66 + exits roll panel"
+            variant={rollOpen ? "primary" : "default"}
+          >
+            🎲 Roll
+          </Button>
+          <Button
+            onClick={() => setSetupOpen(true)}
+            title="Map switcher, name / level / ancestry, orphaned region notes"
+          >
+            ≡ Setup
           </Button>
           <div className="ml-auto flex items-center gap-1">
             <Button onClick={() => zoomBy(1 / ZOOM_STEP)} title="Zoom out">
@@ -924,14 +938,39 @@ function MapV2Editor({
           </div>
         </div>
 
+        {rollOpen && (
+          <div className="mt-3">
+            <RollPanel
+              lastRoll={lastRoll}
+              exitRoll={exitRoll}
+              targetTiles={targetTiles}
+              onRoom={(primary, secondary) =>
+                setLastRoll(classifyRoomRoll(primary, secondary))
+              }
+              onExits={(roll) => setExitRoll(roll)}
+              onUseAsTarget={() => {
+                if (lastRoll) setTargetTiles(lastRoll.tiles);
+              }}
+              onClearTarget={() => setTargetTiles(null)}
+            />
+          </div>
+        )}
+
         <div
           ref={containerRef}
           className="mt-3 max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <svg
             ref={svgRef}
-            width={(map.gridW + 1) * CELL}
-            height={(map.gridH + 1) * CELL}
+            // Scale the layout box (width/height) directly instead of using
+            // a CSS transform. SVG natively scales viewBox content to fit;
+            // the layout box now matches the visual extent so the
+            // container's scrollLeft/scrollTop bounds stay correct at all
+            // zoom levels (a CSS transform leaves the layout box at 100%,
+            // which clamped scroll above 1.0 zoom and made pinch-pan feel
+            // inconsistent). getScreenCTM-based pointer math is unaffected.
+            width={(map.gridW + 1) * CELL * scale}
+            height={(map.gridH + 1) * CELL * scale}
             viewBox={`-${CELL / 2} -${CELL / 2} ${(map.gridW + 1) * CELL} ${
               (map.gridH + 1) * CELL
             }`}
@@ -940,7 +979,6 @@ function MapV2Editor({
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             className="block touch-none select-none"
-            style={{ transform: `scale(${scale})`, transformOrigin: "0 0" }}
           >
             {/* Region tinting (persisted state only) */}
             {regions.regions.map((cells, i) => (
@@ -1149,21 +1187,8 @@ function MapV2Editor({
         </p>
       </Card>
 
-      <div className="space-y-4">
-        <RollPanel
-          lastRoll={lastRoll}
-          exitRoll={exitRoll}
-          targetTiles={targetTiles}
-          onRoom={(primary, secondary) =>
-            setLastRoll(classifyRoomRoll(primary, secondary))
-          }
-          onExits={(roll) => setExitRoll(roll)}
-          onUseAsTarget={() => {
-            if (lastRoll) setTargetTiles(lastRoll.tiles);
-          }}
-          onClearTarget={() => setTargetTiles(null)}
-        />
-        {selectedInfo ? (
+      {selectedInfo && (
+        <div ref={regionDetailRef}>
           <RegionDetailPanel
             info={selectedInfo}
             onPatch={(patch) => patchRegion(selectedInfo.hash, patch)}
@@ -1188,30 +1213,110 @@ function MapV2Editor({
               openCombat();
             }}
           />
-        ) : (
-          <Card title="Region">
-            <p className="text-sm text-zinc-500">
-              Tap a pin in an enclosed region to edit its label, type,
-              encounter and treasure.{" "}
-              {regionInfos.length === 0
-                ? "No regions yet — draw walls to enclose one."
-                : `${regionInfos.length} detected.`}
-            </p>
-          </Card>
-        )}
-        {orphanedMeta.length > 0 && (
-          <Card title="Orphaned region notes">
-            <p className="text-xs text-zinc-500">
-              {orphanedMeta.length} region note
-              {orphanedMeta.length === 1 ? "" : "s"} no longer match any
-              enclosed area on the map. They're kept in storage in case the
-              same shape comes back; otherwise you can clear them.
-            </p>
-            <div className="mt-2">
-              <Button onClick={pruneOrphans}>Prune {orphanedMeta.length}</Button>
+        </div>
+      )}
+
+      {setupOpen && (
+        <SetupModal onClose={() => setSetupOpen(false)}>
+          <MapV2Switcher
+            maps={maps}
+            active={map}
+            onSelect={onSelectMap}
+            onCreate={onCreateMap}
+            onDelete={onDeleteMap}
+          />
+          <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              Map info
+            </h3>
+            <div className="flex flex-wrap items-end gap-2">
+              <Field label="Name" className="grow min-w-[10rem]">
+                <TextField
+                  value={map.name}
+                  onChange={(e) => onUpdate({ name: e.target.value })}
+                />
+              </Field>
+              <Field label="Level">
+                <NumberField
+                  min={1}
+                  max={10}
+                  value={map.level}
+                  onChange={(e) =>
+                    onUpdate({ level: Number(e.target.value) || 1 })
+                  }
+                  className="w-20"
+                />
+              </Field>
+              <Field label="Ancestry">
+                <TextField
+                  value={map.ancestry}
+                  onChange={(e) => onUpdate({ ancestry: e.target.value })}
+                  className="w-32"
+                />
+              </Field>
             </div>
-          </Card>
-        )}
+          </div>
+          {orphanedMeta.length > 0 && (
+            <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Orphaned region notes
+              </h3>
+              <p className="text-xs text-zinc-500">
+                {orphanedMeta.length} region note
+                {orphanedMeta.length === 1 ? "" : "s"} no longer match any
+                enclosed area on the map. They're kept in storage in case the
+                same shape comes back; otherwise you can clear them.
+              </p>
+              <div className="mt-2">
+                <Button onClick={pruneOrphans}>
+                  Prune {orphanedMeta.length}
+                </Button>
+              </div>
+            </div>
+          )}
+        </SetupModal>
+      )}
+    </div>
+  );
+}
+
+function SetupModal({
+  children,
+  onClose,
+}: {
+  children: ReactNode;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center p-3"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Map setup"
+    >
+      <button
+        type="button"
+        aria-label="Close setup"
+        onClick={onClose}
+        className="absolute inset-0 bg-zinc-900/40"
+      />
+      <div className="relative max-h-[85vh] w-[min(36rem,100%)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            Map setup
+          </h2>
+          <Button onClick={onClose} aria-label="Close setup">
+            ✕
+          </Button>
+        </div>
+        {children}
       </div>
     </div>
   );
@@ -1369,6 +1474,7 @@ function RegionDetailPanel({
             onChange={(e) => onPatch({ treasure: e.target.value })}
           />
         </Field>
+        <SendTreasureToBackpack treasure={m?.treasure ?? ""} />
         <label className="inline-flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -1380,6 +1486,62 @@ function RegionDetailPanel({
         </label>
       </div>
     </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+// Quick handoff from a region's noted treasure to the active character's
+// backpack — appends the trimmed treasure text to the chosen text slot
+// (Small / Rations / Loot lockup) with a newline separator. Large slots
+// are deliberately omitted; they're per-slot and the user manages those
+// on the full Sheet view.
+function SendTreasureToBackpack({ treasure }: { treasure: string }) {
+  const { active, update } = useCharacters();
+  const trimmed = treasure.trim();
+  const [justSent, setJustSent] = useState<string | null>(null);
+
+  if (trimmed.length === 0) return null;
+
+  function send(slot: "smallItems" | "rations" | "lootLockup", label: string) {
+    if (!active) return;
+    const current = active.backpack[slot] ?? "";
+    const next = current ? `${current}\n${trimmed}` : trimmed;
+    update(active.id, {
+      backpack: { ...active.backpack, [slot]: next },
+    });
+    setJustSent(label);
+    window.setTimeout(() => setJustSent(null), 1500);
+  }
+
+  return (
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 p-2 text-xs dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="font-medium uppercase tracking-wide text-zinc-500">
+          Send to backpack
+        </span>
+        {justSent && (
+          <span className="text-emerald-700 dark:text-emerald-400">
+            ✓ added to {justSent}
+          </span>
+        )}
+      </div>
+      {!active ? (
+        <p className="text-zinc-500">
+          Pick or create a character on the Sheet to enable this.
+        </p>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          <Button onClick={() => send("smallItems", "Small items")}>
+            Small items
+          </Button>
+          <Button onClick={() => send("rations", "Rations")}>Rations</Button>
+          <Button onClick={() => send("lootLockup", "Loot lockup")}>
+            Loot lockup
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
 

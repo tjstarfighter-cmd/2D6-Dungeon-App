@@ -11,10 +11,11 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import { useCharacters } from "@/hooks/useCharacters";
 import { getRunMode } from "@/lib/character";
-import type { RunMode } from "@/types/character";
+import type { Backpack, RunMode } from "@/types/character";
 import { OverlayProvider, type OverlayApi } from "@/components/OverlayContext";
 import { ShellPicker } from "@/components/ShellPicker";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button, Stepper, TextArea } from "@/components/ui";
 
 // New shell for the rewrite (Phase 1). Selected via the ShellPicker toggle.
 //
@@ -55,11 +56,6 @@ const overlayTitles: Record<ShellOverlayView, string> = {
   cards: "Cards",
   notes: "Notes",
 };
-
-const sheetTabs: { to: string; label: string; end?: boolean }[] = [
-  { to: "/", label: "Sheet", end: true },
-  { to: "/notes", label: "Notes" },
-];
 
 function HeaderSearch() {
   const navigate = useNavigate();
@@ -157,37 +153,141 @@ function PhoneVitalsStrip({ onOpenDrawer }: { onOpenDrawer: () => void }) {
 
 // Shared body for the sheet sidebar — used by the desktop SheetSidebar and
 // by the phone SheetDrawer so they stay in sync.
-function SheetSidebarBody() {
+//
+// `onNavigate` fires when the user taps the "Open full Sheet" link; the
+// phone drawer passes its close handler so navigating doesn't leave the
+// drawer hanging open over the destination view. Desktop omits it.
+function SheetSidebarBody({ onNavigate }: { onNavigate?: () => void }) {
+  const { active, update } = useCharacters();
+
+  function setHp(next: number) {
+    if (!active) return;
+    update(active.id, { hp: { ...active.hp, current: next } });
+  }
+
+  function appendBackpack(slot: keyof Backpack, text: string) {
+    if (!active) return;
+    if (slot === "largeItems") return; // quick-add only targets text slots
+    const current = active.backpack[slot] ?? "";
+    const next = current ? `${current}\n${text}` : text;
+    update(active.id, {
+      backpack: { ...active.backpack, [slot]: next },
+    });
+  }
+
   return (
     <>
       <VitalsStrip />
       <div className="mt-3">
         <RunModeToggle />
       </div>
-      <nav className="mt-3 flex gap-1">
-        {sheetTabs.map((tab) => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            end={tab.end}
-            className={({ isActive }) =>
-              `flex-1 rounded-md px-3 py-1.5 text-center text-xs font-medium transition-colors ${
-                isActive
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-              }`
-            }
-          >
-            {tab.label}
-          </NavLink>
-        ))}
-      </nav>
-      <div className="mt-3 flex-1 overflow-auto text-xs text-zinc-500">
-        {/* Tab contents arrive in later slices; for now the sheet view itself
-            still renders in the main area. */}
-        <p className="italic">Sidebar tab content TBD.</p>
-      </div>
+
+      {active && (
+        <>
+          <HpAdjuster
+            current={active.hp.current}
+            baseline={active.hp.baseline}
+            onChange={setHp}
+          />
+          <QuickAddToBackpack onAppend={appendBackpack} />
+        </>
+      )}
+
+      <NavLink
+        to="/"
+        end
+        onClick={onNavigate}
+        className="mt-3 block rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-center text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+      >
+        Open full Sheet →
+      </NavLink>
     </>
+  );
+}
+
+function HpAdjuster({
+  current,
+  baseline,
+  onChange,
+}: {
+  current: number;
+  baseline: number;
+  onChange: (next: number) => void;
+}) {
+  const pct =
+    baseline > 0 ? Math.max(0, Math.min(100, (current / baseline) * 100)) : 0;
+  const barClass =
+    pct > 50 ? "bg-emerald-500" : pct > 25 ? "bg-amber-500" : "bg-rose-500";
+  return (
+    <div className="mt-3 rounded-md border border-zinc-200 p-2 dark:border-zinc-800">
+      <div className="mb-1 text-[10px] font-medium uppercase tracking-wide text-zinc-500">
+        Health
+      </div>
+      <div className="flex items-center gap-2">
+        <Stepper
+          value={current}
+          onChange={onChange}
+          min={0}
+          max={9999}
+          ariaLabel="Current HP"
+          width="w-14"
+        />
+        <span className="text-xs tabular-nums text-zinc-500">/ {baseline}</span>
+        <span className="ml-auto h-1.5 w-12 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+          <span
+            className={`block h-full ${barClass}`}
+            style={{ width: `${pct}%` }}
+          />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+type QuickSlot = "smallItems" | "rations" | "lootLockup";
+
+function QuickAddToBackpack({
+  onAppend,
+}: {
+  onAppend: (slot: QuickSlot, text: string) => void;
+}) {
+  const [text, setText] = useState("");
+  const [slot, setSlot] = useState<QuickSlot>("smallItems");
+
+  function add() {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    onAppend(slot, trimmed);
+    setText("");
+  }
+
+  return (
+    <div className="mt-3 rounded-md border border-zinc-200 p-2 dark:border-zinc-800">
+      <div className="mb-1 text-[10px] font-medium uppercase tracking-wide text-zinc-500">
+        Quick add to backpack
+      </div>
+      <TextArea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={2}
+        placeholder="Loot, herb, gold…"
+      />
+      <div className="mt-2 flex items-center gap-2">
+        <select
+          value={slot}
+          onChange={(e) => setSlot(e.target.value as QuickSlot)}
+          className="grow rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900"
+          aria-label="Backpack destination"
+        >
+          <option value="smallItems">Small items</option>
+          <option value="rations">Rations</option>
+          <option value="lootLockup">Loot lockup</option>
+        </select>
+        <Button onClick={add} disabled={!text.trim()}>
+          + Add
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -226,7 +326,7 @@ function SheetDrawer({ open, onClose }: { open: boolean; onClose: () => void }) 
             ✕
           </button>
         </div>
-        <SheetSidebarBody />
+        <SheetSidebarBody onNavigate={onClose} />
       </aside>
     </div>
   );

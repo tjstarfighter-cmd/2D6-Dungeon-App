@@ -1,4 +1,5 @@
 // Small UI primitives used by the Character Sheet (and likely beyond).
+import { useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -18,16 +19,56 @@ export function Card({
   action,
   children,
   className = "",
+  collapsible = false,
+  defaultOpen = true,
 }: {
   title?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
+  collapsible?: boolean;
+  defaultOpen?: boolean;
 }) {
+  const baseClass = `rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 ${className}`;
+  const [open, setOpen] = useState(defaultOpen);
+
+  if (collapsible) {
+    return (
+      <details
+        open={open}
+        onToggle={(e) => setOpen(e.currentTarget.open)}
+        className={`group ${baseClass}`}
+      >
+        <summary className="-m-1 flex cursor-pointer list-none items-center justify-between gap-2 rounded p-1 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="text-xs text-zinc-400 transition-transform group-open:rotate-90"
+            >
+              ▸
+            </span>
+            {title && (
+              <h2 className="truncate text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                {title}
+              </h2>
+            )}
+          </span>
+          {action && (
+            <span
+              onClick={(e) => e.stopPropagation()}
+              className="shrink-0"
+            >
+              {action}
+            </span>
+          )}
+        </summary>
+        <div className="mt-3">{children}</div>
+      </details>
+    );
+  }
+
   return (
-    <section
-      className={`rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
-    >
+    <section className={baseClass}>
       {(title || action) && (
         <header className="mb-3 flex items-center justify-between gap-2">
           {title && (
