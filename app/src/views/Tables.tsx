@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
@@ -57,6 +57,15 @@ export default function TablesView() {
       return next;
     });
   }, [id, grouped]);
+
+  // On phone the list and detail stack vertically, so picking a table from
+  // the list leaves you scrolled to the list with the detail off-screen
+  // below. Scroll the detail into view whenever the active id changes.
+  const detailRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!id) return;
+    detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [id]);
 
   return (
     <section className="mx-auto max-w-7xl">
@@ -127,7 +136,7 @@ export default function TablesView() {
         </div>
 
         {/* Detail */}
-        <div className="min-w-0">
+        <div ref={detailRef} className="min-w-0 scroll-mt-4">
           {!active ? (
             <IntroPanel />
           ) : (
