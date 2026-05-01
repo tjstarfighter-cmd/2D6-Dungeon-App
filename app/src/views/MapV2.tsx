@@ -977,7 +977,7 @@ function MapV2Editor({
 
         <div
           ref={containerRef}
-          className="mt-3 min-w-0 max-w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
+          className="mt-3 w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <svg
             ref={svgRef}
