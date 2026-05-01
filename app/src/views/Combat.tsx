@@ -243,19 +243,6 @@ function CombatHeader({
   onXpAtEndChange: (n: number) => void;
   onEndCombat: () => void;
 }) {
-  const hpPct =
-    characterHpBaseline > 0
-      ? Math.max(
-          0,
-          Math.min(100, (characterHpCurrent / characterHpBaseline) * 100),
-        )
-      : 0;
-  const hpBarClass =
-    hpPct > 50
-      ? "bg-emerald-500"
-      : hpPct > 25
-        ? "bg-amber-500"
-        : "bg-rose-500";
   return (
     <Card>
       <header className="space-y-2">
@@ -289,12 +276,6 @@ function CombatHeader({
             <span className="text-zinc-500">HP</span>
             <span className="font-mono font-semibold">
               {characterHpCurrent}/{characterHpBaseline}
-            </span>
-            <span className="h-1.5 w-20 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-              <span
-                className={`block h-full ${hpBarClass}`}
-                style={{ width: `${hpPct}%` }}
-              />
             </span>
           </span>
         </div>
