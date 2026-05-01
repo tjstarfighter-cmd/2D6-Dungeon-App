@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import type { Character } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
@@ -47,16 +47,28 @@ function DiceSetField({
   ariaLabelPrefix?: string;
 }) {
   const parsed = parseDiceSet(value);
-  const primary = parsed?.[0] ?? null;
-  const secondary = parsed?.[1] ?? null;
+  // Hold partial picks locally — parseDiceSet returns null until both dice are
+  // present, so without this the first pick would visibly disappear.
+  const [pending, setPending] = useState<{
+    primary: number | null;
+    secondary: number | null;
+  }>({ primary: null, secondary: null });
+
+  // Drop pending state when value changes from outside (character switch,
+  // import, etc.) so a half-finished pick doesn't leak across rows.
+  useEffect(() => {
+    setPending({ primary: null, secondary: null });
+  }, [value]);
+
+  const primary = parsed?.[0] ?? pending.primary;
+  const secondary = parsed?.[1] ?? pending.secondary;
 
   function commit(p: number | null, s: number | null) {
     if (p === null || s === null) {
-      // Until both are picked, store empty so parseDiceSet returns null
-      // (combat helper treats unparseable rows as inert).
-      onChange("");
+      setPending({ primary: p, secondary: s });
       return;
     }
+    setPending({ primary: null, secondary: null });
     onChange(formatDiceSet(p, s));
   }
 
