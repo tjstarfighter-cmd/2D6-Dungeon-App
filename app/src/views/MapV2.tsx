@@ -83,7 +83,7 @@ export default function MapV2View() {
   const { maps, active, create, update, remove, setActive } = useMapsV2();
 
   return (
-    <section className="mx-auto min-w-0 max-w-7xl space-y-4">
+    <section className="mx-auto w-full min-w-0 max-w-7xl space-y-4 overflow-x-hidden">
       {!active ? (
         <>
           <Card>
