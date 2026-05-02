@@ -1,6 +1,6 @@
 import { Fragment, Suspense, useEffect, useMemo, useRef, useState } from "react";
 
-import type { Character, ManoeuvreSlot } from "@/types/character";
+import type { ArmourSlot, Character, ManoeuvreSlot } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
@@ -602,15 +602,24 @@ function ManoeuvrePicker({
 // -- Armour -----------------------------------------------------------------
 
 function ArmourCard({ character, onPatch }: SectionProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  useEffect(() => {
+    preloadTables();
+  }, []);
+
   function setRow(i: number, patch: Partial<Character["armour"][number]>) {
     const next = character.armour.slice();
     next[i] = { ...next[i], ...patch };
     onPatch({ armour: next });
   }
-  function add() {
+  function addBlank() {
     onPatch({
       armour: [...character.armour, { piece: "", diceSet: "", modifier: "" }],
     });
+  }
+  function addFromTable(slot: ArmourSlot) {
+    onPatch({ armour: [...character.armour, slot] });
   }
   function remove(i: number) {
     onPatch({ armour: character.armour.filter((_, idx) => idx !== i) });
@@ -619,12 +628,48 @@ function ArmourCard({ character, onPatch }: SectionProps) {
     <Card
       title="Armour"
       collapsible
-      action={<Button onClick={add}>+ Add</Button>}
+      action={
+        <div className="flex gap-2">
+          <Button onClick={addBlank} title="Add a blank armour row">
+            + Custom
+          </Button>
+          <Button
+            variant={pickerOpen ? "primary" : "default"}
+            onClick={() => setPickerOpen((o) => !o)}
+            title="Pick from the AT1 armour catalog"
+          >
+            {pickerOpen ? "Close picker" : "+ From table"}
+          </Button>
+        </div>
+      }
     >
+      {pickerOpen && (
+        <Suspense
+          fallback={
+            <p className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+              Loading armour…
+            </p>
+          }
+        >
+          <ArmourPicker
+            level={character.level}
+            existing={character.armour}
+            onPick={(slot) => {
+              addFromTable(slot);
+              setPickerOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
+
       {character.armour.length === 0 ? (
-        <EmptyRow text="No armour equipped." />
+        !pickerOpen && <EmptyRow text="No armour equipped." />
       ) : (
-        <div className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm">
+        <div
+          className={`grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 text-sm ${
+            pickerOpen ? "mt-3" : ""
+          }`}
+        >
           <HeaderCell>Piece</HeaderCell>
           <HeaderCell>Dice Set</HeaderCell>
           <HeaderCell>Modifier</HeaderCell>
@@ -654,6 +699,181 @@ function ArmourCard({ character, onPatch }: SectionProps) {
         </div>
       )}
     </Card>
+  );
+}
+
+// Armour picker: AT1 holds the full catalog (piece, dice set, modifier, cost);
+// ART1–ART4 are the per-tier rolling tables. We use ART1–ART4 to assign each
+// AT1 row a tier (1–4); items not in any ART table are bucketed as "Top tier".
+// Default visible tiers = 1..character.level, with a "Show all" toggle.
+function ArmourPicker({
+  level,
+  existing,
+  onPick,
+}: {
+  level: number;
+  existing: ArmourSlot[];
+  onPick: (slot: ArmourSlot) => void;
+}) {
+  const tables = useTablesData();
+  const [showAll, setShowAll] = useState(false);
+  const [rolledKey, setRolledKey] = useState<string | null>(null);
+  const rolledRef = useRef<HTMLLIElement | null>(null);
+
+  const at1 = tables.AT1;
+
+  // Build name → tier map from ART1..ART4. Names are normalized (uppercased,
+  // stripped of punctuation) because ART tables sometimes drop apostrophes
+  // ("BISHOPS MANTLE" vs AT1's "BISHOP'S MANTLE").
+  const tierByName = useMemo(() => {
+    const map = new Map<string, number>();
+    const norm = (s: string) => s.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const sources: [string, number][] = [
+      ["ART1_RANDOM", 1],
+      ["ART2", 2],
+      ["ART3", 3],
+      ["ART4", 4],
+    ];
+    for (const [key, tier] of sources) {
+      const t = tables[key];
+      if (!t) continue;
+      for (const row of t.data) {
+        const name = String(row.ITEM ?? "");
+        if (name) map.set(norm(name), tier);
+      }
+    }
+    return { map, norm };
+  }, [tables]);
+
+  function tierFor(piece: string): number {
+    return tierByName.map.get(tierByName.norm(piece)) ?? 5;
+  }
+
+  const groups = useMemo(() => {
+    if (!at1) return [];
+    const buckets = new Map<number, TableRow[]>();
+    for (const row of at1.data) {
+      const piece = String(row["ARMOUR TYPE"] ?? "");
+      if (!piece) continue;
+      const tier = tierFor(piece);
+      if (!showAll && tier > level) continue;
+      if (!buckets.has(tier)) buckets.set(tier, []);
+      buckets.get(tier)!.push(row);
+    }
+    return Array.from(buckets.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([tier, rows]) => ({ tier, rows }));
+  }, [at1, level, showAll, tierByName]);
+
+  const flatRows = useMemo(
+    () =>
+      groups.flatMap((g) =>
+        g.rows.map((r, i) => ({ row: r, key: `T${g.tier}-${i}` })),
+      ),
+    [groups],
+  );
+
+  function rollRandom() {
+    if (flatRows.length === 0) return;
+    const pick = flatRows[Math.floor(Math.random() * flatRows.length)];
+    setRolledKey(pick.key);
+    requestAnimationFrame(() => {
+      rolledRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function pickRow(row: TableRow) {
+    onPick({
+      piece: String(row["ARMOUR TYPE"] ?? ""),
+      diceSet: String(row["DICE SET"] ?? ""),
+      modifier: String(row.MODIFIER ?? ""),
+    });
+  }
+
+  if (!at1) {
+    return (
+      <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+        Armour table (AT1) not found in this codex.
+      </p>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-zinc-500">
+          {showAll ? "Showing all tiers" : `Showing T1–T${level}`}
+        </span>
+        <label className="inline-flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showAll}
+            onChange={(e) => setShowAll(e.target.checked)}
+            className="size-3.5"
+          />
+          Show all tiers
+        </label>
+        <Button
+          onClick={rollRandom}
+          disabled={flatRows.length === 0}
+          title="Roll a random armour piece across all visible tiers"
+        >
+          🎲 Roll
+        </Button>
+        <span className="ml-auto text-xs text-zinc-500">
+          Click any row to add it
+        </span>
+      </div>
+
+      {groups.length === 0 ? (
+        <p className="text-sm text-zinc-500">No armour available.</p>
+      ) : (
+        <div className="space-y-3">
+          {groups.map((g) => (
+            <div key={g.tier}>
+              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                {g.tier <= 4 ? `Tier ${g.tier}` : "Top tier"}
+              </h4>
+              <ul className="space-y-1">
+                {g.rows.map((row, i) => {
+                  const key = `T${g.tier}-${i}`;
+                  const rolled = rolledKey === key;
+                  const piece = String(row["ARMOUR TYPE"] ?? "");
+                  const dup = existing.some(
+                    (a) => a.piece.trim().toLowerCase() === piece.toLowerCase(),
+                  );
+                  return (
+                    <li
+                      key={key}
+                      ref={rolled ? rolledRef : undefined}
+                      className={`rounded-md border ${
+                        rolled
+                          ? "border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40"
+                          : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => pickRow(row)}
+                        className="grid w-full grid-cols-[1fr_auto_auto_auto_auto] items-baseline gap-x-3 gap-y-0.5 px-2 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      >
+                        <span className="font-medium">{piece}</span>
+                        <span className="font-mono text-base">{String(row["DICE SET"] ?? "")}</span>
+                        <span className="text-xs text-zinc-500">{String(row.MODIFIER ?? "")}</span>
+                        <span className="text-xs text-zinc-400">{String(row.COST ?? "")}</span>
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                          {rolled ? "Rolled · + Add" : dup ? "(already added)" : "+ Add"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
