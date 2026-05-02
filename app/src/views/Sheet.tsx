@@ -1,6 +1,12 @@
 import { Fragment, Suspense, useEffect, useMemo, useRef, useState } from "react";
 
-import type { ArmourSlot, Character, ManoeuvreSlot } from "@/types/character";
+import type {
+  ArmourSlot,
+  Character,
+  ManoeuvreSlot,
+  PotionSlot,
+  ScrollSlot,
+} from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
@@ -86,6 +92,64 @@ function DiceSetField({
         onChange={(n) => commit(primary, n)}
         ariaLabel={ariaLabelPrefix ? `${ariaLabelPrefix} secondary die` : undefined}
       />
+    </div>
+  );
+}
+
+// Weapon picker: the three core weapons from WMT1, plus "Custom…" so a
+// homebrew weapon name still survives. The dropdown drives the manoeuvre
+// picker in ManoeuvresCard, so keeping the value snapped to the canonical
+// names is what makes that drawer auto-lock to the right table row.
+const WEAPON_OPTIONS = ["Longsword", "Greataxe", "Heavy Mace"] as const;
+
+function WeaponField({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+}) {
+  const isPreset = (WEAPON_OPTIONS as readonly string[]).includes(value);
+  const [customMode, setCustomMode] = useState(!isPreset && value.length > 0);
+
+  // If the value gets set to a preset from elsewhere (import, etc.), drop
+  // out of custom mode so the dropdown reflects the real value.
+  useEffect(() => {
+    if (isPreset) setCustomMode(false);
+  }, [isPreset]);
+
+  return (
+    <div className="flex items-center gap-2">
+      <select
+        aria-label="Weapon"
+        value={customMode ? "__custom" : value}
+        onChange={(e) => {
+          const v = e.target.value;
+          if (v === "__custom") {
+            setCustomMode(true);
+            onChange("");
+          } else {
+            setCustomMode(false);
+            onChange(v);
+          }
+        }}
+        className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+      >
+        <option value="">—</option>
+        {WEAPON_OPTIONS.map((w) => (
+          <option key={w} value={w}>
+            {w}
+          </option>
+        ))}
+        <option value="__custom">Custom…</option>
+      </select>
+      {customMode && (
+        <TextField
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Weapon name"
+        />
+      )}
     </div>
   );
 }
@@ -215,10 +279,9 @@ function IdentityAndStats({ character, onPatch }: SectionProps) {
           />
         </Field>
         <Field label="Weapon" className="sm:col-span-2">
-          <TextField
+          <WeaponField
             value={character.weapon}
-            onChange={(e) => onPatch({ weapon: e.target.value })}
-            placeholder="Longsword / Greataxe / Heavy Mace"
+            onChange={(next) => onPatch({ weapon: next })}
           />
         </Field>
         <Field label="Applied Runes">
@@ -880,18 +943,27 @@ function ArmourPicker({
 // -- Magic Scrolls ----------------------------------------------------------
 
 function ScrollsCard({ character, onPatch }: SectionProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  useEffect(() => {
+    preloadTables();
+  }, []);
+
   function setRow(i: number, patch: Partial<Character["scrolls"][number]>) {
     const next = character.scrolls.slice();
     next[i] = { ...next[i], ...patch };
     onPatch({ scrolls: next });
   }
-  function add() {
+  function addBlank() {
     onPatch({
       scrolls: [
         ...character.scrolls,
         { name: "", orbit: "", dispelDoubles: "", effectModifier: "" },
       ],
     });
+  }
+  function addFromTable(slot: ScrollSlot) {
+    onPatch({ scrolls: [...character.scrolls, slot] });
   }
   function remove(i: number) {
     onPatch({ scrolls: character.scrolls.filter((_, idx) => idx !== i) });
@@ -901,12 +973,48 @@ function ScrollsCard({ character, onPatch }: SectionProps) {
       title="Magic Scrolls"
       collapsible
       defaultOpen={false}
-      action={<Button onClick={add}>+ Add</Button>}
+      action={
+        <div className="flex gap-2">
+          <Button onClick={addBlank} title="Add a blank scroll row">
+            + Custom
+          </Button>
+          <Button
+            variant={pickerOpen ? "primary" : "default"}
+            onClick={() => setPickerOpen((o) => !o)}
+            title="Pick from the MST1 scroll catalog"
+          >
+            {pickerOpen ? "Close picker" : "+ From table"}
+          </Button>
+        </div>
+      }
     >
+      {pickerOpen && (
+        <Suspense
+          fallback={
+            <p className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+              Loading scrolls…
+            </p>
+          }
+        >
+          <ScrollPicker
+            level={character.level}
+            existing={character.scrolls}
+            onPick={(slot) => {
+              addFromTable(slot);
+              setPickerOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
+
       {character.scrolls.length === 0 ? (
-        <EmptyRow text="No scrolls." />
+        !pickerOpen && <EmptyRow text="No scrolls." />
       ) : (
-        <div className="grid grid-cols-[1.4fr_1fr_1fr_1.4fr_auto] items-center gap-2 text-sm">
+        <div
+          className={`grid grid-cols-[1.4fr_1fr_1fr_1.4fr_auto] items-center gap-2 text-sm ${
+            pickerOpen ? "mt-3" : ""
+          }`}
+        >
           <HeaderCell>Name</HeaderCell>
           <HeaderCell>Orbit</HeaderCell>
           <HeaderCell>Dispel Doubles</HeaderCell>
@@ -941,18 +1049,207 @@ function ScrollsCard({ character, onPatch }: SectionProps) {
   );
 }
 
+// Scroll picker: MST1 holds the catalog (name, orbit, dispel ds, effect, …);
+// SCT1–SCT4 are the per-tier rolling tables. Same shape as ArmourPicker.
+function ScrollPicker({
+  level,
+  existing,
+  onPick,
+}: {
+  level: number;
+  existing: ScrollSlot[];
+  onPick: (slot: ScrollSlot) => void;
+}) {
+  const tables = useTablesData();
+  const [showAll, setShowAll] = useState(false);
+  const [rolledKey, setRolledKey] = useState<string | null>(null);
+  const rolledRef = useRef<HTMLLIElement | null>(null);
+
+  const mst1 = tables.MST1;
+
+  // Strip "SCROLL OF " prefix and non-alphanumerics so SCT4's
+  // "SCROLL OF SURGING HEALTH" matches MST1's "SURGING HEALTH" column value.
+  const norm = (s: string) =>
+    s.toUpperCase().replace(/^SCROLL OF /, "").replace(/[^A-Z0-9]/g, "");
+
+  const tierByName = useMemo(() => {
+    const map = new Map<string, number>();
+    const sources: [string, number][] = [
+      ["SCT1", 1],
+      ["SCT2", 2],
+      ["SCT3", 3],
+      ["SCT4", 4],
+    ];
+    for (const [key, tier] of sources) {
+      const t = tables[key];
+      if (!t) continue;
+      for (const row of t.data) {
+        const name = String(row.ITEM ?? "");
+        if (name) map.set(norm(name), tier);
+      }
+    }
+    return map;
+  }, [tables]);
+
+  function tierFor(name: string): number {
+    return tierByName.get(norm(name)) ?? 5;
+  }
+
+  const groups = useMemo(() => {
+    if (!mst1) return [];
+    const buckets = new Map<number, TableRow[]>();
+    for (const row of mst1.data) {
+      const name = String(row["SCROLL OF"] ?? "");
+      if (!name) continue;
+      const tier = tierFor(name);
+      if (!showAll && tier > level) continue;
+      if (!buckets.has(tier)) buckets.set(tier, []);
+      buckets.get(tier)!.push(row);
+    }
+    return Array.from(buckets.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([tier, rows]) => ({ tier, rows }));
+  }, [mst1, level, showAll, tierByName]);
+
+  const flatRows = useMemo(
+    () =>
+      groups.flatMap((g) =>
+        g.rows.map((r, i) => ({ row: r, key: `T${g.tier}-${i}` })),
+      ),
+    [groups],
+  );
+
+  function rollRandom() {
+    if (flatRows.length === 0) return;
+    const pick = flatRows[Math.floor(Math.random() * flatRows.length)];
+    setRolledKey(pick.key);
+    requestAnimationFrame(() => {
+      rolledRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function pickRow(row: TableRow) {
+    onPick({
+      name: `Scroll of ${String(row["SCROLL OF"] ?? "")}`,
+      orbit: String(row.ORBIT ?? ""),
+      dispelDoubles: String(row["DISPEL DS"] ?? ""),
+      effectModifier: String(row.EFFECT ?? ""),
+    });
+  }
+
+  if (!mst1) {
+    return (
+      <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+        Magic Scrolls table (MST1) not found in this codex.
+      </p>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-zinc-500">
+          {showAll ? "Showing all tiers" : `Showing T1–T${level}`}
+        </span>
+        <label className="inline-flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showAll}
+            onChange={(e) => setShowAll(e.target.checked)}
+            className="size-3.5"
+          />
+          Show all tiers
+        </label>
+        <Button
+          onClick={rollRandom}
+          disabled={flatRows.length === 0}
+          title="Roll a random scroll across all visible tiers"
+        >
+          🎲 Roll
+        </Button>
+        <span className="ml-auto text-xs text-zinc-500">
+          Click any row to add it
+        </span>
+      </div>
+
+      {groups.length === 0 ? (
+        <p className="text-sm text-zinc-500">No scrolls available.</p>
+      ) : (
+        <div className="space-y-3">
+          {groups.map((g) => (
+            <div key={g.tier}>
+              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                {g.tier <= 4 ? `Tier ${g.tier}` : "Top tier"}
+              </h4>
+              <ul className="space-y-1">
+                {g.rows.map((row, i) => {
+                  const key = `T${g.tier}-${i}`;
+                  const rolled = rolledKey === key;
+                  const name = String(row["SCROLL OF"] ?? "");
+                  const dup = existing.some(
+                    (s) =>
+                      s.name.trim().toUpperCase().replace(/^SCROLL OF /, "") ===
+                      name.toUpperCase(),
+                  );
+                  return (
+                    <li
+                      key={key}
+                      ref={rolled ? rolledRef : undefined}
+                      className={`rounded-md border ${
+                        rolled
+                          ? "border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40"
+                          : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => pickRow(row)}
+                        className="grid w-full grid-cols-[1fr_auto_auto_2fr_auto] items-baseline gap-x-3 gap-y-0.5 px-2 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      >
+                        <span className="font-medium">SCROLL OF {name}</span>
+                        <span className="text-xs text-zinc-500">{String(row.ORBIT ?? "")}</span>
+                        <span className="text-xs text-zinc-500">DS {String(row["DISPEL DS"] ?? "")}</span>
+                        <span className="text-xs text-zinc-500">{String(row.EFFECT ?? "")}</span>
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                          {rolled ? "Rolled · + Add" : dup ? "(already added)" : "+ Add"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // -- Magic Potions ----------------------------------------------------------
 
 function PotionsCard({ character, onPatch }: SectionProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const atCap = character.potions.length >= 5;
+
+  useEffect(() => {
+    preloadTables();
+  }, []);
+
   function setRow(i: number, patch: Partial<Character["potions"][number]>) {
     const next = character.potions.slice();
     next[i] = { ...next[i], ...patch };
     onPatch({ potions: next });
   }
-  function add() {
+  function addBlank() {
+    if (atCap) return;
     onPatch({
       potions: [...character.potions, { name: "", effectModifier: "" }],
     });
+  }
+  function addFromTable(slot: PotionSlot) {
+    if (atCap) return;
+    onPatch({ potions: [...character.potions, slot] });
   }
   function remove(i: number) {
     onPatch({ potions: character.potions.filter((_, idx) => idx !== i) });
@@ -965,16 +1262,53 @@ function PotionsCard({ character, onPatch }: SectionProps) {
       action={
         <span className="flex items-center gap-2 text-xs text-zinc-500">
           <span>{character.potions.length} / 5 carried</span>
-          <Button onClick={add} disabled={character.potions.length >= 5}>
-            + Add
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={addBlank}
+              disabled={atCap}
+              title="Add a blank potion row"
+            >
+              + Custom
+            </Button>
+            <Button
+              variant={pickerOpen ? "primary" : "default"}
+              onClick={() => setPickerOpen((o) => !o)}
+              disabled={atCap && !pickerOpen}
+              title="Pick from the MPT1 potion catalog"
+            >
+              {pickerOpen ? "Close picker" : "+ From table"}
+            </Button>
+          </div>
         </span>
       }
     >
+      {pickerOpen && !atCap && (
+        <Suspense
+          fallback={
+            <p className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+              Loading potions…
+            </p>
+          }
+        >
+          <PotionPicker
+            level={character.level}
+            existing={character.potions}
+            onPick={(slot) => {
+              addFromTable(slot);
+              setPickerOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
+
       {character.potions.length === 0 ? (
-        <EmptyRow text="No potions." />
+        !pickerOpen && <EmptyRow text="No potions." />
       ) : (
-        <div className="grid grid-cols-[1fr_1.4fr_auto] items-center gap-2 text-sm">
+        <div
+          className={`grid grid-cols-[1fr_1.4fr_auto] items-center gap-2 text-sm ${
+            pickerOpen ? "mt-3" : ""
+          }`}
+        >
           <HeaderCell>Name</HeaderCell>
           <HeaderCell>Effect Modifier</HeaderCell>
           <span />
@@ -996,6 +1330,177 @@ function PotionsCard({ character, onPatch }: SectionProps) {
         </div>
       )}
     </Card>
+  );
+}
+
+// Potion picker: MPT1 catalog filtered/grouped by tier from POT1–POT4.
+function PotionPicker({
+  level,
+  existing,
+  onPick,
+}: {
+  level: number;
+  existing: PotionSlot[];
+  onPick: (slot: PotionSlot) => void;
+}) {
+  const tables = useTablesData();
+  const [showAll, setShowAll] = useState(false);
+  const [rolledKey, setRolledKey] = useState<string | null>(null);
+  const rolledRef = useRef<HTMLLIElement | null>(null);
+
+  const mpt1 = tables.MPT1;
+
+  const norm = (s: string) =>
+    s.toUpperCase().replace(/^POTION OF /, "").replace(/[^A-Z0-9]/g, "");
+
+  const tierByName = useMemo(() => {
+    const map = new Map<string, number>();
+    const sources: [string, number][] = [
+      ["POT1", 1],
+      ["POT2", 2],
+      ["POT3", 3],
+      ["POT4", 4],
+    ];
+    for (const [key, tier] of sources) {
+      const t = tables[key];
+      if (!t) continue;
+      for (const row of t.data) {
+        const name = String(row.ITEM ?? "");
+        if (name) map.set(norm(name), tier);
+      }
+    }
+    return map;
+  }, [tables]);
+
+  function tierFor(name: string): number {
+    return tierByName.get(norm(name)) ?? 5;
+  }
+
+  const groups = useMemo(() => {
+    if (!mpt1) return [];
+    const buckets = new Map<number, TableRow[]>();
+    for (const row of mpt1.data) {
+      const name = String(row["POTION OF"] ?? "");
+      if (!name) continue;
+      const tier = tierFor(name);
+      if (!showAll && tier > level) continue;
+      if (!buckets.has(tier)) buckets.set(tier, []);
+      buckets.get(tier)!.push(row);
+    }
+    return Array.from(buckets.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([tier, rows]) => ({ tier, rows }));
+  }, [mpt1, level, showAll, tierByName]);
+
+  const flatRows = useMemo(
+    () =>
+      groups.flatMap((g) =>
+        g.rows.map((r, i) => ({ row: r, key: `T${g.tier}-${i}` })),
+      ),
+    [groups],
+  );
+
+  function rollRandom() {
+    if (flatRows.length === 0) return;
+    const pick = flatRows[Math.floor(Math.random() * flatRows.length)];
+    setRolledKey(pick.key);
+    requestAnimationFrame(() => {
+      rolledRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function pickRow(row: TableRow) {
+    onPick({
+      name: `Potion of ${String(row["POTION OF"] ?? "")}`,
+      effectModifier: String(row["EFFECT MODIFIER"] ?? ""),
+    });
+  }
+
+  if (!mpt1) {
+    return (
+      <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+        Magic Potions table (MPT1) not found in this codex.
+      </p>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-zinc-500">
+          {showAll ? "Showing all tiers" : `Showing T1–T${level}`}
+        </span>
+        <label className="inline-flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showAll}
+            onChange={(e) => setShowAll(e.target.checked)}
+            className="size-3.5"
+          />
+          Show all tiers
+        </label>
+        <Button
+          onClick={rollRandom}
+          disabled={flatRows.length === 0}
+          title="Roll a random potion across all visible tiers"
+        >
+          🎲 Roll
+        </Button>
+        <span className="ml-auto text-xs text-zinc-500">
+          Click any row to add it
+        </span>
+      </div>
+
+      {groups.length === 0 ? (
+        <p className="text-sm text-zinc-500">No potions available.</p>
+      ) : (
+        <div className="space-y-3">
+          {groups.map((g) => (
+            <div key={g.tier}>
+              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                {g.tier <= 4 ? `Tier ${g.tier}` : "Top tier"}
+              </h4>
+              <ul className="space-y-1">
+                {g.rows.map((row, i) => {
+                  const key = `T${g.tier}-${i}`;
+                  const rolled = rolledKey === key;
+                  const name = String(row["POTION OF"] ?? "");
+                  const dup = existing.some(
+                    (p) =>
+                      p.name.trim().toUpperCase().replace(/^POTION OF /, "") ===
+                      name.toUpperCase(),
+                  );
+                  return (
+                    <li
+                      key={key}
+                      ref={rolled ? rolledRef : undefined}
+                      className={`rounded-md border ${
+                        rolled
+                          ? "border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40"
+                          : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => pickRow(row)}
+                        className="grid w-full grid-cols-[1fr_2fr_auto_auto] items-baseline gap-x-3 gap-y-0.5 px-2 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      >
+                        <span className="font-medium">POTION OF {name}</span>
+                        <span className="text-xs text-zinc-500">{String(row["EFFECT MODIFIER"] ?? "")}</span>
+                        <span className="text-xs text-zinc-400">{String(row.DURATION ?? "")}</span>
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                          {rolled ? "Rolled · + Add" : dup ? "(already added)" : "+ Add"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
