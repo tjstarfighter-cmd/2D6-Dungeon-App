@@ -19,6 +19,7 @@ let _tables: Promise<TablesCodex> | null = null;
 let _cards: Promise<CardsIndex> | null = null;
 let _creatures: Promise<CreaturesIndex> | null = null;
 let _rules: Promise<string> | null = null;
+let _cheatsheet: Promise<string> | null = null;
 
 function tablesPromise(): Promise<TablesCodex> {
   if (!_tables) {
@@ -54,6 +55,13 @@ function rulesPromise(): Promise<string> {
   return _rules;
 }
 
+function cheatsheetPromise(): Promise<string> {
+  if (!_cheatsheet) {
+    _cheatsheet = import("./cheatsheet.md?raw").then((m) => m.default);
+  }
+  return _cheatsheet;
+}
+
 /** Suspense-aware getter for the Tables Codex JSON. */
 export function useTablesData(): TablesCodex {
   return use(tablesPromise());
@@ -74,6 +82,11 @@ export function useRulesData(): string {
   return use(rulesPromise());
 }
 
+/** Suspense-aware getter for the Help / Cheatsheet Markdown. */
+export function useCheatsheetData(): string {
+  return use(cheatsheetPromise());
+}
+
 /**
  * Fire-and-forget preload helpers. Call from a hover handler / nav-mount
  * to warm a chunk before the user actually navigates.
@@ -82,3 +95,4 @@ export const preloadTables = tablesPromise;
 export const preloadCards = cardsPromise;
 export const preloadCreatures = creaturesPromise;
 export const preloadRules = rulesPromise;
+export const preloadCheatsheet = cheatsheetPromise;

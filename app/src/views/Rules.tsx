@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 
 import { useRulesData } from "@/data/lazy";
 import { remarkCrossLinkTables } from "@/lib/rules-cross-link";
+import { makeMarkdownComponents } from "@/lib/markdownComponents";
 
 interface TocItem {
   text: string;
@@ -216,83 +217,3 @@ function TocList({
   );
 }
 
-// ---------------------------------------------------------------------------
-
-function makeMarkdownComponents() {
-  return {
-    h1: (props: any) => (
-      <h1 className="mb-4 mt-6 text-3xl font-bold tracking-tight" {...props} />
-    ),
-    h2: (props: any) => (
-      <h2
-        className="mb-3 mt-8 scroll-mt-4 border-b border-zinc-200 pb-1 text-2xl font-semibold tracking-tight dark:border-zinc-800"
-        {...props}
-      />
-    ),
-    h3: (props: any) => (
-      <h3 className="mb-2 mt-6 scroll-mt-4 text-xl font-semibold" {...props} />
-    ),
-    h4: (props: any) => (
-      <h4 className="mb-2 mt-4 text-base font-semibold text-zinc-800 dark:text-zinc-200" {...props} />
-    ),
-    p: (props: any) => <p className="my-3 leading-relaxed" {...props} />,
-    strong: (props: any) => <strong className="font-semibold text-zinc-900 dark:text-zinc-100" {...props} />,
-    em: (props: any) => <em {...props} />,
-    a: ({ href, children, ...props }: any) => {
-      const cls =
-        "text-emerald-700 underline hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300";
-      // Route in-app links through React Router so navigation is
-      // client-side (no full reload). External links and same-page hash
-      // anchors stay as plain <a>.
-      if (typeof href === "string" && href.startsWith("/")) {
-        return (
-          <Link to={href} className={cls} {...props}>
-            {children}
-          </Link>
-        );
-      }
-      return (
-        <a href={href} className={cls} {...props}>
-          {children}
-        </a>
-      );
-    },
-    ul: (props: any) => <ul className="my-3 list-disc space-y-1 pl-6" {...props} />,
-    ol: (props: any) => <ol className="my-3 list-decimal space-y-1 pl-6" {...props} />,
-    li: (props: any) => <li className="leading-relaxed" {...props} />,
-    blockquote: (props: any) => (
-      <blockquote
-        className="my-3 border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200"
-        {...props}
-      />
-    ),
-    code: (props: any) => {
-      // Inline code (block code uses <pre><code>; we don't expect that in rules).
-      return (
-        <code
-          className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[0.9em] text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
-          {...props}
-        />
-      );
-    },
-    table: (props: any) => (
-      <div className="my-4 overflow-x-auto">
-        <table className="w-full border-collapse text-sm" {...props} />
-      </div>
-    ),
-    thead: (props: any) => (
-      <thead className="border-b border-zinc-300 dark:border-zinc-700" {...props} />
-    ),
-    th: (props: any) => (
-      <th
-        className="px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400"
-        {...props}
-      />
-    ),
-    tr: (props: any) => (
-      <tr className="border-b border-zinc-200 dark:border-zinc-800" {...props} />
-    ),
-    td: (props: any) => <td className="px-2 py-1.5 align-top" {...props} />,
-    hr: (props: any) => <hr className="my-6 border-zinc-200 dark:border-zinc-800" {...props} />,
-  };
-}

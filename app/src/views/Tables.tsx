@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
+import { useRegisterTablesSearch } from "@/components/TablesSearch";
 import { useTablesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import {
@@ -60,6 +61,13 @@ export default function TablesView() {
     });
   }, [id, grouped]);
 
+  // Story 1.12 — expose the search input to Shell hotkeys (Cmd/Ctrl+K, /).
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  useRegisterTablesSearch(() => {
+    searchInputRef.current?.focus();
+    searchInputRef.current?.select();
+  });
+
   // On phone the list and detail stack vertically, so picking a table from
   // the list leaves you scrolled to the list with the detail off-screen
   // below. Scroll the detail into view whenever the active id changes.
@@ -75,6 +83,7 @@ export default function TablesView() {
         {/* List */}
         <div className="space-y-3 lg:sticky lg:top-0 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-auto lg:pr-2">
           <input
+            ref={searchInputRef}
             type="search"
             placeholder={`Search ${allKeys.length} tables…`}
             value={query}

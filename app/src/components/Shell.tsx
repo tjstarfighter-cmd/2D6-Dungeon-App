@@ -5,8 +5,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
+  type Dispatch,
   type ReactNode,
+  type SetStateAction,
 } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -24,6 +27,10 @@ import {
   type SheetSubTab,
 } from "@/components/SheetTabs";
 import { MapToolsProvider, useMapTools } from "@/components/MapTools";
+import {
+  TablesSearchProvider,
+  useTablesSearch,
+} from "@/components/TablesSearch";
 import { ToastProvider } from "@/components/Toast";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
@@ -302,6 +309,81 @@ function PhoneBottomTabs({
 
 type ModalKey = "rules" | "help" | "about" | "backup" | "switcher";
 
+// Global keyboard shortcuts (Story 1.12). Lives inside TablesSearchProvider
+// so it can resolve the focus handler registered by views/Tables.
+function ShellHotkeys({
+  setSheetSubTab,
+  setPhoneTab,
+  setRightTab,
+  setModal,
+}: {
+  setSheetSubTab: Dispatch<SetStateAction<SheetSubTab>>;
+  setPhoneTab: Dispatch<SetStateAction<PhoneTab>>;
+  setRightTab: Dispatch<SetStateAction<RightTab>>;
+  setModal: Dispatch<SetStateAction<ModalKey | null>>;
+}) {
+  const focusTablesSearch = useTablesSearch();
+  // Keep the latest callable in a ref so the [] effect doesn't go stale.
+  const focusRef = useRef(focusTablesSearch);
+  useEffect(() => {
+    focusRef.current = focusTablesSearch;
+  });
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const target = e.target;
+      const inEditable =
+        target instanceof HTMLElement &&
+        target.matches("input, textarea, [contenteditable='true']");
+
+      // Cmd/Ctrl combos (no shift/alt). Cmd+1..4 → Sheet sub-tab; Cmd+K
+      // → focus Tables search. preventDefault so the browser doesn't run
+      // its own binding (e.g. Chrome's address-bar focus on Cmd+K).
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+        const idx = SHEET_SUB_TABS.findIndex((t) => t.shortcut === e.key);
+        if (idx !== -1) {
+          if (inEditable) return;
+          e.preventDefault();
+          setSheetSubTab(SHEET_SUB_TABS[idx].key);
+          setPhoneTab("sheet");
+          return;
+        }
+        if (e.key.toLowerCase() === "k") {
+          if (inEditable) return;
+          e.preventDefault();
+          setPhoneTab("tables");
+          setRightTab("tables");
+          focusRef.current();
+        }
+        return;
+      }
+
+      // Bare-key shortcuts. ? requires Shift on US layouts but the produced
+      // KeyboardEvent.key is "?", so we don't filter on shift here. Skip
+      // while typing so '?' / '/' still flow into inputs.
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (inEditable) return;
+
+      if (e.key === "?") {
+        e.preventDefault();
+        setModal((prev) => (prev === "help" ? null : "help"));
+        return;
+      }
+      if (e.key === "/") {
+        e.preventDefault();
+        setPhoneTab("tables");
+        setRightTab("tables");
+        focusRef.current();
+        return;
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setSheetSubTab, setPhoneTab, setRightTab, setModal]);
+
+  return null;
+}
+
 export function Shell() {
   const location = useLocation();
   const [phoneTab, setPhoneTab] = useState<PhoneTab>("map");
@@ -331,32 +413,6 @@ export function Shell() {
     }
   }, [location.pathname]);
 
-  // Cmd/Ctrl + 1..4 → Sheet sub-tab. Skip when an editable element has
-  // focus so we don't hijack typed digits, and skip when the modifier key
-  // also matches a browser shortcut (Cmd+1 → first tab on macOS) only
-  // when the user is actually typing.
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (!(e.ctrlKey || e.metaKey)) return;
-      if (e.shiftKey || e.altKey) return;
-      const idx = SHEET_SUB_TABS.findIndex((t) => t.shortcut === e.key);
-      if (idx === -1) return;
-      const target = e.target;
-      if (
-        target instanceof HTMLElement &&
-        target.matches("input, textarea, [contenteditable='true']")
-      ) {
-        return;
-      }
-      e.preventDefault();
-      setSheetSubTab(SHEET_SUB_TABS[idx].key);
-      // Phone affordance: bring the Sheet panel forward.
-      setPhoneTab("sheet");
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
   const shellNav = useMemo<ShellNavApi>(
     () => ({
       openCombat: () => {
@@ -372,6 +428,13 @@ export function Shell() {
   return (
     <ShellNavContext.Provider value={shellNav}>
      <ToastProvider>
+      <TablesSearchProvider>
+      <ShellHotkeys
+        setSheetSubTab={setSheetSubTab}
+        setPhoneTab={setPhoneTab}
+        setRightTab={setRightTab}
+        setModal={setModal}
+      />
       <div className="flex h-[100dvh] flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Header
           onOpenRules={() => setModal("rules")}
@@ -435,6 +498,7 @@ export function Shell() {
       {modal === "about" && <AboutModal onClose={closeModal} />}
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
       {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
+      </TablesSearchProvider>
      </ToastProvider>
     </ShellNavContext.Provider>
   );
