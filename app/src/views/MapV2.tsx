@@ -30,6 +30,7 @@ import {
   exitsFromD6,
   nextPinNumber,
   regionCentroidTile,
+  renumberPins,
   rollD6,
   tilesHash,
   type RoomRoll,
@@ -372,6 +373,17 @@ function MapV2Editor({
   // Set when the user taps an unpinned region with the Pin tool active.
   const [pinPromptHash, setPinPromptHash] = useState<string | null>(null);
 
+  // Story 2.4: hash of the pinned region whose edit modal is open. Opened
+  // by Pin-tool-tap on pinned, or long-press with any other tool active.
+  const [pinEditHash, setPinEditHash] = useState<string | null>(null);
+
+  // Story 2.4: long-press tracking. setTimeout id while a press is held;
+  // when it fires, the modal opens and longPressFiredRef tells the
+  // trailing click handler to bail (otherwise the same gesture would
+  // also call setSelectedHash and open the side panel).
+  const longPressTimerRef = useRef<number | null>(null);
+  const longPressFiredRef = useRef(false);
+
   // Latest 2d6 room roll + the user-pinned exit-count D6 (Step 9).
   // Ephemeral — not persisted. `targetTiles` drives the HUD (Step 10).
   const [lastRoll, setLastRoll] = useState<RoomRoll | null>(null);
@@ -485,6 +497,29 @@ function MapV2Editor({
       number: nextPinNumber(map.regions, kind),
       pinnedAt: new Date().toISOString(),
     });
+  }
+
+  // Story 2.4: flip a pinned region's kind and renumber every pin so
+  // counters stay consistent with pinnedAt order.
+  function togglePinKind(hash: string) {
+    const flipped = map.regions.map((r) =>
+      r.tilesHash === hash && r.kind
+        ? { ...r, kind: r.kind === "room" ? "hall" : "room" }
+        : r,
+    );
+    onUpdate({ regions: renumberPins(flipped as RegionMeta[]) });
+  }
+
+  // Story 2.4: clear pin metadata and renumber the remaining pins.
+  // `kind`/`number`/`pinnedAt` set to undefined → JSON.stringify drops
+  // them on persistence, so the region returns to "unpinned" state.
+  function unpinRegion(hash: string) {
+    const cleared = map.regions.map((r) =>
+      r.tilesHash === hash
+        ? { ...r, kind: undefined, number: undefined, pinnedAt: undefined }
+        : r,
+    );
+    onUpdate({ regions: renumberPins(cleared) });
   }
 
   const dots = useMemo(() => {
@@ -1195,15 +1230,55 @@ function MapV2Editor({
                     cy={cy}
                     r={CELL * 0.55}
                     fill="transparent"
-                    onPointerDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => {
+                      e.stopPropagation();
+                      // Story 2.4: long-press on a pinned region opens
+                      // the edit modal regardless of the active tool.
+                      // Pin-tool taps go through onClick instead.
+                      if (!pinned || tool === "pin") return;
+                      longPressFiredRef.current = false;
+                      if (longPressTimerRef.current !== null) {
+                        window.clearTimeout(longPressTimerRef.current);
+                      }
+                      longPressTimerRef.current = window.setTimeout(() => {
+                        longPressFiredRef.current = true;
+                        longPressTimerRef.current = null;
+                        setPinEditHash(r.hash);
+                      }, 500);
+                    }}
+                    onPointerUp={() => {
+                      if (longPressTimerRef.current !== null) {
+                        window.clearTimeout(longPressTimerRef.current);
+                        longPressTimerRef.current = null;
+                      }
+                    }}
+                    onPointerMove={() => {
+                      // Any drag cancels the long-press timer.
+                      if (longPressTimerRef.current !== null) {
+                        window.clearTimeout(longPressTimerRef.current);
+                        longPressTimerRef.current = null;
+                      }
+                    }}
+                    onPointerCancel={() => {
+                      if (longPressTimerRef.current !== null) {
+                        window.clearTimeout(longPressTimerRef.current);
+                        longPressTimerRef.current = null;
+                      }
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Story 2.3: Pin tool taps prompt for kind on
-                      // unpinned regions; tapping a pinned region with
-                      // Pin active is a no-op until Story 2.4 wires the
-                      // edit modal.
+                      // Long-press already opened the edit modal; suppress
+                      // the trailing click so it doesn't also fire below.
+                      if (longPressFiredRef.current) {
+                        longPressFiredRef.current = false;
+                        return;
+                      }
+                      // Story 2.3/2.4: Pin tool taps prompt for kind on
+                      // unpinned regions; tap pinned with Pin active opens
+                      // the edit modal (Story 2.4).
                       if (tool === "pin") {
                         if (!r.meta?.kind) setPinPromptHash(r.hash);
+                        else setPinEditHash(r.hash);
                         return;
                       }
                       setSelectedHash(r.hash);
@@ -1432,7 +1507,174 @@ function MapV2Editor({
           onClose={() => setPinPromptHash(null)}
         />
       )}
+      {pinEditHash &&
+        (() => {
+          const region = map.regions.find(
+            (r) => r.tilesHash === pinEditHash,
+          );
+          if (!region || !region.kind) return null;
+          return (
+            <PinEditModal
+              region={region}
+              onPatchLabel={(label) => patchRegion(pinEditHash, { label })}
+              onPatchCleared={(cleared) =>
+                patchRegion(pinEditHash, { cleared })
+              }
+              onToggleKind={() => togglePinKind(pinEditHash)}
+              onUnpin={() => {
+                unpinRegion(pinEditHash);
+                setPinEditHash(null);
+              }}
+              onClose={() => setPinEditHash(null)}
+            />
+          );
+        })()}
     </div>
+  );
+}
+
+function PinEditModal({
+  region,
+  onPatchLabel,
+  onPatchCleared,
+  onToggleKind,
+  onUnpin,
+  onClose,
+}: {
+  region: RegionMeta;
+  onPatchLabel: (label: string) => void;
+  onPatchCleared: (cleared: boolean) => void;
+  onToggleKind: () => void;
+  onUnpin: () => void;
+  onClose: () => void;
+}) {
+  const [label, setLabel] = useState(region.label ?? "");
+  const [confirmFlip, setConfirmFlip] = useState(false);
+  const [confirmUnpin, setConfirmUnpin] = useState(false);
+  const kindLabel = region.kind === "room" ? "Room" : "Hallway";
+  const otherKindLabel = region.kind === "room" ? "Hallway" : "Room";
+  return (
+    <Modal title={`Edit pin · ${kindLabel} ${region.number}`} onClose={onClose}>
+      <div className="space-y-4">
+        <div>
+          <label
+            htmlFor="pin-edit-label"
+            className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500"
+          >
+            Label
+          </label>
+          <input
+            id="pin-edit-label"
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            onBlur={() => {
+              if ((region.label ?? "") !== label) onPatchLabel(label);
+            }}
+            placeholder="Free-text label (optional)"
+            className="block w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          />
+        </div>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={!!region.cleared}
+            onChange={(e) => onPatchCleared(e.target.checked)}
+          />
+          <span>Cleared</span>
+          <span className="ml-2 text-xs text-zinc-500">
+            Greys the marker once you've cleared this region.
+          </span>
+        </label>
+
+        <div className="rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <div className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                Kind
+              </div>
+              <div className="text-sm">
+                Currently <strong>{kindLabel}</strong>
+              </div>
+            </div>
+            {!confirmFlip ? (
+              <button
+                type="button"
+                onClick={() => setConfirmFlip(true)}
+                className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+              >
+                Switch to {otherKindLabel}
+              </button>
+            ) : null}
+          </div>
+          {confirmFlip && (
+            <div className="mt-3 space-y-2 rounded bg-amber-50 p-2 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+              <p>
+                Changing kind renumbers other pins on this map. Continue?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToggleKind();
+                    setConfirmFlip(false);
+                  }}
+                  className="rounded-md border border-amber-700 bg-amber-200 px-2 py-1 font-medium text-amber-900 hover:bg-amber-300 dark:border-amber-300 dark:bg-amber-800 dark:text-amber-100 dark:hover:bg-amber-700"
+                >
+                  Confirm switch
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmFlip(false)}
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-md border border-rose-200 p-3 dark:border-rose-900/50">
+          {!confirmUnpin ? (
+            <button
+              type="button"
+              onClick={() => setConfirmUnpin(true)}
+              className="rounded-md border border-rose-300 bg-white px-2 py-1 text-sm text-rose-800 hover:bg-rose-50 dark:border-rose-800 dark:bg-zinc-900 dark:text-rose-300 dark:hover:bg-rose-950/30"
+            >
+              Unpin
+            </button>
+          ) : (
+            <div className="space-y-2 text-xs text-rose-900 dark:text-rose-200">
+              <p>
+                Unpinning clears the pin's number and removes the marker.
+                Continue?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onUnpin();
+                    setConfirmUnpin(false);
+                  }}
+                  className="rounded-md border border-rose-700 bg-rose-200 px-2 py-1 font-medium text-rose-900 hover:bg-rose-300 dark:border-rose-300 dark:bg-rose-800 dark:text-rose-100 dark:hover:bg-rose-700"
+                >
+                  Confirm unpin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmUnpin(false)}
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Modal>
   );
 }
 

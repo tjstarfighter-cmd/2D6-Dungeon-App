@@ -258,3 +258,28 @@ export function nextPinNumber(
 ): number {
   return regions.filter((r) => r.kind === kind).length + 1;
 }
+
+/**
+ * Recompute per-kind sequential numbers for all pinned regions, ordered by
+ * `pinnedAt` ascending. Used after a kind toggle (Story 2.4) so numbers
+ * stay consistent with pin order — the flipped region drops to the tail
+ * of its new kind, and the kind it left re-ranks 1..N without gaps.
+ * Unpinned regions and missing-pinnedAt regions pass through unchanged.
+ */
+export function renumberPins(
+  regions: ReadonlyArray<RegionMeta>,
+): RegionMeta[] {
+  const ordered = regions
+    .filter((r) => r.kind && r.pinnedAt)
+    .slice()
+    .sort((a, b) => (a.pinnedAt ?? "").localeCompare(b.pinnedAt ?? ""));
+  const counters: Record<PinKind, number> = { room: 0, hall: 0 };
+  const next: Map<string, number> = new Map();
+  for (const r of ordered) {
+    counters[r.kind as PinKind]++;
+    next.set(r.tilesHash, counters[r.kind as PinKind]);
+  }
+  return regions.map((r) =>
+    next.has(r.tilesHash) ? { ...r, number: next.get(r.tilesHash) } : r,
+  );
+}
