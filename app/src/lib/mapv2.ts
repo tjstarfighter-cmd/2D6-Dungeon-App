@@ -2,7 +2,14 @@
 // Region detection lives here (not in the view) so future callers (Step 7
 // pin centroids, Step 10 tile-count HUD) can reuse it.
 
-import { wallKey, type MapDocV2, type PinKind, type RegionMeta, type WallKey } from "@/types/mapv2";
+import {
+  wallKey,
+  type MapDocV2,
+  type PinKind,
+  type RegionMeta,
+  type Wall,
+  type WallKey,
+} from "@/types/mapv2";
 
 // ---- Ancestry catalog ---------------------------------------------------
 
@@ -282,6 +289,46 @@ export function renumberPins(
   return regions.map((r) =>
     next.has(r.tilesHash) ? { ...r, number: next.get(r.tilesHash) } : r,
   );
+}
+
+/**
+ * Two tiles a wall separates. Walls are between adjacent dots. Horizontal
+ * (ay === by) walls separate the tile above (ax, ay-1) from the tile
+ * below (ax, ay). Vertical (ax === bx) walls separate the tile left
+ * (ax-1, ay) from the tile right (ax, ay). Either tile may be off-map;
+ * callers must bounds-check before using.
+ */
+export function tilesAdjacentToWall(
+  wall: Wall,
+): [[number, number], [number, number]] {
+  if (wall.ay === wall.by) {
+    return [
+      [wall.ax, wall.ay - 1],
+      [wall.ax, wall.ay],
+    ];
+  }
+  return [
+    [wall.ax - 1, wall.ay],
+    [wall.ax, wall.ay],
+  ];
+}
+
+/**
+ * Given an exit-bearing wall and the tile set of the region the player
+ * is leaving, return the tile on the OTHER side. Returns null when both
+ * or neither side is in the source region (ambiguous — e.g. exit on a
+ * map-edge wall where one side is off-map).
+ */
+export function otherSideOfExit(
+  wall: Wall,
+  fromRegionTiles: ReadonlyArray<readonly [number, number]>,
+): [number, number] | null {
+  const [t1, t2] = tilesAdjacentToWall(wall);
+  const t1In = fromRegionTiles.some(([x, y]) => x === t1[0] && y === t1[1]);
+  const t2In = fromRegionTiles.some(([x, y]) => x === t2[0] && y === t2[1]);
+  if (t1In && !t2In) return t2;
+  if (t2In && !t1In) return t1;
+  return null;
 }
 
 /**

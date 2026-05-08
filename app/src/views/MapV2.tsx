@@ -31,6 +31,7 @@ import {
   exitsFromD6,
   findRegionContaining,
   nextPinNumber,
+  otherSideOfExit,
   regionCentroidTile,
   renumberPins,
   rollD6,
@@ -400,6 +401,23 @@ function MapV2Editor({
     { x: number; y: number } | null
   >(null);
 
+  // Story 2.7: exit-tap → 2d6-for-size banner state machine. Idle by
+  // default; advanced by exit-tap routing or the banner itself. The
+  // local `primary` (selected first die before the second tap) lives
+  // alongside so the banner stays purely presentational.
+  const [sizeRollState, setSizeRollState] = useState<SizeRollState>({
+    phase: "idle",
+  });
+  const [sizeRollPrimary, setSizeRollPrimary] = useState<number | null>(null);
+  function openSizePrompt() {
+    setSizeRollPrimary(null);
+    setSizeRollState({ phase: "prompt" });
+  }
+  function dismissSizeRoll() {
+    setSizeRollPrimary(null);
+    setSizeRollState({ phase: "idle" });
+  }
+
   // Latest 2d6 room roll + the user-pinned exit-count D6 (Step 9).
   // Ephemeral — not persisted. `targetTiles` drives the HUD (Step 10).
   const [lastRoll, setLastRoll] = useState<RoomRoll | null>(null);
@@ -513,6 +531,8 @@ function MapV2Editor({
       number: nextPinNumber(map.regions, kind),
       pinnedAt: new Date().toISOString(),
     });
+    // Story 2.7: pinning the new region completes the size-roll flow.
+    dismissSizeRoll();
   }
 
   // Story 2.4: flip a pinned region's kind and renumber every pin so
@@ -974,11 +994,10 @@ function MapV2Editor({
       // pointer may not have been captured (e.g. cancelled by pinch) — fine.
     }
 
-    // Story 2.6: tap-to-jump. Runs BEFORE the tool-specific teardowns
-    // because pan teardown short-circuits with `return` and would
-    // otherwise prevent the jump from firing under the Pan tool. The
-    // gestureMovedRef gate ensures pans, draws, erase strokes, and
-    // clearbox drags don't trigger a jump.
+    // Story 2.6 / 2.7: tap-to-jump and exit-tap routing. Runs BEFORE
+    // the tool-specific teardowns because pan teardown short-circuits
+    // with `return` and would otherwise prevent these from firing
+    // under the Pan tool. gestureMovedRef gates against drags.
     if (
       !gestureMovedRef.current &&
       tool !== "pin" &&
@@ -989,7 +1008,70 @@ function MapV2Editor({
       if (grid) {
         const gx = Math.floor(grid.gx);
         const gy = Math.floor(grid.gy);
-        if (gx >= 0 && gy >= 0 && gx < map.gridW && gy < map.gridH) {
+
+        // Story 2.7: try exit-tap routing first. The token must be in
+        // a pinned region; the tap must land near a wall with an exit
+        // on that region's boundary; the other side decides the route
+        // (jump if known region, size-prompt if unexplored, no-op if
+        // off-map / ambiguous).
+        const tokenPos =
+          map.tokenPosition ?? defaultTokenPosition(map);
+        const currentTiles = findRegionContaining(
+          regions.regions,
+          tokenPos.x,
+          tokenPos.y,
+        );
+        const currentMeta = currentTiles
+          ? map.regions.find((r) => r.tilesHash === tilesHash(currentTiles))
+          : null;
+        let exitHandled = false;
+        if (currentTiles && currentMeta?.kind) {
+          const widx = findWallIndexNear(grid.gx, grid.gy);
+          if (widx >= 0) {
+            const wall = map.walls[widx];
+            if (wall.exit) {
+              const other = otherSideOfExit(wall, currentTiles);
+              if (other) {
+                const [ox, oy] = other;
+                const inBounds =
+                  ox >= 0 &&
+                  oy >= 0 &&
+                  ox < map.gridW &&
+                  oy < map.gridH;
+                if (inBounds) {
+                  const otherTiles = findRegionContaining(
+                    regions.regions,
+                    ox,
+                    oy,
+                  );
+                  if (otherTiles) {
+                    const centroid = regionCentroidTile(otherTiles);
+                    if (centroid) {
+                      onUpdate({
+                        tokenPosition: { x: centroid[0], y: centroid[1] },
+                      });
+                    }
+                    exitHandled = true;
+                  } else {
+                    openSizePrompt();
+                    exitHandled = true;
+                  }
+                }
+                // off-map → no-op
+              }
+            }
+          }
+        }
+
+        // Story 2.6 fallback: tap inside a region (and not consumed by
+        // exit-tap routing) jumps the token to that region's centroid.
+        if (
+          !exitHandled &&
+          gx >= 0 &&
+          gy >= 0 &&
+          gx < map.gridW &&
+          gy < map.gridH
+        ) {
           const tiles = findRegionContaining(regions.regions, gx, gy);
           if (tiles) {
             const centroid = regionCentroidTile(tiles);
@@ -1113,6 +1195,18 @@ function MapV2Editor({
           exitType={exitType}
           onExitType={setExitType}
           className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 lg:bottom-auto lg:left-2 lg:top-2 lg:translate-x-0"
+        />
+        <SizeRollBanner
+          state={sizeRollState}
+          primary={sizeRollPrimary}
+          onPickPrimary={setSizeRollPrimary}
+          onPick={(p, s) =>
+            setSizeRollState({
+              phase: "resolved",
+              roll: classifyRoomRoll(p, s),
+            })
+          }
+          onDismiss={dismissSizeRoll}
         />
         <div
           ref={containerRef}
@@ -1811,6 +1905,90 @@ function PinEditModal({
         </div>
       </div>
     </Modal>
+  );
+}
+
+// Story 2.7: in-map sticky banner for the exit-tap → 2d6-for-size flow.
+// Two phases: "prompt" (Roll 2d6 for size) → "resolved" (dimensions +
+// "draw walls, then pin"). Persists until the user picks a value, pins
+// the new region, or dismisses with ✕.
+type SizeRollState =
+  | { phase: "idle" }
+  | { phase: "prompt" }
+  | { phase: "resolved"; roll: RoomRoll };
+
+function SizeRollBanner({
+  state,
+  primary,
+  onPickPrimary,
+  onPick,
+  onDismiss,
+}: {
+  state: SizeRollState;
+  primary: number | null;
+  onPickPrimary: (n: number) => void;
+  onPick: (primary: number, secondary: number) => void;
+  onDismiss: () => void;
+}) {
+  if (state.phase === "idle") return null;
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Size roll banner"
+      className="pointer-events-auto absolute left-1/2 top-2 z-20 max-w-[min(28rem,90%)] -translate-x-1/2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 shadow-lg dark:border-amber-700 dark:bg-amber-950/80 dark:text-amber-100"
+    >
+      <div className="flex items-start gap-2">
+        <div className="flex-1">
+          {state.phase === "prompt" ? (
+            <div className="space-y-2">
+              <div className="font-medium">Roll 2d6 for size</div>
+              <div className="text-xs">
+                {primary === null
+                  ? "Tap a primary die value:"
+                  : `Primary ${primary} — tap a secondary die value:`}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => {
+                      if (primary === null) onPickPrimary(n);
+                      else onPick(primary, n);
+                    }}
+                    className="h-8 w-8 rounded-md border border-amber-700 bg-white font-mono text-sm font-semibold text-amber-900 hover:bg-amber-100 dark:border-amber-300 dark:bg-amber-900 dark:text-amber-100 dark:hover:bg-amber-800"
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <div className="font-medium">
+                {state.roll.kind === "corridor" ? "Hallway" : "Room"}{" "}
+                {state.roll.primary}×{state.roll.secondary} — draw walls,
+                then pin
+              </div>
+              {state.roll.double && (
+                <div className="text-xs text-amber-800 dark:text-amber-200">
+                  double — re-roll-and-add per rules
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label="Dismiss size roll banner"
+          className="rounded-md border border-amber-300 bg-white px-1.5 py-0 text-amber-800 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-100 dark:hover:bg-amber-800"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
   );
 }
 
