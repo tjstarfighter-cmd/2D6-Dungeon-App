@@ -23,6 +23,7 @@ import {
   SHEET_SUB_TABS,
   type SheetSubTab,
 } from "@/components/SheetTabs";
+import { MapToolsProvider, useMapTools } from "@/components/MapTools";
 import { ToastProvider } from "@/components/Toast";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
@@ -41,7 +42,9 @@ const TablesView = lazy(() => import("@/views/Tables"));
 // Story 1.1 keeps Log on desktop right column only; phone Log access is
 // part of Story 1.13 and intentionally not wired here.
 type PhoneTab = "sheet" | "map" | "tables";
-type MiddleTab = "map" | "combat";
+// "log" is phone-only (the Map tab gains a third inner tab on phone, per
+// design memo §"Map column"). Desktop's [Map][Combat] strip filters it out.
+type MiddleTab = "map" | "combat" | "log";
 type RightTab = "tables" | "log";
 
 // Bridge so descendants (e.g. MapV2's "Start combat" button) can summon the
@@ -149,6 +152,82 @@ function PanelTabBar<T extends string>({
         </button>
       ))}
     </div>
+  );
+}
+
+// Map column tab strip. Desktop shows [Map][Combat]; phone adds a Log
+// inner tab (per design memo §"Map column"). Right side hosts the
+// support buttons that bridge into MapV2 via MapToolsContext.
+function MapAreaTabStrip({
+  active,
+  onChange,
+}: {
+  active: MiddleTab;
+  onChange: (next: MiddleTab) => void;
+}) {
+  const tools = useMapTools();
+  const desktopTabs: { key: MiddleTab; label: string }[] = [
+    { key: "map", label: "Map" },
+    { key: "combat", label: "Combat" },
+  ];
+  const phoneTabs: { key: MiddleTab; label: string }[] = [
+    ...desktopTabs,
+    { key: "log", label: "Log" },
+  ];
+  return (
+    <div className="flex shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-2 py-1 dark:border-zinc-800 dark:bg-zinc-900">
+      <div role="tablist" aria-label="Map area" className="flex items-center gap-1">
+        {/* Phone shows three tabs (Map/Combat/Log); desktop hides Log */}
+        {phoneTabs.map((t) => {
+          const desktopOnly = desktopTabs.some((d) => d.key === t.key);
+          const visibility = desktopOnly ? "" : "lg:hidden";
+          return (
+            <button
+              key={t.key}
+              type="button"
+              role="tab"
+              aria-selected={t.key === active}
+              onClick={() => onChange(t.key)}
+              className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${visibility} ${
+                t.key === active
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="ml-auto flex items-center gap-1">
+        <SupportButton label="Setup" glyph="⚙" onClick={tools.openSetup} />
+        <SupportButton label="Roll" glyph="🎲" onClick={tools.openRoll} />
+        <SupportButton label="Undo" glyph="↶" onClick={tools.undo} />
+        <SupportButton label="Zoom to fit" glyph="⌖" onClick={tools.zoomFit} />
+      </div>
+    </div>
+  );
+}
+
+function SupportButton({
+  label,
+  glyph,
+  onClick,
+}: {
+  label: string;
+  glyph: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+    >
+      {glyph}
+    </button>
   );
 }
 
@@ -311,22 +390,22 @@ export function Shell() {
             <SheetTabs active={sheetSubTab} onChange={setSheetSubTab} />
           </Column>
 
-          {/* Middle: Map / Combat */}
+          {/* Middle: Map / Combat (+ Log inner-tab on phone) */}
           <Column active={phoneTab === "map"} side="middle">
-            <PanelTabBar<MiddleTab>
-              ariaLabel="Map column"
-              tabs={[
-                { key: "map", label: "Map" },
-                { key: "combat", label: "Combat" },
-              ]}
-              active={middleTab}
-              onChange={setMiddleTab}
-            />
-            <div className="relative flex-1 overflow-auto">
-              <Suspense fallback={<Loader />}>
-                {middleTab === "map" ? <MapView /> : <CombatView />}
-              </Suspense>
-            </div>
+            <MapToolsProvider>
+              <MapAreaTabStrip active={middleTab} onChange={setMiddleTab} />
+              <div className="relative flex-1 overflow-auto">
+                <Suspense fallback={<Loader />}>
+                  {middleTab === "combat" ? (
+                    <CombatView />
+                  ) : middleTab === "log" ? (
+                    <LogPlaceholder />
+                  ) : (
+                    <MapView />
+                  )}
+                </Suspense>
+              </div>
+            </MapToolsProvider>
           </Column>
 
           {/* Right: Tables / Log (Notes view as placeholder) */}

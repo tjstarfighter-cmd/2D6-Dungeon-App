@@ -12,6 +12,7 @@ import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useShellNav } from "@/components/Shell";
+import { useRegisterMapTools } from "@/components/MapTools";
 import {
   Button,
   Card,
@@ -352,6 +353,16 @@ function MapV2Editor({
   const [lastRoll, setLastRoll] = useState<RoomRoll | null>(null);
   const [exitRoll, setExitRoll] = useState<number | null>(null);
   const [targetTiles, setTargetTiles] = useState<number | null>(null);
+
+  // Story 1.11 — expose Setup / Roll / Undo / Zoom-to-fit to the Shell's
+  // map-area tab strip. Function declarations below are hoisted so this
+  // resolves without ordering pain.
+  useRegisterMapTools({
+    openSetup: () => setSetupOpen(true),
+    openRoll: () => setRollOpen(true),
+    undo: () => undo(),
+    zoomFit: () => zoomFit(),
+  });
 
   // Stylus palm rejection: any active pen pointer suppresses touch input
   // for the duration. Active stylus reports pointerType="pen", passive
