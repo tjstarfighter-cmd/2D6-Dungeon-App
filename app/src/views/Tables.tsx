@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
-import { NotesPanel } from "@/components/NotesPanel";
 import { useTablesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import {
@@ -268,14 +267,6 @@ function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable 
         ) : (
           <FlatTable table={table} highlightRoll={roll} />
         )}
-      </div>
-
-      <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
-        <NotesPanel
-          compact
-          target={{ kind: "table", id: tableKey }}
-          title={`Notes for ${tableKey}`}
-        />
       </div>
     </Card>
   );

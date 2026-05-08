@@ -30,7 +30,6 @@ import { ToastProvider } from "@/components/Toast";
 const MapView = lazy(() => import("@/views/MapV2"));
 const CombatView = lazy(() => import("@/views/Combat"));
 const TablesView = lazy(() => import("@/views/Tables"));
-const NotesView = lazy(() => import("@/views/Notes")); // placeholder Log surface
 
 // ---- Shell tab state ------------------------------------------------------
 //
@@ -60,6 +59,21 @@ function Loader() {
   return (
     <div className="p-6 text-sm text-zinc-500" role="status" aria-live="polite">
       Loading…
+    </div>
+  );
+}
+
+// Log tab placeholder until the per-room log threads ship in Epic 2.
+// The legacy global Notes view (views/Notes.tsx) was deleted in Story 1.9
+// per AR12; character notes moved into the Sheet's Lore sub-tab.
+function LogPlaceholder() {
+  return (
+    <div className="space-y-3 text-sm text-zinc-500">
+      <p>📌 Tap a pin on the Map to view its log thread.</p>
+      <p className="text-xs">
+        Per-room game logs (rolls, combat summaries, loot, events) ship in
+        Epic 2.
+      </p>
     </div>
   );
 }
@@ -328,7 +342,7 @@ export function Shell() {
             />
             <div className="flex-1 overflow-auto p-4">
               <Suspense fallback={<Loader />}>
-                {rightTab === "tables" ? <TablesView /> : <NotesView />}
+                {rightTab === "tables" ? <TablesView /> : <LogPlaceholder />}
               </Suspense>
             </div>
           </Column>
