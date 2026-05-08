@@ -11,7 +11,11 @@ import {
 import { useLocation } from "react-router-dom";
 
 import { useCharacters } from "@/hooks/useCharacters";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AboutModal } from "@/components/AboutModal";
+import { BackupRestoreModal } from "@/components/BackupRestoreModal";
+import { Header } from "@/components/Header";
+import { HelpModal } from "@/components/HelpModal";
+import { RulesOverlay } from "@/components/RulesOverlay";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -50,44 +54,6 @@ function Loader() {
     <div className="p-6 text-sm text-zinc-500" role="status" aria-live="polite">
       Loading…
     </div>
-  );
-}
-
-// Slim header. Story 1.2 adds the Rules button, install pill, overflow menu,
-// settings, and theme picker; Story 1.1 just keeps the title + a theme
-// toggle on desktop.
-function Header() {
-  return (
-    <header className="flex shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900">
-      <h1 className="text-base font-semibold">
-        2D6 Dungeon
-        <span className="ml-2 text-xs font-normal text-zinc-500">companion</span>
-      </h1>
-      <div className="ml-auto flex items-center gap-2">
-        {/* [⊕] install pill — Story 1.2 wires beforeinstallprompt; for now
-            it's a visible placeholder so the slot is reserved. */}
-        <button
-          type="button"
-          aria-label="Install app"
-          title="Install (Story 1.2)"
-          className="rounded-full border border-zinc-300 bg-white px-2.5 py-0.5 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
-        >
-          ⊕
-        </button>
-        <div className="hidden lg:block">
-          <ThemeToggle />
-        </div>
-        {/* [⋯] overflow menu — phone only; Story 1.2 wires its contents. */}
-        <button
-          type="button"
-          aria-label="More"
-          title="More (Story 1.2)"
-          className="rounded-md border border-zinc-300 bg-white px-3 py-1 text-sm text-zinc-700 hover:bg-zinc-100 lg:hidden dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
-        >
-          ⋯
-        </button>
-      </div>
-    </header>
   );
 }
 
@@ -234,11 +200,14 @@ function PhoneBottomTabs({
   );
 }
 
+type ModalKey = "rules" | "help" | "about" | "backup";
+
 export function Shell() {
   const location = useLocation();
   const [phoneTab, setPhoneTab] = useState<PhoneTab>("map");
   const [middleTab, setMiddleTab] = useState<MiddleTab>("map");
   const [rightTab, setRightTab] = useState<RightTab>("tables");
+  const [modal, setModal] = useState<ModalKey | null>(null);
 
   // URL → tab sync. Old bookmarks (/tables/T1, /map, /combat) and
   // cross-link navigations from Rules markdown still map to the right
@@ -271,10 +240,17 @@ export function Shell() {
     [],
   );
 
+  const closeModal = () => setModal(null);
+
   return (
     <ShellNavContext.Provider value={shellNav}>
       <div className="flex h-[100dvh] flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <Header />
+        <Header
+          onOpenRules={() => setModal("rules")}
+          onOpenHelp={() => setModal("help")}
+          onOpenAbout={() => setModal("about")}
+          onOpenBackup={() => setModal("backup")}
+        />
         <PhoneVitals onTap={() => setPhoneTab("sheet")} />
 
         <div className="flex min-h-0 flex-1">
@@ -326,6 +302,11 @@ export function Shell() {
 
         <PhoneBottomTabs active={phoneTab} onChange={setPhoneTab} />
       </div>
+
+      {modal === "rules" && <RulesOverlay onClose={closeModal} />}
+      {modal === "help" && <HelpModal onClose={closeModal} />}
+      {modal === "about" && <AboutModal onClose={closeModal} />}
+      {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
     </ShellNavContext.Provider>
   );
 }
