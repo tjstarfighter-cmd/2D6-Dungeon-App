@@ -284,6 +284,24 @@ export function renumberPins(
   );
 }
 
+/**
+ * Find which detected region contains the given grid coord, if any.
+ * Linear scan; first match wins. Used by Story 2.6 tap-to-jump to
+ * resolve the tap point into a region for centroid jumping.
+ */
+export function findRegionContaining(
+  regions: ReadonlyArray<ReadonlyArray<readonly [number, number]>>,
+  gx: number,
+  gy: number,
+): ReadonlyArray<readonly [number, number]> | null {
+  for (const tiles of regions) {
+    for (const [tx, ty] of tiles) {
+      if (tx === gx && ty === gy) return tiles;
+    }
+  }
+  return null;
+}
+
 // ---- Character token (Story 2.5) ----------------------------------------
 
 /** Center grid coords. Used as the token default when a map has no

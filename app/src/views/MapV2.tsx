@@ -29,6 +29,7 @@ import {
   defaultTokenPosition,
   detectRegions,
   exitsFromD6,
+  findRegionContaining,
   nextPinNumber,
   regionCentroidTile,
   renumberPins,
@@ -386,6 +387,18 @@ function MapV2Editor({
   // also call setSelectedHash and open the side panel).
   const longPressTimerRef = useRef<number | null>(null);
   const longPressFiredRef = useRef(false);
+
+  // Story 2.6: tap-vs-drag detection at the SVG level. Set to false on
+  // pointerdown and flipped true on pointermove; pointerup uses this to
+  // decide whether the gesture was a tap (eligible for token-jump).
+  const gestureMovedRef = useRef(false);
+
+  // Story 2.6: token free-drag state. `tokenDragPos` (grid coords,
+  // possibly fractional) drives the live visual during drag; on release
+  // we persist via onUpdate({ tokenPosition }). Null when not dragging.
+  const [tokenDragPos, setTokenDragPos] = useState<
+    { x: number; y: number } | null
+  >(null);
 
   // Latest 2d6 room roll + the user-pinned exit-count D6 (Step 9).
   // Ephemeral — not persisted. `targetTiles` drives the HUD (Step 10).
@@ -780,6 +793,10 @@ function MapV2Editor({
   // ---- Pointer plumbing ---------------------------------------------------
 
   function onPointerDown(e: ReactPointerEvent<SVGSVGElement>) {
+    // Story 2.6: reset gesture-moved tracking at the start of every
+    // primary-pointer interaction.
+    gestureMovedRef.current = false;
+
     // Stylus tracking + palm rejection.
     if (e.pointerType === "pen") {
       penPointersRef.current.add(e.pointerId);
@@ -864,6 +881,10 @@ function MapV2Editor({
   }
 
   function onPointerMove(e: ReactPointerEvent<SVGSVGElement>) {
+    // Story 2.6: any move during the gesture means it's a drag, not a
+    // tap. Token-jump is suppressed for drags.
+    gestureMovedRef.current = true;
+
     // Pinch-zoom path takes precedence.
     if (e.pointerType === "touch" && pointersRef.current.has(e.pointerId)) {
       pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -951,6 +972,35 @@ function MapV2Editor({
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
       // pointer may not have been captured (e.g. cancelled by pinch) — fine.
+    }
+
+    // Story 2.6: tap-to-jump. Runs BEFORE the tool-specific teardowns
+    // because pan teardown short-circuits with `return` and would
+    // otherwise prevent the jump from firing under the Pan tool. The
+    // gestureMovedRef gate ensures pans, draws, erase strokes, and
+    // clearbox drags don't trigger a jump.
+    if (
+      !gestureMovedRef.current &&
+      tool !== "pin" &&
+      activeCharacter &&
+      !inPinchSessionRef.current
+    ) {
+      const grid = clientToGrid(e);
+      if (grid) {
+        const gx = Math.floor(grid.gx);
+        const gy = Math.floor(grid.gy);
+        if (gx >= 0 && gy >= 0 && gx < map.gridW && gy < map.gridH) {
+          const tiles = findRegionContaining(regions.regions, gx, gy);
+          if (tiles) {
+            const centroid = regionCentroidTile(tiles);
+            if (centroid) {
+              onUpdate({
+                tokenPosition: { x: centroid[0], y: centroid[1] },
+              });
+            }
+          }
+        }
+      }
     }
 
     // Pan teardown.
@@ -1370,10 +1420,13 @@ function MapV2Editor({
             })}
 
             {/* Story 2.5: character token. Hidden when no active character.
-                Position falls back to the map center until first placed
-                (Story 2.6 wires tap-to-jump and free-drag). */}
+                Position falls back to the map center until first placed.
+                Story 2.6 adds free-drag (pointer capture) and tap-to-jump
+                via the SVG-level handlers. */}
             {activeCharacter && (() => {
-              const pos = map.tokenPosition ?? defaultTokenPosition(map);
+              const persisted =
+                map.tokenPosition ?? defaultTokenPosition(map);
+              const pos = tokenDragPos ?? persisted;
               const tx = (pos.x + 0.5) * CELL;
               const ty = (pos.y + 0.5) * CELL;
               const color = tokenColorFor(activeCharacter.id);
@@ -1381,8 +1434,50 @@ function MapV2Editor({
               return (
                 <g
                   key="character-token"
-                  style={{ pointerEvents: "none" }}
+                  style={{ pointerEvents: "auto", cursor: "grab" }}
                   aria-label={`Character token: ${activeCharacter.name}`}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    try {
+                      e.currentTarget.setPointerCapture(e.pointerId);
+                    } catch {
+                      // setPointerCapture can throw on some browsers
+                      // when called on an SVGGElement; capturing isn't
+                      // strictly required for the move-while-pointer-
+                      // is-down case, so swallow and continue.
+                    }
+                    setTokenDragPos(persisted);
+                  }}
+                  onPointerMove={(e) => {
+                    if (tokenDragPos === null) return;
+                    e.stopPropagation();
+                    const svg = svgRef.current;
+                    if (!svg) return;
+                    const pt = svg.createSVGPoint();
+                    pt.x = e.clientX;
+                    pt.y = e.clientY;
+                    const ctm = svg.getScreenCTM();
+                    if (!ctm) return;
+                    const local = pt.matrixTransform(ctm.inverse());
+                    // Center the token on the cursor (subtract 0.5 since
+                    // rendering offsets by +0.5 cell).
+                    setTokenDragPos({
+                      x: local.x / CELL - 0.5,
+                      y: local.y / CELL - 0.5,
+                    });
+                  }}
+                  onPointerUp={(e) => {
+                    if (tokenDragPos === null) return;
+                    e.stopPropagation();
+                    try {
+                      e.currentTarget.releasePointerCapture(e.pointerId);
+                    } catch {
+                      // see comment in onPointerDown
+                    }
+                    onUpdate({ tokenPosition: tokenDragPos });
+                    setTokenDragPos(null);
+                  }}
+                  onPointerCancel={() => setTokenDragPos(null)}
                 >
                   <circle
                     cx={tx}
@@ -1399,6 +1494,7 @@ function MapV2Editor({
                     fontSize={CELL * 0.55}
                     fontWeight={700}
                     fill="white"
+                    pointerEvents="none"
                   >
                     {initial}
                   </text>
