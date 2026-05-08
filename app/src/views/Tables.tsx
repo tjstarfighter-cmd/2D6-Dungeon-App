@@ -5,6 +5,7 @@ import { Button, Card } from "@/components/ui";
 import { useRegisterTablesSearch } from "@/components/TablesSearch";
 import { useTablesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
+import { useTablesPrefs } from "@/hooks/useTablesPrefs";
 import {
   categoryFor,
   groupByCategory,
@@ -25,6 +26,8 @@ export default function TablesView() {
   const id = useMatch("/tables/:id")?.params.id;
   const [query, setQuery] = useState("");
   const tables = useTablesData();
+  // Story 3.1 — Pinned + Recent sections.
+  const { pinned, recent, togglePinned, pushRecent } = useTablesPrefs();
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);
   const filteredKeys = useMemo(() => {
@@ -68,6 +71,22 @@ export default function TablesView() {
     searchInputRef.current?.select();
   });
 
+  // Story 3.1 — push to Recent when the active table changes (URL-driven).
+  useEffect(() => {
+    if (id && tables[id]) pushRecent(id);
+  }, [id, tables, pushRecent]);
+
+  // Filter Pinned / Recent to ids that still exist in the codex (stale ids
+  // from old saves get hidden silently).
+  const pinnedIds = useMemo(
+    () => Array.from(pinned).filter((k) => tables[k]),
+    [pinned, tables],
+  );
+  const recentIds = useMemo(
+    () => recent.filter((k) => tables[k]),
+    [recent, tables],
+  );
+
   // On phone the list and detail stack vertically, so picking a table from
   // the list leaves you scrolled to the list with the detail off-screen
   // below. Scroll the detail into view whenever the active id changes.
@@ -90,6 +109,51 @@ export default function TablesView() {
             onChange={(e) => setQuery(e.target.value)}
             className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
           />
+          {/* Story 3.1 — NEXT placeholder. Always-empty until later
+              stories drive auto-population (recent rolls / creature
+              picks); render nothing for now so the section reserves
+              no visual space when empty per AC. */}
+
+          {/* Pinned section (hidden when empty per AC). */}
+          {!searching && pinnedIds.length > 0 && (
+            <section aria-label="Pinned tables" className="space-y-1">
+              <h3 className="px-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                ★ Pinned
+              </h3>
+              <ul>
+                {pinnedIds.map((k) => (
+                  <TableRow
+                    key={`pin-${k}`}
+                    id={k}
+                    title={tables[k].title}
+                    pinned={true}
+                    onTogglePin={() => togglePinned(k)}
+                  />
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Recent section (hidden when empty per AC). */}
+          {!searching && recentIds.length > 0 && (
+            <section aria-label="Recent tables" className="space-y-1">
+              <h3 className="px-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Recent
+              </h3>
+              <ul>
+                {recentIds.map((k) => (
+                  <TableRow
+                    key={`rec-${k}`}
+                    id={k}
+                    title={tables[k].title}
+                    pinned={pinned.has(k)}
+                    onTogglePin={() => togglePinned(k)}
+                  />
+                ))}
+              </ul>
+            </section>
+          )}
+
           {grouped.length === 0 && (
             <p className="text-sm text-zinc-500">No tables match.</p>
           )}
@@ -124,21 +188,13 @@ export default function TablesView() {
                 </summary>
                 <ul className="mt-1">
                   {g.keys.map((k) => (
-                    <li key={k}>
-                      <NavLink
-                        to={`/tables/${k}`}
-                        className={({ isActive }) =>
-                          `block rounded px-2 py-1 text-sm ${
-                            isActive
-                              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                          }`
-                        }
-                      >
-                        <span className="font-mono text-xs text-zinc-400">{k}</span>{" "}
-                        {tables[k].title.replace(new RegExp(`^${k}\\s*-\\s*`, "i"), "")}
-                      </NavLink>
-                    </li>
+                    <TableRow
+                      key={k}
+                      id={k}
+                      title={tables[k].title}
+                      pinned={pinned.has(k)}
+                      onTogglePin={() => togglePinned(k)}
+                    />
                   ))}
                 </ul>
               </details>
@@ -156,6 +212,58 @@ export default function TablesView() {
         </div>
       </div>
     </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+function TableRow({
+  id,
+  title,
+  pinned,
+  onTogglePin,
+}: {
+  id: string;
+  title: string;
+  pinned: boolean;
+  onTogglePin: () => void;
+}) {
+  // Strip a leading "ID - " prefix so the visible title isn't redundant
+  // with the small mono ID rendered alongside it.
+  const cleanTitle = title.replace(new RegExp(`^${id}\\s*-\\s*`, "i"), "");
+  return (
+    <li className="flex items-stretch">
+      <NavLink
+        to={`/tables/${id}`}
+        className={({ isActive }) =>
+          `block flex-1 rounded px-2 py-1 text-sm ${
+            isActive
+              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          }`
+        }
+      >
+        <span className="font-mono text-xs text-zinc-400">{id}</span>{" "}
+        {cleanTitle}
+      </NavLink>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onTogglePin();
+        }}
+        aria-label={pinned ? `Unpin ${id}` : `Pin ${id}`}
+        title={pinned ? "Unpin" : "Pin to favorites"}
+        className={`ml-1 shrink-0 rounded px-1.5 text-base ${
+          pinned
+            ? "text-amber-500 hover:text-amber-600"
+            : "text-zinc-300 hover:text-amber-500 dark:text-zinc-600"
+        }`}
+      >
+        {pinned ? "★" : "☆"}
+      </button>
+    </li>
   );
 }
 
