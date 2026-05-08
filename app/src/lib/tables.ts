@@ -189,6 +189,48 @@ export function groupByCategory(
   return result;
 }
 
+// ----- Search ----------------------------------------------------------------
+
+/**
+ * Story 3.2 — relevance-ordered table search. Returns the keys that match
+ * the query (case-insensitive), sorted by tier:
+ *   0. exact ID match
+ *   1. title starts with query
+ *   2. any substring match across ID, title, or notes
+ * Within a tier, ties break alphabetically by ID for stability. Cell
+ * content is NOT searched (per UX-DR17).
+ */
+export function searchTablesByRelevance(
+  tables: Record<string, CodexTable>,
+  query: string,
+): string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  type Hit = { id: string; tier: number };
+  const hits: Hit[] = [];
+  for (const id of Object.keys(tables)) {
+    const t = tables[id];
+    const idLower = id.toLowerCase();
+    const titleLower = t.title.toLowerCase();
+    const notesLower = (t.notes ?? "").toLowerCase();
+    let tier: number | null = null;
+    if (idLower === q) {
+      tier = 0;
+    } else if (titleLower.startsWith(q)) {
+      tier = 1;
+    } else if (
+      idLower.includes(q) ||
+      titleLower.includes(q) ||
+      notesLower.includes(q)
+    ) {
+      tier = 2;
+    }
+    if (tier !== null) hits.push({ id, tier });
+  }
+  hits.sort((a, b) => a.tier - b.tier || a.id.localeCompare(b.id));
+  return hits.map((h) => h.id);
+}
+
 // ----- Display helpers -----------------------------------------------------
 
 /** A table row column may be a value or a nested sub-table (WMT1). */

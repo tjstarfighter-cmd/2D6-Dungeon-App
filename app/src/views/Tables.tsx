@@ -14,6 +14,7 @@ import {
   rollRandom,
   rollValuesFor,
   rowMatchesRoll,
+  searchTablesByRelevance,
   type RollKind,
   type RollValue,
 } from "@/lib/tables";
@@ -87,6 +88,12 @@ export default function TablesView() {
     [recent, tables],
   );
 
+  // Story 3.2 — relevance-ordered flat results when searching.
+  const searchResults = useMemo(
+    () => (query.trim() ? searchTablesByRelevance(tables, query) : []),
+    [query, tables],
+  );
+
   // On phone the list and detail stack vertically, so picking a table from
   // the list leaves you scrolled to the list with the detail off-screen
   // below. Scroll the detail into view whenever the active id changes.
@@ -154,10 +161,35 @@ export default function TablesView() {
             </section>
           )}
 
-          {grouped.length === 0 && (
+          {/* Story 3.2: when searching, render a flat relevance-ordered
+              list instead of the categorized tree (Pinned/Recent are
+              already hidden when searching per Story 3.1 gates). */}
+          {searching && (
+            <section aria-label="Search results">
+              {searchResults.length === 0 ? (
+                <p className="px-2 text-sm text-zinc-500">
+                  No tables match.
+                </p>
+              ) : (
+                <ul>
+                  {searchResults.map((k) => (
+                    <TableRow
+                      key={`s-${k}`}
+                      id={k}
+                      title={tables[k].title}
+                      pinned={pinned.has(k)}
+                      onTogglePin={() => togglePinned(k)}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          {!searching && grouped.length === 0 && (
             <p className="text-sm text-zinc-500">No tables match.</p>
           )}
-          {grouped.map((g) => {
+          {!searching && grouped.map((g) => {
             const isOpen = searching || openCats.has(g.category);
             return (
               <details
