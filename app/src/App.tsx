@@ -1,20 +1,9 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { ShellRoot } from "@/components/ShellRoot";
+import { Shell } from "@/components/Shell";
 
-// Each view is its own chunk so the first paint doesn't pay for
-// react-markdown / remark-gfm / rehype-slug (Rules) up front.
-const SheetView = lazy(() => import("@/views/Sheet"));
-const CombatView = lazy(() => import("@/views/Combat"));
-const TablesView = lazy(() => import("@/views/Tables"));
-const CardsView = lazy(() => import("@/views/Cards"));
-const RulesView = lazy(() => import("@/views/Rules"));
-const NotesView = lazy(() => import("@/views/Notes"));
-const SearchView = lazy(() => import("@/views/Search"));
-const MapView = lazy(() => import("@/views/MapV2"));
-
-// Presenter views render outside Layout — chrome-less, full-bleed for OBS.
+// Presenter views render outside the Shell — chrome-less, full-bleed for OBS.
 const PresentIndex = lazy(() => import("@/views/present/Index"));
 const PresentMap = lazy(() => import("@/views/present/Map"));
 const PresentCard = lazy(() => import("@/views/present/Card"));
@@ -43,19 +32,11 @@ export default function App() {
       <Route path="present/table/:id" element={<Lazy><PresentTable /></Lazy>} />
       <Route path="present/roll" element={<Lazy><PresentRoll /></Lazy>} />
 
-      <Route element={<ShellRoot />}>
-        <Route index element={<Lazy><SheetView /></Lazy>} />
-        <Route path="combat" element={<Lazy><CombatView /></Lazy>} />
-        <Route path="tables" element={<Lazy><TablesView /></Lazy>} />
-        <Route path="tables/:id" element={<Lazy><TablesView /></Lazy>} />
-        <Route path="cards" element={<Lazy><CardsView /></Lazy>} />
-        <Route path="cards/:id" element={<Lazy><CardsView /></Lazy>} />
-        <Route path="rules" element={<Lazy><RulesView /></Lazy>} />
-        <Route path="notes" element={<Lazy><NotesView /></Lazy>} />
-        <Route path="search" element={<Lazy><SearchView /></Lazy>} />
-        <Route path="map" element={<Lazy><MapView /></Lazy>} />
-        <Route path="*" element={<Lazy><SheetView /></Lazy>} />
-      </Route>
+      {/* Everything else lands in the new Shell. The Shell renders Sheet,
+          Map, Combat, Tables, and Log panels directly; legacy URLs like
+          /tables/T1 still route here so Tables can pick up the :id, and
+          the Shell maps the path to the right phone tab. */}
+      <Route path="*" element={<Shell />} />
     </Routes>
   );
 }

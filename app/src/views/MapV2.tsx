@@ -11,7 +11,7 @@ import {
 import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2 } from "@/hooks/useMapsV2";
-import { useOverlayApi } from "@/components/OverlayContext";
+import { useShellNav } from "@/components/Shell";
 import {
   Button,
   Card,
@@ -302,7 +302,7 @@ function MapV2Editor({
 }) {
   const { active: activeCharacter } = useCharacters();
   const { encounter, start: startEncounter } = useEncounter();
-  const { openCombat } = useOverlayApi();
+  const { openCombat } = useShellNav();
 
   const [tool, setTool] = useState<Tool>("pan");
   const [exitType, setExitType] = useState<ExitType>("door");

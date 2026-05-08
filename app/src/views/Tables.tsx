@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, NavLink, useParams } from "react-router-dom";
+import { Link, NavLink, useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
 import { NotesPanel } from "@/components/NotesPanel";
@@ -19,7 +19,10 @@ import {
 import type { CodexTable, TableRow } from "@/types/tables";
 
 export default function TablesView() {
-  const { id } = useParams();
+  // useMatch resolves the table id from the URL whether Tables is mounted
+  // via the legacy /tables/:id route or rendered directly inside the new
+  // shell's right column.
+  const id = useMatch("/tables/:id")?.params.id;
   const [query, setQuery] = useState("");
   const tables = useTablesData();
 
