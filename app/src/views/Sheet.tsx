@@ -102,7 +102,7 @@ function DiceSetField({
 // names is what makes that drawer auto-lock to the right table row.
 const WEAPON_OPTIONS = ["Longsword", "Greataxe", "Heavy Mace"] as const;
 
-function WeaponField({
+export function WeaponField({
   value,
   onChange,
 }: {
