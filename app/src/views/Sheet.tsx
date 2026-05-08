@@ -1051,7 +1051,7 @@ export function ScrollsCard({ character, onPatch }: SectionProps) {
 
 // Scroll picker: MST1 holds the catalog (name, orbit, dispel ds, effect, …);
 // SCT1–SCT4 are the per-tier rolling tables. Same shape as ArmourPicker.
-function ScrollPicker({
+export function ScrollPicker({
   level,
   existing,
   onPick,
@@ -1334,7 +1334,7 @@ export function PotionsCard({ character, onPatch }: SectionProps) {
 }
 
 // Potion picker: MPT1 catalog filtered/grouped by tier from POT1–POT4.
-function PotionPicker({
+export function PotionPicker({
   level,
   existing,
   onPick,

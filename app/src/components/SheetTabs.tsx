@@ -10,11 +10,10 @@ import {
   GodsCard,
   LegendCard,
   ManoeuvresCard,
-  PotionsCard,
   ResourcesCard,
-  ScrollsCard,
   WeaponField,
 } from "@/views/Sheet";
+import { MagicPotionsCard, MagicScrollsCard } from "@/components/MagicCards";
 
 // Story 1.5 — sub-tab navigation under PinnedVitals. Loadout is the
 // default. Stories 1.6–1.9 will swap the body content for proper pickers
@@ -206,8 +205,8 @@ function AddRune({ onAdd }: { onAdd: (rune: string) => void }) {
 function MagicBody({ character, onPatch }: BodyProps) {
   return (
     <>
-      <ScrollsCard character={character} onPatch={onPatch} />
-      <PotionsCard character={character} onPatch={onPatch} />
+      <MagicScrollsCard character={character} onPatch={onPatch} />
+      <MagicPotionsCard character={character} onPatch={onPatch} />
     </>
   );
 }
