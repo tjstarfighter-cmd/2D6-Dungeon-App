@@ -189,6 +189,65 @@ export function groupByCategory(
   return result;
 }
 
+// ----- NEXT references -----------------------------------------------------
+
+/**
+ * Story 3.4 — find table IDs referenced inside a rolled-cell text. Matches
+ * known IDs at word boundaries so "T1" doesn't match inside "T100", and
+ * sorts longest-id-first so e.g. `L1HA_Rooms` wins over `L1HA` if both
+ * exist. Returns the matched ids deduped, preserving first-occurrence
+ * order (so the most-recent source mapping is stable).
+ */
+export function extractReferencedTableIds(
+  text: string,
+  knownIds: ReadonlyArray<string>,
+): string[] {
+  if (!text) return [];
+  // Sort longest first to prevent shorter prefixes from absorbing matches.
+  const idsByLen = [...knownIds].sort((a, b) => b.length - a.length);
+  const seen = new Set<string>();
+  const result: string[] = [];
+  // Track the spans of text already consumed by a longer id so a nested
+  // shorter id (e.g. "AT1" inside "AT1_RANDOM") isn't double-counted.
+  let consumed = "";
+  const lower = text;
+  for (const id of idsByLen) {
+    // \b doesn't behave well across non-word boundaries (`_` is a word
+    // char, so `\bAT1\b` still matches inside `AT1_RANDOM`). Use a
+    // manual boundary check that treats `_` as continuation.
+    const pattern = new RegExp(escapeRegExp(id), "gi");
+    let m: RegExpExecArray | null;
+    while ((m = pattern.exec(lower)) !== null) {
+      const start = m.index;
+      const end = start + m[0].length;
+      const before = start > 0 ? lower[start - 1] : "";
+      const after = end < lower.length ? lower[end] : "";
+      const isWordCh = (c: string) => /[A-Za-z0-9_]/.test(c);
+      if (isWordCh(before) || isWordCh(after)) continue;
+      // Already covered by a longer id at this span?
+      if (
+        consumed.includes(`|${start}-${end}|`) ||
+        [...consumed.matchAll(/\|(\d+)-(\d+)\|/g)].some(
+          (s) =>
+            +s[1] <= start && +s[2] >= end,
+        )
+      ) {
+        continue;
+      }
+      consumed += `|${start}-${end}|`;
+      if (!seen.has(id)) {
+        seen.add(id);
+        result.push(id);
+      }
+    }
+  }
+  return result;
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // ----- Search ----------------------------------------------------------------
 
 /**

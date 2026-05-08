@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
@@ -8,6 +8,7 @@ import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
 import {
   categoryFor,
+  extractReferencedTableIds,
   groupByCategory,
   isNestedRows,
   rollKindFor,
@@ -38,6 +39,41 @@ export default function TablesView() {
       else next.add(k);
       return next;
     });
+
+  // Story 3.4 — NEXT entries. Cascade up to 2 levels deep.
+  const [nextEntries, setNextEntries] = useState<
+    Array<{ id: string; from: string; depth: number }>
+  >([]);
+  const handleResolveRoll = useCallback(
+    (sourceKey: string, matchedText: string) => {
+      const knownIds = Object.keys(tables);
+      const refs = extractReferencedTableIds(matchedText, knownIds).filter(
+        (refId) => refId !== sourceKey,
+      );
+      if (refs.length === 0) return;
+      setNextEntries((prev) => {
+        const sourceEntry = prev.find((e) => e.id === sourceKey);
+        const sourceDepth = sourceEntry?.depth ?? 0;
+        const newDepth = sourceDepth + 1;
+        if (newDepth > 2) return prev;
+        const next = prev.slice();
+        for (const refId of refs) {
+          const idx = next.findIndex((e) => e.id === refId);
+          const entry = { id: refId, from: sourceKey, depth: newDepth };
+          if (idx >= 0) next[idx] = entry;
+          else next.push(entry);
+        }
+        return next;
+      });
+      // Auto-expand cascaded entries so the player sees them ready to roll.
+      setExpanded((s) => {
+        const next = new Set(s);
+        for (const refId of refs) next.add(refId);
+        return next;
+      });
+    },
+    [tables],
+  );
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);
   const filteredKeys = useMemo(() => {
@@ -123,10 +159,33 @@ export default function TablesView() {
             onChange={(e) => setQuery(e.target.value)}
             className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
           />
-          {/* Story 3.1 — NEXT placeholder. Always-empty until later
-              stories drive auto-population (recent rolls / creature
-              picks); render nothing for now so the section reserves
-              no visual space when empty per AC. */}
+          {/* Story 3.4 — NEXT section. Auto-populated when a roll on an
+              expanded table resolves to text containing other table IDs.
+              Hidden when empty per AC. */}
+          {!searching && nextEntries.length > 0 && (
+            <section aria-label="NEXT tables" className="space-y-1">
+              <h3 className="px-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                NEXT
+              </h3>
+              <ul>
+                {nextEntries.map((e) =>
+                  tables[e.id] ? (
+                    <TableRow
+                      key={`next-${e.id}`}
+                      id={e.id}
+                      table={tables[e.id]}
+                      pinned={pinned.has(e.id)}
+                      expanded={expanded.has(e.id)}
+                      onTogglePin={() => togglePinned(e.id)}
+                      onToggleExpand={() => toggleExpand(e.id)}
+                      onResolveRoll={handleResolveRoll}
+                      badge={`from ${e.from}`}
+                    />
+                  ) : null,
+                )}
+              </ul>
+            </section>
+          )}
 
           {/* Pinned section (hidden when empty per AC). */}
           {!searching && pinnedIds.length > 0 && (
@@ -144,6 +203,7 @@ export default function TablesView() {
                     expanded={expanded.has(k)}
                     onTogglePin={() => togglePinned(k)}
                     onToggleExpand={() => toggleExpand(k)}
+                    onResolveRoll={handleResolveRoll}
                   />
                 ))}
               </ul>
@@ -166,6 +226,7 @@ export default function TablesView() {
                     expanded={expanded.has(k)}
                     onTogglePin={() => togglePinned(k)}
                     onToggleExpand={() => toggleExpand(k)}
+                    onResolveRoll={handleResolveRoll}
                   />
                 ))}
               </ul>
@@ -192,6 +253,7 @@ export default function TablesView() {
                       expanded={expanded.has(k)}
                       onTogglePin={() => togglePinned(k)}
                       onToggleExpand={() => toggleExpand(k)}
+                      onResolveRoll={handleResolveRoll}
                     />
                   ))}
                 </ul>
@@ -241,6 +303,7 @@ export default function TablesView() {
                       expanded={expanded.has(k)}
                       onTogglePin={() => togglePinned(k)}
                       onToggleExpand={() => toggleExpand(k)}
+                      onResolveRoll={handleResolveRoll}
                     />
                   ))}
                 </ul>
@@ -262,6 +325,8 @@ function TableRow({
   expanded,
   onTogglePin,
   onToggleExpand,
+  onResolveRoll,
+  badge,
 }: {
   id: string;
   table: CodexTable;
@@ -269,6 +334,8 @@ function TableRow({
   expanded: boolean;
   onTogglePin: () => void;
   onToggleExpand: () => void;
+  onResolveRoll?: (sourceKey: string, matchedText: string) => void;
+  badge?: string;
 }) {
   // Strip a leading "ID - " prefix so the visible title isn't redundant
   // with the small mono ID rendered alongside it.
@@ -299,6 +366,11 @@ function TableRow({
           </span>
           <span className="font-mono text-xs text-zinc-400">{id}</span>
           <span className="truncate">{cleanTitle}</span>
+          {badge && (
+            <span className="ml-auto rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+              {badge}
+            </span>
+          )}
         </button>
         <button
           type="button"
@@ -320,7 +392,11 @@ function TableRow({
       </div>
       {expanded && (
         <div className="my-2">
-          <TableDetail tableKey={id} table={table} />
+          <TableDetail
+            tableKey={id}
+            table={table}
+            onResolveRoll={onResolveRoll}
+          />
         </div>
       )}
     </li>
@@ -329,7 +405,15 @@ function TableRow({
 
 // ---------------------------------------------------------------------------
 
-function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable }) {
+function TableDetail({
+  tableKey,
+  table,
+  onResolveRoll,
+}: {
+  tableKey: string;
+  table: CodexTable;
+  onResolveRoll?: (sourceKey: string, matchedText: string) => void;
+}) {
   const kind = rollKindFor(table);
   const [roll, setRoll] = useState<RollValue | null>(null);
   const { publishResolved: publishRollResolved } = useCurrentRoll();
@@ -337,7 +421,8 @@ function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable 
   // Publish to the OBS roll overlay whenever the user lands on a roll
   // for this table. We summarise the matched row by joining all but the
   // first column (the first column is the roll/range, the rest is the
-  // result the viewer cares about).
+  // result the viewer cares about). Story 3.4 also forwards that text
+  // to onResolveRoll so the parent can mine it for table-id references.
   useEffect(() => {
     if (roll === null) return;
     const matched = table.data.find((r) => rowMatchesRoll(r, roll));
@@ -362,7 +447,10 @@ function TableDetail({ tableKey, table }: { tableKey: string; table: CodexTable 
       value: String(roll),
       result: { headline, sub: tableKey },
     });
-  }, [roll, table, tableKey, kind, publishRollResolved]);
+    if (onResolveRoll && headline !== "(no matching row)") {
+      onResolveRoll(tableKey, headline);
+    }
+  }, [roll, table, tableKey, kind, publishRollResolved, onResolveRoll]);
 
   return (
     <Card>
