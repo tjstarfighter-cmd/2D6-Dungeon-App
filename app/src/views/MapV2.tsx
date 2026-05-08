@@ -10,7 +10,7 @@ import {
 
 import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
-import { useMapsV2 } from "@/hooks/useMapsV2";
+import { useMapsV2, type CreateMapV2Options } from "@/hooks/useMapsV2";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import {
@@ -22,6 +22,8 @@ import {
   TextField,
 } from "@/components/ui";
 import {
+  ANCESTRIES,
+  DEFAULT_ANCESTRY,
   classifyRoomRoll,
   detectRegions,
   exitsFromD6,
@@ -135,7 +137,7 @@ function MapV2Switcher({
   maps: MapDocV2[];
   active: MapDocV2 | null;
   onSelect: (id: string) => void;
-  onCreate: (opts: { name?: string; gridW?: number; gridH?: number }) => void;
+  onCreate: (opts: CreateMapV2Options) => void;
   onDelete: () => void;
 }) {
   const selectId = useId();
@@ -195,9 +197,10 @@ const MAX_GRID = 40;
 function NewMapPicker({
   onCreate,
 }: {
-  onCreate: (opts: { name?: string; gridW?: number; gridH?: number }) => void;
+  onCreate: (opts: CreateMapV2Options) => void;
 }) {
   const [name, setName] = useState("New Map");
+  const [ancestry, setAncestry] = useState<string>(DEFAULT_ANCESTRY);
   // String state so the user can clear the field while typing without it
   // snapping back to 1. Parsed and clamped at commit time.
   const [wStr, setWStr] = useState("25");
@@ -220,6 +223,7 @@ function NewMapPicker({
   function commit(opts: { gridW: number; gridH: number }) {
     onCreate({
       name: name.trim() || "New Map",
+      ancestry,
       gridW: clamp(Math.round(opts.gridW), 1, MAX_GRID),
       gridH: clamp(Math.round(opts.gridH), 1, MAX_GRID),
     });
@@ -230,6 +234,19 @@ function NewMapPicker({
       <div className="flex flex-wrap items-end gap-2">
         <Field label="Name" className="grow min-w-[10rem]">
           <TextField value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+        <Field label="Ancestry">
+          <select
+            value={ancestry}
+            onChange={(e) => setAncestry(e.target.value)}
+            className="block rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          >
+            {ANCESTRIES.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
         </Field>
         <Field label="Width">
           <NumberField
@@ -298,7 +315,7 @@ function MapV2Editor({
   onUpdate: (patch: Partial<MapDocV2>) => void;
   maps: MapDocV2[];
   onSelectMap: (id: string) => void;
-  onCreateMap: (opts: { name?: string; gridW?: number; gridH?: number }) => void;
+  onCreateMap: (opts: CreateMapV2Options) => void;
   onDeleteMap: () => void;
 }) {
   const { active: activeCharacter } = useCharacters();
@@ -1278,11 +1295,27 @@ function MapV2Editor({
                 />
               </Field>
               <Field label="Ancestry">
-                <TextField
+                <select
                   value={map.ancestry}
                   onChange={(e) => onUpdate({ ancestry: e.target.value })}
-                  className="w-32"
-                />
+                  className="block w-40 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                >
+                  {ANCESTRIES.map((a) => (
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
+                  ))}
+                  {/* Legacy / future freeform values: surface as a selectable
+                      option so the stored value stays editable without
+                      forcing a destructive migration (per Story 2.1 AC4). */}
+                  {!ANCESTRIES.includes(
+                    map.ancestry as (typeof ANCESTRIES)[number],
+                  ) && (
+                    <option key="__legacy" value={map.ancestry}>
+                      {map.ancestry || "(unset)"}
+                    </option>
+                  )}
+                </select>
               </Field>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
+import { DEFAULT_ANCESTRY } from "@/lib/mapv2";
 import type { MapDocV2 } from "@/types/mapv2";
 
 const MAPS_KEY = "2d6d.mapsV2";
@@ -39,6 +40,7 @@ function newId(prefix: string): string {
 
 export interface CreateMapV2Options {
   name?: string;
+  ancestry?: string;
   gridW?: number;
   gridH?: number;
 }
@@ -49,7 +51,7 @@ export function createMapDocV2(opts: CreateMapV2Options = {}): MapDocV2 {
     id: newId("mapv2"),
     name: opts.name ?? "New Map",
     level: 1,
-    ancestry: "Human",
+    ancestry: opts.ancestry ?? DEFAULT_ANCESTRY,
     gridW: opts.gridW ?? DEFAULT_GRID_W,
     gridH: opts.gridH ?? DEFAULT_GRID_H,
     walls: [],

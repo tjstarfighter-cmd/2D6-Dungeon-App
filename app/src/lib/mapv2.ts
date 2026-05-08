@@ -4,6 +4,17 @@
 
 import { wallKey, type WallKey } from "@/types/mapv2";
 
+// ---- Ancestry catalog ---------------------------------------------------
+
+/**
+ * Structured ancestry options surfaced in the new-map and edit-map UIs.
+ * Story 2.1 ships only "Human Ancestry"; further entries land as ancestry
+ * expansions ship (Vision-tier per PRD). MapDocV2.ancestry stays typed as
+ * `string` so legacy freeform values keep loading without migration.
+ */
+export const ANCESTRIES = ["Human Ancestry"] as const;
+export const DEFAULT_ANCESTRY: (typeof ANCESTRIES)[number] = "Human Ancestry";
+
 // ---- Tile-set identity --------------------------------------------------
 
 /**
