@@ -179,6 +179,11 @@ export default function TablesView() {
                       onTogglePin={() => togglePinned(e.id)}
                       onToggleExpand={() => toggleExpand(e.id)}
                       onResolveRoll={handleResolveRoll}
+                      onDismiss={() =>
+                        setNextEntries((prev) =>
+                          prev.filter((p) => p.id !== e.id),
+                        )
+                      }
                       badge={`from ${e.from}`}
                     />
                   ) : null,
@@ -326,6 +331,7 @@ function TableRow({
   onTogglePin,
   onToggleExpand,
   onResolveRoll,
+  onDismiss,
   badge,
 }: {
   id: string;
@@ -335,6 +341,7 @@ function TableRow({
   onTogglePin: () => void;
   onToggleExpand: () => void;
   onResolveRoll?: (sourceKey: string, matchedText: string) => void;
+  onDismiss?: () => void;
   badge?: string;
 }) {
   // Strip a leading "ID - " prefix so the visible title isn't redundant
@@ -389,6 +396,21 @@ function TableRow({
         >
           {pinned ? "★" : "☆"}
         </button>
+        {onDismiss && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDismiss();
+            }}
+            aria-label={`Dismiss ${id} from NEXT`}
+            title="Dismiss from NEXT"
+            className="ml-1 shrink-0 rounded px-1.5 text-sm text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          >
+            ✕
+          </button>
+        )}
       </div>
       {expanded && (
         <div className="my-2">
