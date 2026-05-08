@@ -19,7 +19,11 @@ interface Section {
   body: string;
 }
 
-export default function RulesView() {
+export default function RulesView({
+  onInAppNavigate,
+}: {
+  onInAppNavigate?: (href: string) => void;
+} = {}) {
   const location = useLocation();
   const navigate = useNavigate();
   const rulesMd = useRulesData();
@@ -54,7 +58,19 @@ export default function RulesView() {
     });
   }, [location.hash, sections.length]);
 
-  const components = useMemo(() => makeMarkdownComponents(), []);
+  // Story 3.6 — when the user taps a [T1]-style cross-link, close the
+  // Rules overlay so the Tables surface (which the link routes to) is
+  // actually visible. Only fire for /tables/ navigations; anchor links
+  // within the same Rules page must keep Rules open.
+  const components = useMemo(
+    () =>
+      makeMarkdownComponents({
+        onInAppNavigate: (href) => {
+          if (href.startsWith("/tables/")) onInAppNavigate?.(href);
+        },
+      }),
+    [onInAppNavigate],
+  );
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-7xl overflow-x-hidden">

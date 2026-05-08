@@ -129,6 +129,18 @@ export default function TablesView() {
     });
   }, [id, tables, pushRecent]);
 
+  // Story 3.6 — scroll the targeted row into view after it's been added
+  // to expanded/Recent. The first DOM match wins (NEXT renders first), so
+  // a target already in NEXT scrolls there without a duplicate render.
+  // Unknown ids quietly no-op since the selector finds nothing.
+  useEffect(() => {
+    if (!id) return;
+    const target = document.querySelector(
+      `[data-table-row-id="${CSS.escape(id)}"]`,
+    );
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [id, nextEntries, expanded]);
+
   // Filter Pinned / Recent to ids that still exist in the codex (stale ids
   // from old saves get hidden silently).
   const pinnedIds = useMemo(
@@ -351,7 +363,7 @@ function TableRow({
     "",
   );
   return (
-    <li>
+    <li data-table-row-id={id}>
       <div className="flex items-stretch">
         <button
           type="button"

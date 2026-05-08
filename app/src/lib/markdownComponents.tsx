@@ -5,7 +5,19 @@ import { Link } from "react-router-dom";
 // HelpModal.tsx (cheatsheet). Keeping a single factory means typography,
 // link routing, and table styling stay consistent across markdown surfaces.
 
-export function makeMarkdownComponents(): Components {
+export interface MarkdownComponentOptions {
+  /**
+   * Optional callback fired when an in-app link is followed (e.g. a Rules
+   * cross-link to /tables/X). Story 3.6 uses this to close the Rules
+   * overlay so the Tables surface is actually visible after the tap.
+   */
+  onInAppNavigate?: (href: string) => void;
+}
+
+export function makeMarkdownComponents(
+  options: MarkdownComponentOptions = {},
+): Components {
+  const { onInAppNavigate } = options;
   return {
     h1: (props) => (
       <h1 className="mb-4 mt-6 text-3xl font-bold tracking-tight" {...props} />
@@ -41,7 +53,11 @@ export function makeMarkdownComponents(): Components {
       // anchors stay as plain <a>.
       if (typeof href === "string" && href.startsWith("/")) {
         return (
-          <Link to={href} className={cls}>
+          <Link
+            to={href}
+            className={cls}
+            onClick={() => onInAppNavigate?.(href)}
+          >
             {children}
           </Link>
         );

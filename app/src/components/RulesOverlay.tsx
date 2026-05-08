@@ -44,7 +44,7 @@ export function RulesOverlay({ onClose }: { onClose: () => void }) {
             </div>
           }
         >
-          <RulesView />
+          <RulesView onInAppNavigate={onClose} />
         </Suspense>
       </div>
     </div>
