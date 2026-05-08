@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, NavLink, useMatch } from "react-router-dom";
+import { useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
 import { useRegisterTablesSearch } from "@/components/TablesSearch";
@@ -29,6 +29,15 @@ export default function TablesView() {
   const tables = useTablesData();
   // Story 3.1 — Pinned + Recent sections.
   const { pinned, recent, togglePinned, pushRecent } = useTablesPrefs();
+  // Story 3.3 — inline expansion. Multiple tables can be open at once.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  const toggleExpand = (k: string) =>
+    setExpanded((s) => {
+      const next = new Set(s);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);
   const filteredKeys = useMemo(() => {
@@ -45,8 +54,6 @@ export default function TablesView() {
   }, [query, allKeys]);
 
   const grouped = useMemo(() => groupByCategory(filteredKeys), [filteredKeys]);
-
-  const active = id ? tables[id] : undefined;
 
   // Collapsible category groups in the list. Default closed; auto-open the
   // category containing the active table; force-open all categories while
@@ -73,8 +80,17 @@ export default function TablesView() {
   });
 
   // Story 3.1 — push to Recent when the active table changes (URL-driven).
+  // Story 3.3 — also auto-expand the URL id so /tables/:id deep-links from
+  // Rules markdown still surface that table inline.
   useEffect(() => {
-    if (id && tables[id]) pushRecent(id);
+    if (!id || !tables[id]) return;
+    pushRecent(id);
+    setExpanded((s) => {
+      if (s.has(id)) return s;
+      const next = new Set(s);
+      next.add(id);
+      return next;
+    });
   }, [id, tables, pushRecent]);
 
   // Filter Pinned / Recent to ids that still exist in the codex (stale ids
@@ -94,20 +110,11 @@ export default function TablesView() {
     [query, tables],
   );
 
-  // On phone the list and detail stack vertically, so picking a table from
-  // the list leaves you scrolled to the list with the detail off-screen
-  // below. Scroll the detail into view whenever the active id changes.
-  const detailRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (!id) return;
-    detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [id]);
 
   return (
-    <section className="mx-auto max-w-7xl">
-      <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
-        {/* List */}
-        <div className="space-y-3 lg:sticky lg:top-0 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-auto lg:pr-2">
+    <section>
+      <div>
+        <div className="space-y-3">
           <input
             ref={searchInputRef}
             type="search"
@@ -132,9 +139,11 @@ export default function TablesView() {
                   <TableRow
                     key={`pin-${k}`}
                     id={k}
-                    title={tables[k].title}
+                    table={tables[k]}
                     pinned={true}
+                    expanded={expanded.has(k)}
                     onTogglePin={() => togglePinned(k)}
+                    onToggleExpand={() => toggleExpand(k)}
                   />
                 ))}
               </ul>
@@ -152,9 +161,11 @@ export default function TablesView() {
                   <TableRow
                     key={`rec-${k}`}
                     id={k}
-                    title={tables[k].title}
+                    table={tables[k]}
                     pinned={pinned.has(k)}
+                    expanded={expanded.has(k)}
                     onTogglePin={() => togglePinned(k)}
+                    onToggleExpand={() => toggleExpand(k)}
                   />
                 ))}
               </ul>
@@ -176,9 +187,11 @@ export default function TablesView() {
                     <TableRow
                       key={`s-${k}`}
                       id={k}
-                      title={tables[k].title}
+                      table={tables[k]}
                       pinned={pinned.has(k)}
+                      expanded={expanded.has(k)}
                       onTogglePin={() => togglePinned(k)}
+                      onToggleExpand={() => toggleExpand(k)}
                     />
                   ))}
                 </ul>
@@ -223,24 +236,17 @@ export default function TablesView() {
                     <TableRow
                       key={k}
                       id={k}
-                      title={tables[k].title}
+                      table={tables[k]}
                       pinned={pinned.has(k)}
+                      expanded={expanded.has(k)}
                       onTogglePin={() => togglePinned(k)}
+                      onToggleExpand={() => toggleExpand(k)}
                     />
                   ))}
                 </ul>
               </details>
             );
           })}
-        </div>
-
-        {/* Detail */}
-        <div ref={detailRef} className="min-w-0 scroll-mt-4">
-          {!active ? (
-            <IntroPanel />
-          ) : (
-            <TableDetail tableKey={id!} table={active} />
-          )}
         </div>
       </div>
     </section>
@@ -251,84 +257,73 @@ export default function TablesView() {
 
 function TableRow({
   id,
-  title,
+  table,
   pinned,
+  expanded,
   onTogglePin,
+  onToggleExpand,
 }: {
   id: string;
-  title: string;
+  table: CodexTable;
   pinned: boolean;
+  expanded: boolean;
   onTogglePin: () => void;
+  onToggleExpand: () => void;
 }) {
   // Strip a leading "ID - " prefix so the visible title isn't redundant
   // with the small mono ID rendered alongside it.
-  const cleanTitle = title.replace(new RegExp(`^${id}\\s*-\\s*`, "i"), "");
-  return (
-    <li className="flex items-stretch">
-      <NavLink
-        to={`/tables/${id}`}
-        className={({ isActive }) =>
-          `block flex-1 rounded px-2 py-1 text-sm ${
-            isActive
-              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          }`
-        }
-      >
-        <span className="font-mono text-xs text-zinc-400">{id}</span>{" "}
-        {cleanTitle}
-      </NavLink>
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onTogglePin();
-        }}
-        aria-label={pinned ? `Unpin ${id}` : `Pin ${id}`}
-        title={pinned ? "Unpin" : "Pin to favorites"}
-        className={`ml-1 shrink-0 rounded px-1.5 text-base ${
-          pinned
-            ? "text-amber-500 hover:text-amber-600"
-            : "text-zinc-300 hover:text-amber-500 dark:text-zinc-600"
-        }`}
-      >
-        {pinned ? "★" : "☆"}
-      </button>
-    </li>
+  const cleanTitle = table.title.replace(
+    new RegExp(`^${id}\\s*-\\s*`, "i"),
+    "",
   );
-}
-
-// ---------------------------------------------------------------------------
-
-function IntroPanel() {
-  const tables = useTablesData();
-  const sample = ["L1HA_Rooms", "AT1", "WMT1", "MIT1", "ENP1"];
   return (
-    <Card title="Tables">
-      <p className="text-sm">
-        Pick a table from the list. <strong>Lookup mode</strong> is the default
-        — tap your rolled value to highlight the matching row. The
-        &quot;Roll for me&quot; button is there if you'd rather the app rolled.
-      </p>
-      <div className="mt-4">
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-          Try one of these
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {sample.map((k) => (
-            <Link
-              key={k}
-              to={`/tables/${k}`}
-              className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-            >
-              <span className="font-mono text-xs text-zinc-400">{k}</span>{" "}
-              {tables[k].title}
-            </Link>
-          ))}
-        </div>
+    <li>
+      <div className="flex items-stretch">
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          aria-expanded={expanded}
+          className={`flex flex-1 items-center gap-1 rounded px-2 py-1 text-left text-sm ${
+            expanded
+              ? "bg-zinc-200 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
+              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`text-[0.7em] text-zinc-400 transition-transform ${
+              expanded ? "rotate-90" : ""
+            }`}
+          >
+            ▸
+          </span>
+          <span className="font-mono text-xs text-zinc-400">{id}</span>
+          <span className="truncate">{cleanTitle}</span>
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onTogglePin();
+          }}
+          aria-label={pinned ? `Unpin ${id}` : `Pin ${id}`}
+          title={pinned ? "Unpin" : "Pin to favorites"}
+          className={`ml-1 shrink-0 rounded px-1.5 text-base ${
+            pinned
+              ? "text-amber-500 hover:text-amber-600"
+              : "text-zinc-300 hover:text-amber-500 dark:text-zinc-600"
+          }`}
+        >
+          {pinned ? "★" : "☆"}
+        </button>
       </div>
-    </Card>
+      {expanded && (
+        <div className="my-2">
+          <TableDetail tableKey={id} table={table} />
+        </div>
+      )}
+    </li>
   );
 }
 
