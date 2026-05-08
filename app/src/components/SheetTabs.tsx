@@ -6,14 +6,17 @@ import { NotesPanel } from "@/components/NotesPanel";
 import { Button, Card, Field, TextField } from "@/components/ui";
 import {
   ArmourCard,
-  BackpackCard,
   GodsCard,
   LegendCard,
   ManoeuvresCard,
-  ResourcesCard,
   WeaponField,
 } from "@/views/Sheet";
 import { MagicPotionsCard, MagicScrollsCard } from "@/components/MagicCards";
+import {
+  PackBackpackCard,
+  PackResourcesCard,
+  SideQuestsCard,
+} from "@/components/PackCards";
 
 // Story 1.5 — sub-tab navigation under PinnedVitals. Loadout is the
 // default. Stories 1.6–1.9 will swap the body content for proper pickers
@@ -214,8 +217,9 @@ function MagicBody({ character, onPatch }: BodyProps) {
 function PackBody({ character, onPatch }: BodyProps) {
   return (
     <>
-      <ResourcesCard character={character} onPatch={onPatch} />
-      <BackpackCard character={character} onPatch={onPatch} />
+      <PackBackpackCard character={character} onPatch={onPatch} />
+      <PackResourcesCard character={character} onPatch={onPatch} />
+      <SideQuestsCard character={character} onPatch={onPatch} />
     </>
   );
 }

@@ -1,4 +1,9 @@
-import { DEFAULT_RUN_MODE, type Character, type RunMode } from "@/types/character";
+import {
+  DEFAULT_RUN_MODE,
+  type Character,
+  type RunMode,
+  type SideQuest,
+} from "@/types/character";
 
 // The six subterranean gods, in the order they appear on the physical sheet.
 // Names match the card folder filenames in docs/2D6 Dungeon Cards/God Cards/.
@@ -15,7 +20,45 @@ export type GodName = (typeof GODS)[number];
 
 export const STATUS_PIPS = 7; // Bloodied / Soaked have 7 boxes each on the sheet.
 export const LEGEND_LEVELS = 10;
-export const LARGE_ITEM_SLOTS = 10;
+export const LARGE_ITEM_SLOTS = 5;
+
+function genId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+/**
+ * Normalise a stored character payload to the current schema. Used on read
+ * so the rest of the app can rely on typed fields without scattering migration
+ * checks. Currently handles the sideQuests string → SideQuest[] migration
+ * (Story 1.8).
+ */
+export function normalizeCharacter(raw: unknown): Character {
+  // Defensive cast — storage values come from JSON.parse and may predate the
+  // current schema. We trust the rest of the shape (everything else has
+  // been around since the rewrite) and only patch fields known to drift.
+  const c = raw as Omit<Character, "sideQuests"> & { sideQuests: unknown };
+
+  let sideQuests: SideQuest[];
+  const rawQuests = c.sideQuests;
+  if (Array.isArray(rawQuests)) {
+    sideQuests = rawQuests as SideQuest[];
+  } else if (typeof rawQuests === "string" && rawQuests.trim()) {
+    sideQuests = [
+      {
+        id: genId(),
+        text: rawQuests.trim(),
+        status: "active",
+        createdAt: c.createdAt ?? new Date().toISOString(),
+      },
+    ];
+  } else {
+    sideQuests = [];
+  }
+
+  return { ...c, sideQuests } as Character;
+}
 
 /** Rules: HP baseline = 10 × level. Used by the "set baseline from level" affordance. */
 export function baselineHpForLevel(level: number): number {
@@ -31,10 +74,7 @@ export function getRunMode(character: Character | null | undefined): RunMode {
 export function createCharacter(name = "New Adventurer"): Character {
   const now = new Date().toISOString();
   return {
-    id:
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `c-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id: genId(),
     name,
     level: 1,
     hp: { current: 10, baseline: 10 },
@@ -55,7 +95,7 @@ export function createCharacter(name = "New Adventurer"): Character {
     coins: { gc: 0, sc: 0, cc: 0 },
     treasure: "",
     liberatedPrisoners: 0,
-    sideQuests: "",
+    sideQuests: [],
     favour: Object.fromEntries(GODS.map((g) => [g, 0])),
     currentRun: { mode: DEFAULT_RUN_MODE },
     backpack: {

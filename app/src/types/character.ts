@@ -42,6 +42,17 @@ export interface StatusConditions {
   pneumonia: boolean;
 }
 
+export type SideQuestStatus = "active" | "complete" | "abandoned";
+
+export interface SideQuest {
+  id: string;
+  text: string;
+  description?: string;
+  status: SideQuestStatus;
+  createdAt: string;
+  completedAt?: string;
+}
+
 export interface Backpack {
   largeItems: string[];   // up to 10 numbered slots
   smallItems: string;     // free-form
@@ -70,7 +81,7 @@ export interface Character {
   coins: Coins;
   treasure: string;
   liberatedPrisoners: number;
-  sideQuests: string;
+  sideQuests: SideQuest[];
   favour: Record<string, number>;  // god name -> Favour Points
   backpack: Backpack;
   // Per-run state. `mode` is the shell mode for this run:

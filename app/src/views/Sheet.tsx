@@ -1587,25 +1587,16 @@ export function ResourcesCard({ character, onPatch }: SectionProps) {
           onChange={(e) => onPatch({ treasure: e.target.value })}
         />
       </Field>
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div>
-          <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500">
-            Liberated Prisoners
-          </span>
-          <Stepper
-            value={character.liberatedPrisoners}
-            onChange={(n) => onPatch({ liberatedPrisoners: n })}
-            ariaLabel="Liberated prisoners"
-            width="w-16"
-          />
-        </div>
-        <Field label="Side Quests">
-          <TextArea
-            rows={2}
-            value={character.sideQuests}
-            onChange={(e) => onPatch({ sideQuests: e.target.value })}
-          />
-        </Field>
+      <div className="mt-3">
+        <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500">
+          Liberated Prisoners
+        </span>
+        <Stepper
+          value={character.liberatedPrisoners}
+          onChange={(n) => onPatch({ liberatedPrisoners: n })}
+          ariaLabel="Liberated prisoners"
+          width="w-16"
+        />
       </div>
     </Card>
   );

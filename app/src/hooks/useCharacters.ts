@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 import type { Character } from "@/types/character";
-import { createCharacter } from "@/lib/character";
+import { createCharacter, normalizeCharacter } from "@/lib/character";
 
 const CHARS_KEY = "2d6d.characters";
 const ACTIVE_KEY = "2d6d.activeCharacter";
@@ -28,7 +28,17 @@ function writeJson(key: string, value: unknown): void {
 // Two stores (characters map + active id) sharing the same hook surface.
 // useSyncExternalStore keeps every consumer in sync without a Provider.
 
-let storeChars: CharactersById = readJson<CharactersById>(CHARS_KEY, {});
+let storeChars: CharactersById = normalizeStore(
+  readJson<CharactersById>(CHARS_KEY, {}),
+);
+
+function normalizeStore(raw: CharactersById): CharactersById {
+  // Run each character through the schema normaliser so legacy fields
+  // (e.g. sideQuests as string before Story 1.8) are migrated on read.
+  const out: CharactersById = {};
+  for (const [id, c] of Object.entries(raw)) out[id] = normalizeCharacter(c);
+  return out;
+}
 let storeActive: string | null = readJson<string | null>(ACTIVE_KEY, null);
 
 const charsListeners = new Set<() => void>();
@@ -132,7 +142,7 @@ export function useCharacters(): UseCharactersResult {
   const replaceAll = useCallback(
     (next: Character[], newActiveId?: string) => {
       const map: CharactersById = {};
-      for (const c of next) map[c.id] = c;
+      for (const c of next) map[c.id] = normalizeCharacter(c);
       setChars(map);
       setActiveStore(newActiveId ?? next[0]?.id ?? null);
     },

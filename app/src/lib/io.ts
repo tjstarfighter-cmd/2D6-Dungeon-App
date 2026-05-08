@@ -1,6 +1,7 @@
 import type { Character } from "@/types/character";
 import type { MapDocV2 } from "@/types/mapv2";
 import type { Note } from "@/types/notes";
+import { normalizeCharacter } from "@/lib/character";
 
 // Bumped to 4 with the dot-grid map rewrite: the maps field is now
 // MapDocV2[] (walls + regions, schema:2). Backups from versions <=3
@@ -101,7 +102,7 @@ export function parseImport(text: string): ImportResult {
       errors.push(`Character ${i}: missing required fields (id, name)`);
       return;
     }
-    characters.push(c);
+    characters.push(normalizeCharacter(c));
   });
 
   const notes: Note[] = [];
