@@ -16,6 +16,7 @@ import { BackupRestoreModal } from "@/components/BackupRestoreModal";
 import { Header } from "@/components/Header";
 import { HelpModal } from "@/components/HelpModal";
 import { RulesOverlay } from "@/components/RulesOverlay";
+import { ToastProvider } from "@/components/Toast";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -244,6 +245,7 @@ export function Shell() {
 
   return (
     <ShellNavContext.Provider value={shellNav}>
+     <ToastProvider>
       <div className="flex h-[100dvh] flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Header
           onOpenRules={() => setModal("rules")}
@@ -307,6 +309,7 @@ export function Shell() {
       {modal === "help" && <HelpModal onClose={closeModal} />}
       {modal === "about" && <AboutModal onClose={closeModal} />}
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
+     </ToastProvider>
     </ShellNavContext.Provider>
   );
 }
