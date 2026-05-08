@@ -13,8 +13,10 @@ import { useLocation } from "react-router-dom";
 import { useCharacters } from "@/hooks/useCharacters";
 import { AboutModal } from "@/components/AboutModal";
 import { BackupRestoreModal } from "@/components/BackupRestoreModal";
+import { CharacterSwitcherModal } from "@/components/CharacterSwitcherModal";
 import { Header } from "@/components/Header";
 import { HelpModal } from "@/components/HelpModal";
+import { PinnedVitals } from "@/components/PinnedVitals";
 import { RulesOverlay } from "@/components/RulesOverlay";
 import { ToastProvider } from "@/components/Toast";
 
@@ -201,7 +203,7 @@ function PhoneBottomTabs({
   );
 }
 
-type ModalKey = "rules" | "help" | "about" | "backup";
+type ModalKey = "rules" | "help" | "about" | "backup" | "switcher";
 
 export function Shell() {
   const location = useLocation();
@@ -256,8 +258,10 @@ export function Shell() {
         <PhoneVitals onTap={() => setPhoneTab("sheet")} />
 
         <div className="flex min-h-0 flex-1">
-          {/* Sheet column */}
+          {/* Sheet column — pinned vitals stay above the scrollable
+              content (Stories 1.5–1.9 turn the lower body into sub-tabs). */}
           <Column active={phoneTab === "sheet"} side="left">
+            <PinnedVitals onOpenSwitcher={() => setModal("switcher")} />
             <div className="flex-1 overflow-auto p-4">
               <Suspense fallback={<Loader />}>
                 <SheetView />
@@ -309,6 +313,7 @@ export function Shell() {
       {modal === "help" && <HelpModal onClose={closeModal} />}
       {modal === "about" && <AboutModal onClose={closeModal} />}
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
+      {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
      </ToastProvider>
     </ShellNavContext.Provider>
   );
