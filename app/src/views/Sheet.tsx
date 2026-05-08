@@ -257,7 +257,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
 
 // -- Identity & stats -------------------------------------------------------
 
-function IdentityAndStats({ character, onPatch }: SectionProps) {
+export function IdentityAndStats({ character, onPatch }: SectionProps) {
   function patchHp(patch: Partial<Character["hp"]>) {
     onPatch({ hp: { ...character.hp, ...patch } });
   }
@@ -368,7 +368,7 @@ function IdentityAndStats({ character, onPatch }: SectionProps) {
 
 // -- Manoeuvres -------------------------------------------------------------
 
-function ManoeuvresCard({ character, onPatch }: SectionProps) {
+export function ManoeuvresCard({ character, onPatch }: SectionProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   // Warm the tables chunk so opening the picker doesn't suspend visibly.
@@ -664,7 +664,7 @@ function ManoeuvrePicker({
 
 // -- Armour -----------------------------------------------------------------
 
-function ArmourCard({ character, onPatch }: SectionProps) {
+export function ArmourCard({ character, onPatch }: SectionProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
@@ -942,7 +942,7 @@ function ArmourPicker({
 
 // -- Magic Scrolls ----------------------------------------------------------
 
-function ScrollsCard({ character, onPatch }: SectionProps) {
+export function ScrollsCard({ character, onPatch }: SectionProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
@@ -1228,7 +1228,7 @@ function ScrollPicker({
 
 // -- Magic Potions ----------------------------------------------------------
 
-function PotionsCard({ character, onPatch }: SectionProps) {
+export function PotionsCard({ character, onPatch }: SectionProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const atCap = character.potions.length >= 5;
 
@@ -1506,7 +1506,7 @@ function PotionPicker({
 
 // -- Status -----------------------------------------------------------------
 
-function StatusCard({ character, onPatch }: SectionProps) {
+export function StatusCard({ character, onPatch }: SectionProps) {
   function patchStatus(patch: Partial<Character["status"]>) {
     onPatch({ status: { ...character.status, ...patch } });
   }
@@ -1554,7 +1554,7 @@ function StatusCard({ character, onPatch }: SectionProps) {
 
 // -- Resources --------------------------------------------------------------
 
-function ResourcesCard({ character, onPatch }: SectionProps) {
+export function ResourcesCard({ character, onPatch }: SectionProps) {
   function patchCoins(patch: Partial<Character["coins"]>) {
     onPatch({ coins: { ...character.coins, ...patch } });
   }
@@ -1613,7 +1613,7 @@ function ResourcesCard({ character, onPatch }: SectionProps) {
 
 // -- Gods -------------------------------------------------------------------
 
-function GodsCard({ character, onPatch }: SectionProps) {
+export function GodsCard({ character, onPatch }: SectionProps) {
   function setFavour(god: string, n: number) {
     onPatch({ favour: { ...character.favour, [god]: n } });
   }
@@ -1639,7 +1639,7 @@ function GodsCard({ character, onPatch }: SectionProps) {
 
 // -- Legend Status Tracker --------------------------------------------------
 
-function LegendCard({ character, onPatch }: SectionProps) {
+export function LegendCard({ character, onPatch }: SectionProps) {
   function toggle(i: number) {
     const next = character.legendLevels.slice();
     next[i] = !next[i];
@@ -1674,7 +1674,7 @@ function LegendCard({ character, onPatch }: SectionProps) {
 
 // -- Backpack ---------------------------------------------------------------
 
-function BackpackCard({ character, onPatch }: SectionProps) {
+export function BackpackCard({ character, onPatch }: SectionProps) {
   function patchBackpack(patch: Partial<Character["backpack"]>) {
     onPatch({ backpack: { ...character.backpack, ...patch } });
   }

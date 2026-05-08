@@ -18,11 +18,15 @@ import { Header } from "@/components/Header";
 import { HelpModal } from "@/components/HelpModal";
 import { PinnedVitals } from "@/components/PinnedVitals";
 import { RulesOverlay } from "@/components/RulesOverlay";
+import {
+  SheetTabs,
+  SHEET_SUB_TABS,
+  type SheetSubTab,
+} from "@/components/SheetTabs";
 import { ToastProvider } from "@/components/Toast";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
-const SheetView = lazy(() => import("@/views/Sheet"));
 const MapView = lazy(() => import("@/views/MapV2"));
 const CombatView = lazy(() => import("@/views/Combat"));
 const TablesView = lazy(() => import("@/views/Tables"));
@@ -210,6 +214,7 @@ export function Shell() {
   const [phoneTab, setPhoneTab] = useState<PhoneTab>("map");
   const [middleTab, setMiddleTab] = useState<MiddleTab>("map");
   const [rightTab, setRightTab] = useState<RightTab>("tables");
+  const [sheetSubTab, setSheetSubTab] = useState<SheetSubTab>("loadout");
   const [modal, setModal] = useState<ModalKey | null>(null);
 
   // URL → tab sync. Old bookmarks (/tables/T1, /map, /combat) and
@@ -232,6 +237,32 @@ export function Shell() {
       setRightTab("log");
     }
   }, [location.pathname]);
+
+  // Cmd/Ctrl + 1..4 → Sheet sub-tab. Skip when an editable element has
+  // focus so we don't hijack typed digits, and skip when the modifier key
+  // also matches a browser shortcut (Cmd+1 → first tab on macOS) only
+  // when the user is actually typing.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if (e.shiftKey || e.altKey) return;
+      const idx = SHEET_SUB_TABS.findIndex((t) => t.shortcut === e.key);
+      if (idx === -1) return;
+      const target = e.target;
+      if (
+        target instanceof HTMLElement &&
+        target.matches("input, textarea, [contenteditable='true']")
+      ) {
+        return;
+      }
+      e.preventDefault();
+      setSheetSubTab(SHEET_SUB_TABS[idx].key);
+      // Phone affordance: bring the Sheet panel forward.
+      setPhoneTab("sheet");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const shellNav = useMemo<ShellNavApi>(
     () => ({
@@ -258,15 +289,12 @@ export function Shell() {
         <PhoneVitals onTap={() => setPhoneTab("sheet")} />
 
         <div className="flex min-h-0 flex-1">
-          {/* Sheet column — pinned vitals stay above the scrollable
-              content (Stories 1.5–1.9 turn the lower body into sub-tabs). */}
+          {/* Sheet column — pinned vitals stay above; sub-tabs below
+              swap Loadout / Magic / Pack / Lore content. Stories 1.6–1.9
+              replace each tab's body. */}
           <Column active={phoneTab === "sheet"} side="left">
             <PinnedVitals onOpenSwitcher={() => setModal("switcher")} />
-            <div className="flex-1 overflow-auto p-4">
-              <Suspense fallback={<Loader />}>
-                <SheetView />
-              </Suspense>
-            </div>
+            <SheetTabs active={sheetSubTab} onChange={setSheetSubTab} />
           </Column>
 
           {/* Middle: Map / Combat */}
