@@ -51,7 +51,7 @@ const SNAP_RADIUS = 0.45; // grid units (touch / mouse)
 const SNAP_RADIUS_PEN = 0.3; // tighter snap for stylus precision
 const ERASE_RADIUS = 0.55; // grid units
 
-type Tool = "pan" | "draw" | "erase" | "exit" | "clearbox";
+type Tool = "pan" | "draw" | "erase" | "exit" | "clearbox" | "pin";
 
 // Snapshot-based: each wall-modifying action pushes the pre-state walls.
 // In-memory only, so the size cost is acceptable (~80B per wall × ~200 walls
@@ -942,12 +942,6 @@ function MapV2Editor({
     <div className="w-full min-w-0 space-y-4 overflow-x-hidden">
       <Card className="w-full min-w-0 overflow-x-hidden">
         <div className="flex w-full min-w-0 flex-wrap items-center gap-2">
-          <ToolPalette
-            tool={tool}
-            onTool={setTool}
-            exitType={exitType}
-            onExitType={setExitType}
-          />
           <Button onClick={undo} disabled={undoCount === 0} title="Undo last stroke">
             ↶ Undo
           </Button>
@@ -1003,9 +997,21 @@ function MapV2Editor({
           </div>
         )}
 
+        {/* Story 2.2: floating tool palette over the canvas. The relative
+            wrapper anchors the absolute toolbar so it stays put regardless
+            of canvas scroll. Desktop: vertical stack at left edge. Phone:
+            horizontal strip pinned to the bottom of the map area. */}
+        <div className="relative mt-3">
+        <ToolPalette
+          tool={tool}
+          onTool={setTool}
+          exitType={exitType}
+          onExitType={setExitType}
+          className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 lg:bottom-auto lg:left-2 lg:top-2 lg:translate-x-0"
+        />
         <div
           ref={containerRef}
-          className="mt-3 w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
+          className="w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <svg
             ref={svgRef}
@@ -1209,6 +1215,7 @@ function MapV2Editor({
             })}
           </svg>
         </div>
+        </div>
         <p className="mt-2 text-xs text-zinc-500">
           {targetTiles !== null && (
             <span
@@ -1392,18 +1399,21 @@ function ToolPalette({
   onTool,
   exitType,
   onExitType,
+  className = "",
 }: {
   tool: Tool;
   onTool: (t: Tool) => void;
   exitType: ExitType;
   onExitType: (t: ExitType) => void;
+  className?: string;
 }) {
-  const tools: { id: Tool; label: string; hint: string }[] = [
-    { id: "pan", label: "Pan", hint: "Drag to move the map. Two-finger pinch to zoom." },
-    { id: "draw", label: "Draw", hint: "Drag along dots to lay walls." },
-    { id: "erase", label: "Erase", hint: "Tap or drag near a wall to remove it." },
-    { id: "exit", label: "Exit", hint: "Tap a wall to attach (or remove) an exit of the selected type." },
-    { id: "clearbox", label: "Clear box", hint: "Drag a rectangle to remove every wall inside it." },
+  const tools: { id: Tool; glyph: string; label: string; hint: string }[] = [
+    { id: "pan", glyph: "✋", label: "Pan", hint: "Drag to move the map. Two-finger pinch to zoom." },
+    { id: "draw", glyph: "✎", label: "Draw", hint: "Drag along dots to lay walls." },
+    { id: "erase", glyph: "⌫", label: "Erase", hint: "Tap or drag near a wall to remove it." },
+    { id: "exit", glyph: "✖", label: "Exit", hint: "Tap a wall to attach (or remove) an exit of the selected type." },
+    { id: "clearbox", glyph: "⬜", label: "Clear box", hint: "Drag a rectangle to remove every wall inside it." },
+    { id: "pin", glyph: "📌", label: "Pin", hint: "Tap a region to label it Room or Hallway (Story 2.3)." },
   ];
   // Tools toggle: tapping the active drawing tool drops back to Pan so the
   // user can move around without dropping into a stroke or erase.
@@ -1417,31 +1427,38 @@ function ToolPalette({
     }
   }
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div
+      role="toolbar"
+      aria-label="Map drawing tools"
+      className={`flex flex-row gap-1 rounded-md border border-zinc-300 bg-white/95 p-1 shadow lg:flex-col dark:border-zinc-700 dark:bg-zinc-900/95 ${className}`}
+    >
       {tools.map((t) => (
         <button
           key={t.id}
           type="button"
           onClick={() => pick(t.id)}
-          className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+          aria-label={t.label}
+          aria-pressed={tool === t.id}
+          title={`${t.label} — ${t.hint}`}
+          className={`flex h-9 w-9 items-center justify-center rounded text-base transition-colors ${
             tool === t.id
-              ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
-              : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
           }`}
-          title={t.hint}
         >
-          {t.label}
+          <span aria-hidden="true">{t.glyph}</span>
         </button>
       ))}
+      {/* Exit flyout — horizontal on desktop (pops to the right of the
+          vertical stack), above the bar on phone. Preserves the existing
+          UX-DR6 select-based picker. */}
       {tool === "exit" && (
-        <span className="ml-1 inline-flex items-center gap-2 text-sm">
-          <span className="text-xs uppercase tracking-wide text-zinc-500">
-            Type
-          </span>
+        <div className="absolute bottom-full left-0 z-10 mb-1 lg:bottom-auto lg:left-full lg:top-0 lg:mb-0 lg:ml-1">
           <select
             value={exitType}
             onChange={(e) => onExitType(e.target.value as ExitType)}
-            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            aria-label="Exit type"
+            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm shadow dark:border-zinc-700 dark:bg-zinc-900"
           >
             <option value="door">Door</option>
             <option value="open">Open</option>
@@ -1450,7 +1467,7 @@ function ToolPalette({
             <option value="magical">Magical barrier</option>
             <option value="secret">Secret</option>
           </select>
-        </span>
+        </div>
       )}
     </div>
   );
