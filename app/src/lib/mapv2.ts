@@ -2,7 +2,7 @@
 // Region detection lives here (not in the view) so future callers (Step 7
 // pin centroids, Step 10 tile-count HUD) can reuse it.
 
-import { wallKey, type WallKey } from "@/types/mapv2";
+import { wallKey, type PinKind, type RegionMeta, type WallKey } from "@/types/mapv2";
 
 // ---- Ancestry catalog ---------------------------------------------------
 
@@ -241,4 +241,20 @@ export function detectRegions(
 
   const largest = regions.reduce((m, r) => Math.max(m, r.length), 0);
   return { regions, largest };
+}
+
+// ---- Pin numbering ------------------------------------------------------
+
+/**
+ * Next sequential pin number for a given kind on a map. Counts existing
+ * regions whose `kind` matches and returns count+1. Per Story 2.3 AC6
+ * room/hall counters are independent and follow `pinnedAt` order; for a
+ * fresh pin "count + 1" is correct because new pins land at the tail.
+ * Renumber-after-edit semantics (Story 2.4) live elsewhere.
+ */
+export function nextPinNumber(
+  regions: ReadonlyArray<RegionMeta>,
+  kind: PinKind,
+): number {
+  return regions.filter((r) => r.kind === kind).length + 1;
 }

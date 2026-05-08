@@ -11,6 +11,7 @@ import {
 import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2, type CreateMapV2Options } from "@/hooks/useMapsV2";
+import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import {
@@ -27,6 +28,7 @@ import {
   classifyRoomRoll,
   detectRegions,
   exitsFromD6,
+  nextPinNumber,
   regionCentroidTile,
   rollD6,
   tilesHash,
@@ -37,6 +39,7 @@ import {
   wallKey,
   wallSetFromList,
   type MapDocV2,
+  type PinKind,
   type RegionMeta,
   type Wall,
   type WallKey,
@@ -365,6 +368,10 @@ function MapV2Editor({
   // lives in map.regions until the user resurrects the same tile set).
   const [selectedHash, setSelectedHash] = useState<string | null>(null);
 
+  // Story 2.3: hash of the region awaiting Pin-as-Room/Hallway choice.
+  // Set when the user taps an unpinned region with the Pin tool active.
+  const [pinPromptHash, setPinPromptHash] = useState<string | null>(null);
+
   // Latest 2d6 room roll + the user-pinned exit-count D6 (Step 9).
   // Ephemeral — not persisted. `targetTiles` drives the HUD (Step 10).
   const [lastRoll, setLastRoll] = useState<RoomRoll | null>(null);
@@ -468,6 +475,16 @@ function MapV2Editor({
     const detected = new Set(regionInfos.map((r) => r.hash));
     const next = map.regions.filter((m) => detected.has(m.tilesHash));
     onUpdate({ regions: next });
+  }
+
+  // Story 2.3: pin a region as Room or Hallway. Numbers are assigned per
+  // kind, scoped to this map, by pin order (next = count + 1).
+  function pinRegion(hash: string, kind: PinKind) {
+    patchRegion(hash, {
+      kind,
+      number: nextPinNumber(map.regions, kind),
+      pinnedAt: new Date().toISOString(),
+    });
   }
 
   const dots = useMemo(() => {
@@ -1160,6 +1177,16 @@ function MapV2Editor({
               const selected = r.hash === selectedHash;
               const label = r.meta?.label || r.meta?.type || "";
               const cleared = !!r.meta?.cleared;
+              const kind = r.meta?.kind;
+              const num = r.meta?.number;
+              const pinned = !!kind && typeof num === "number";
+              // Story 2.3: pinned regions show "R1"/"H1" with a kind glyph
+              // in the corner; unpinned regions keep the v1 dot+label
+              // rendering so existing meta editing remains accessible.
+              const pinLabel = pinned
+                ? `${kind === "room" ? "R" : "H"}${num}`
+                : "";
+              const kindGlyph = kind === "room" ? "▣" : "┊";
               return (
                 <g key={`pin-${r.hash}`} style={{ pointerEvents: "auto" }}>
                   {/* Generous transparent hit target — easier than the dot. */}
@@ -1171,25 +1198,75 @@ function MapV2Editor({
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={(e) => {
                       e.stopPropagation();
+                      // Story 2.3: Pin tool taps prompt for kind on
+                      // unpinned regions; tapping a pinned region with
+                      // Pin active is a no-op until Story 2.4 wires the
+                      // edit modal.
+                      if (tool === "pin") {
+                        if (!r.meta?.kind) setPinPromptHash(r.hash);
+                        return;
+                      }
                       setSelectedHash(r.hash);
                     }}
                     style={{ cursor: "pointer" }}
                   />
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={selected ? CELL * 0.32 : CELL * 0.22}
-                    className={
-                      cleared
-                        ? "fill-zinc-400 stroke-zinc-700 dark:fill-zinc-500 dark:stroke-zinc-200"
-                        : selected
-                          ? "fill-emerald-300 stroke-emerald-700 dark:fill-emerald-500 dark:stroke-emerald-200"
-                          : "fill-amber-200 stroke-amber-700 dark:fill-amber-400 dark:stroke-amber-100"
-                    }
-                    strokeWidth={selected ? 2 : 1.5}
-                    pointerEvents="none"
-                  />
-                  {label && (
+                  {pinned ? (
+                    <>
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={CELL * 0.42}
+                        className={
+                          cleared
+                            ? "fill-zinc-400 stroke-zinc-700 dark:fill-zinc-500 dark:stroke-zinc-200"
+                            : selected
+                              ? "fill-emerald-300 stroke-emerald-800 dark:fill-emerald-500 dark:stroke-emerald-200"
+                              : "fill-amber-100 stroke-amber-800 dark:fill-amber-300 dark:stroke-amber-100"
+                        }
+                        strokeWidth={selected ? 2.5 : 2}
+                        pointerEvents="none"
+                      />
+                      <text
+                        x={cx}
+                        y={cy + CELL * 0.18}
+                        textAnchor="middle"
+                        fontSize={CELL * 0.5}
+                        fontWeight={700}
+                        className="fill-zinc-900 dark:fill-zinc-100"
+                        pointerEvents="none"
+                      >
+                        {pinLabel}
+                      </text>
+                      {/* Small kind glyph in the corner, per AC7 */}
+                      <text
+                        x={cx + CELL * 0.36}
+                        y={cy - CELL * 0.18}
+                        textAnchor="middle"
+                        fontSize={CELL * 0.32}
+                        className="fill-zinc-700 dark:fill-zinc-300"
+                        pointerEvents="none"
+                        aria-label={`Kind: ${kind === "room" ? "Room" : "Hallway"}`}
+                      >
+                        {kindGlyph}
+                      </text>
+                    </>
+                  ) : (
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={selected ? CELL * 0.32 : CELL * 0.22}
+                      className={
+                        cleared
+                          ? "fill-zinc-400 stroke-zinc-700 dark:fill-zinc-500 dark:stroke-zinc-200"
+                          : selected
+                            ? "fill-emerald-300 stroke-emerald-700 dark:fill-emerald-500 dark:stroke-emerald-200"
+                            : "fill-amber-200 stroke-amber-700 dark:fill-amber-400 dark:stroke-amber-100"
+                      }
+                      strokeWidth={selected ? 2 : 1.5}
+                      pointerEvents="none"
+                    />
+                  )}
+                  {!pinned && label && (
                     // Single text + canvas-matched halo so labels feel etched
                     // into the map rather than stamped on top. Earlier version
                     // stacked white-fill + dark-stroke under a zinc-900 fill,
@@ -1346,7 +1423,55 @@ function MapV2Editor({
           )}
         </SetupModal>
       )}
+      {pinPromptHash && (
+        <PinKindPrompt
+          onPick={(kind) => {
+            pinRegion(pinPromptHash, kind);
+            setPinPromptHash(null);
+          }}
+          onClose={() => setPinPromptHash(null)}
+        />
+      )}
     </div>
+  );
+}
+
+function PinKindPrompt({
+  onPick,
+  onClose,
+}: {
+  onPick: (kind: PinKind) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal title="Pin region" onClose={onClose}>
+      <p className="text-zinc-600 dark:text-zinc-400">
+        Choose how to label this region. Numbering is per-map and per-kind,
+        following the order you pin in.
+      </p>
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => onPick("room")}
+          className="rounded-md border border-zinc-300 bg-white px-3 py-3 text-left hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+        >
+          <div className="text-base font-semibold">▣ Pin as Room</div>
+          <div className="text-xs text-zinc-500">
+            Numbered Room 1, Room 2, …
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => onPick("hall")}
+          className="rounded-md border border-zinc-300 bg-white px-3 py-3 text-left hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+        >
+          <div className="text-base font-semibold">┊ Pin as Hallway</div>
+          <div className="text-xs text-zinc-500">
+            Numbered Hall 1, Hall 2, …
+          </div>
+        </button>
+      </div>
+    </Modal>
   );
 }
 

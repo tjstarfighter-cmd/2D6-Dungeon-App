@@ -29,6 +29,8 @@ export type WallKey = string;
 // human-edited fields persist. If the user reshapes a region such that
 // its tile-set hash changes, that metadata becomes orphaned — Step 7's
 // pin/side-panel work will reconcile this.
+export type PinKind = "room" | "hall";
+
 export interface RegionMeta {
   tilesHash: string;
   label?: string;
@@ -37,6 +39,11 @@ export interface RegionMeta {
   encounter?: string;
   treasure?: string;
   cleared?: boolean;
+  // Story 2.3: explicit pin metadata. All optional so legacy maps load
+  // without migration (unpinned regions have these undefined).
+  kind?: PinKind;
+  number?: number;
+  pinnedAt?: string;
 }
 
 export interface MapDocV2 {
