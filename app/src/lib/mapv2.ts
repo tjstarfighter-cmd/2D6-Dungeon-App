@@ -2,7 +2,7 @@
 // Region detection lives here (not in the view) so future callers (Step 7
 // pin centroids, Step 10 tile-count HUD) can reuse it.
 
-import { wallKey, type PinKind, type RegionMeta, type WallKey } from "@/types/mapv2";
+import { wallKey, type MapDocV2, type PinKind, type RegionMeta, type WallKey } from "@/types/mapv2";
 
 // ---- Ancestry catalog ---------------------------------------------------
 
@@ -282,4 +282,34 @@ export function renumberPins(
   return regions.map((r) =>
     next.has(r.tilesHash) ? { ...r, number: next.get(r.tilesHash) } : r,
   );
+}
+
+// ---- Character token (Story 2.5) ----------------------------------------
+
+/** Center grid coords. Used as the token default when a map has no
+ *  persisted `tokenPosition` yet. Floored so the token lands on a tile. */
+export function defaultTokenPosition(map: Pick<MapDocV2, "gridW" | "gridH">): {
+  x: number;
+  y: number;
+} {
+  return { x: Math.floor(map.gridW / 2), y: Math.floor(map.gridH / 2) };
+}
+
+/** First letter of a name, uppercased. Empty string if name is empty. */
+export function tokenInitialFor(name: string): string {
+  const trimmed = name.trim();
+  return trimmed.length === 0 ? "?" : trimmed[0].toUpperCase();
+}
+
+/** Deterministic color for a character id. Hashes the id into an HSL hue
+ *  while avoiding the amber/emerald range used by pin markers (~30°–150°),
+ *  so a token reads as a distinct entity even on top of a pinned region. */
+export function tokenColorFor(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  // Sample hues from the blue/violet/magenta band: 200°–340°.
+  const hue = 200 + (h % 141);
+  return `hsl(${hue} 70% 55%)`;
 }

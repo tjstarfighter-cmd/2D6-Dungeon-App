@@ -26,6 +26,7 @@ import {
   ANCESTRIES,
   DEFAULT_ANCESTRY,
   classifyRoomRoll,
+  defaultTokenPosition,
   detectRegions,
   exitsFromD6,
   nextPinNumber,
@@ -33,6 +34,8 @@ import {
   renumberPins,
   rollD6,
   tilesHash,
+  tokenColorFor,
+  tokenInitialFor,
   type RoomRoll,
 } from "@/lib/mapv2";
 import {
@@ -1365,6 +1368,43 @@ function MapV2Editor({
                 </g>
               );
             })}
+
+            {/* Story 2.5: character token. Hidden when no active character.
+                Position falls back to the map center until first placed
+                (Story 2.6 wires tap-to-jump and free-drag). */}
+            {activeCharacter && (() => {
+              const pos = map.tokenPosition ?? defaultTokenPosition(map);
+              const tx = (pos.x + 0.5) * CELL;
+              const ty = (pos.y + 0.5) * CELL;
+              const color = tokenColorFor(activeCharacter.id);
+              const initial = tokenInitialFor(activeCharacter.name);
+              return (
+                <g
+                  key="character-token"
+                  style={{ pointerEvents: "none" }}
+                  aria-label={`Character token: ${activeCharacter.name}`}
+                >
+                  <circle
+                    cx={tx}
+                    cy={ty}
+                    r={CELL * 0.42}
+                    fill={color}
+                    stroke="white"
+                    strokeWidth={2.5}
+                  />
+                  <text
+                    x={tx}
+                    y={ty + CELL * 0.18}
+                    textAnchor="middle"
+                    fontSize={CELL * 0.55}
+                    fontWeight={700}
+                    fill="white"
+                  >
+                    {initial}
+                  </text>
+                </g>
+              );
+            })()}
           </svg>
         </div>
         </div>

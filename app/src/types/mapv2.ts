@@ -58,6 +58,9 @@ export interface MapDocV2 {
   walls: Wall[];
   regions: RegionMeta[];
   notes: MapNote[];
+  /** Story 2.5: persisted character-token grid coords for this map.
+   *  Optional so legacy maps load unchanged; missing → center default. */
+  tokenPosition?: { x: number; y: number };
   createdAt: string;
   updatedAt: string;
   /** Schema version for future migrations. */
