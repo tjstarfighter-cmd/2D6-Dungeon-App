@@ -4,9 +4,14 @@ import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
 import { useRunEnd, type RunEndCause } from "@/components/RunEnd";
+import { useShellNav } from "@/components/Shell";
+import { useToast } from "@/components/Toast";
 import { detectRegions, tilesHash } from "@/lib/mapv2";
 import { tierFor } from "@/lib/level-up";
+import { archiveRun } from "@/lib/run-archive";
+import { downloadText } from "@/lib/io";
 import { wallSetFromList, type MapDocV2 } from "@/types/mapv2";
+import type { Character } from "@/types/character";
 import type { Note } from "@/types/notes";
 
 // Story 6.10 — run-end modal. Centred overlay that aggregates run
@@ -21,9 +26,11 @@ import type { Note } from "@/types/notes";
 
 export function RunEndModal() {
   const { cause, clearRunEnd } = useRunEnd();
-  const { active } = useCharacters();
+  const { active, update: updateChar } = useCharacters();
   const { maps } = useMapsV2();
   const { notes } = useNotes();
+  const nav = useShellNav();
+  const toast = useToast();
 
   const stats = useMemo(() => {
     if (!active) return null;
@@ -32,6 +39,73 @@ export function RunEndModal() {
 
   if (!cause || !active || !stats) return null;
   const tier = tierFor(active.level);
+
+  function archiveAndClose(): void {
+    archiveRun({ character: active!, allMaps: maps, allNotes: notes, cause: cause! });
+  }
+
+  function handleViewSheet(): void {
+    clearRunEnd();
+    nav.openSheet();
+  }
+
+  function handleExportPdf(): void {
+    // Story 6.11 placeholder until Epic 8 ships PDF export. Surface a
+    // JSON download so the player can keep an offline copy and the
+    // action never silently fails.
+    const stamp = new Date().toISOString().slice(0, 10);
+    const safeName = active!.name.replace(/[^a-z0-9]+/gi, "_") || "run";
+    const payload = JSON.stringify(
+      {
+        notice: "PDF export ships in Epic 8. JSON snapshot for now.",
+        character: active,
+        maps,
+        notes: notes.filter(
+          (n) => n.target?.kind === "room" && stats!.maps.some((m) =>
+            m.regions.some((r) => r.tilesHash === n.target?.id),
+          ),
+        ),
+        cause,
+      },
+      null,
+      2,
+    );
+    downloadText(`${safeName}-lvl${active!.level}-${stamp}.json`, payload);
+    toast.success({ message: "Run exported as JSON (PDF coming in Epic 8)." });
+  }
+
+  function handleSameCharacter(): void {
+    if (!active) return;
+    if (
+      !window.confirm(
+        `Reviving ${active.name} will archive this run and start fresh. Continue?`,
+      )
+    )
+      return;
+    archiveAndClose();
+    // Reset run-scoped state. Keep equipment, level, manoeuvres, stats —
+    // only HP / XP / status / pending choices reset, plus side quests
+    // are marked abandoned (pre-existing completed ones stay completed).
+    const sideQuests = active.sideQuests.map((q) =>
+      q.status === "active" ? { ...q, status: "abandoned" as const } : q,
+    );
+    const revived: Partial<Character> = {
+      hp: { ...active.hp, current: active.hp.baseline },
+      xp: 0,
+      status: { bloodied: 0, soaked: 0, fever: false, pneumonia: false },
+      pendingLevelUps: [],
+      sideQuests,
+    };
+    updateChar(active.id, revived);
+    clearRunEnd();
+    nav.openSheet();
+  }
+
+  function handleNewCharacter(): void {
+    archiveAndClose();
+    clearRunEnd();
+    nav.openWizard();
+  }
 
   return (
     <div
@@ -87,40 +161,28 @@ export function RunEndModal() {
         <footer className="grid shrink-0 grid-cols-2 gap-2 border-t border-zinc-200 px-4 py-3 dark:border-zinc-800 sm:grid-cols-4">
           <button
             type="button"
-            onClick={() => clearRunEnd()}
+            onClick={handleViewSheet}
             className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
           >
             View final sheet
           </button>
           <button
             type="button"
-            onClick={() =>
-              alert(
-                "PDF export ships in Epic 8. For now this button is a placeholder.",
-              )
-            }
+            onClick={handleExportPdf}
             className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
           >
             Export run as PDF ↗
           </button>
           <button
             type="button"
-            onClick={() =>
-              alert(
-                "Same-character new run ships in Story 6.11. For now this dismisses the modal.",
-              )
-            }
+            onClick={handleSameCharacter}
             className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
           >
             Start new run — same character
           </button>
           <button
             type="button"
-            onClick={() =>
-              alert(
-                "New-character flow ships in Story 6.11. For now this dismisses the modal.",
-              )
-            }
+            onClick={handleNewCharacter}
             className="rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
             Start new run — new character

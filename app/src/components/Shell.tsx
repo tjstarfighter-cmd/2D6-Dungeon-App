@@ -93,11 +93,16 @@ interface ShellNavApi {
   // Story 6.7 — re-summon the level-up wizard for any unresolved
   // pending choices (badge tap on PinnedVitals).
   openLevelUp: () => void;
+  // Story 6.11 — surface the Sheet column. Used by the run-end
+  // modal's "View final sheet" action so the deceased character's
+  // sheet is visible right after the modal closes.
+  openSheet: () => void;
 }
 const ShellNavContext = createContext<ShellNavApi>({
   openCombat: () => {},
   openWizard: () => {},
   openLevelUp: () => {},
+  openSheet: () => {},
 });
 export function useShellNav(): ShellNavApi {
   return useContext(ShellNavContext);
@@ -658,6 +663,9 @@ export function Shell() {
       },
       openLevelUp: () => {
         setModal("levelup");
+      },
+      openSheet: () => {
+        setPhoneTab("sheet");
       },
     }),
     [],
