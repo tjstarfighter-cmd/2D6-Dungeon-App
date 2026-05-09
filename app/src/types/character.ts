@@ -98,6 +98,11 @@ export interface Character {
    *  in the CharacterSwitcher's Past runs section is reverse-chronological;
    *  the array itself stays append-only so indexes are stable. */
   runs?: RunRecord[];
+  /** Story 6.13 — playable status. "dead" forces every editable surface
+   *  into read-only mode via useReadOnly(). Set by the run-end flow's
+   *  "View final sheet" path; cleared on same-character revive. Optional
+   *  so legacy saves default to "alive". */
+  state?: "alive" | "dead";
   createdAt: string;
   updatedAt: string;
 }

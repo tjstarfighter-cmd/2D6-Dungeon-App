@@ -3,6 +3,7 @@ import { useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import type { Character } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
 import { NotesPanel } from "@/components/NotesPanel";
+import { ReadOnlyShield } from "@/components/ReadOnlyShield";
 import { Button, Card, Field, TextField } from "@/components/ui";
 import {
   ArmourCard,
@@ -41,6 +42,21 @@ export function SheetTabs({ active, onChange }: Props) {
   const { active: character, update } = useCharacters();
   if (!character) return null; // PinnedVitals already handles empty states
 
+  return <SheetTabsBody character={character} active={active} onChange={onChange} update={update} />;
+}
+
+function SheetTabsBody({
+  character,
+  active,
+  onChange,
+  update,
+}: {
+  character: Character;
+  active: SheetSubTab;
+  onChange: Props["onChange"];
+  update: (id: string, patch: Partial<Character>) => void;
+}) {
+
   function patch(p: Partial<Character>) {
     update(character!.id, p);
   }
@@ -49,20 +65,25 @@ export function SheetTabs({ active, onChange }: Props) {
     <>
       <SubTabStrip active={active} onChange={onChange} />
       <div className="flex-1 overflow-auto p-3">
-        <div className="space-y-3">
-          {active === "loadout" && (
-            <LoadoutBody character={character} onPatch={patch} />
-          )}
-          {active === "magic" && (
-            <MagicBody character={character} onPatch={patch} />
-          )}
-          {active === "pack" && (
-            <PackBody character={character} onPatch={patch} />
-          )}
-          {active === "lore" && (
-            <LoreBody character={character} onPatch={patch} />
-          )}
-        </div>
+        {/* Story 6.13 — sub-tab editors are wholly disabled when the
+            character is dead. The strip itself stays interactive so the
+            player can still browse Loadout / Magic / Pack / Lore. */}
+        <ReadOnlyShield>
+          <div className="space-y-3">
+            {active === "loadout" && (
+              <LoadoutBody character={character} onPatch={patch} />
+            )}
+            {active === "magic" && (
+              <MagicBody character={character} onPatch={patch} />
+            )}
+            {active === "pack" && (
+              <PackBody character={character} onPatch={patch} />
+            )}
+            {active === "lore" && (
+              <LoreBody character={character} onPatch={patch} />
+            )}
+          </div>
+        </ReadOnlyShield>
       </div>
     </>
   );

@@ -55,6 +55,7 @@ export function RunEndModal() {
   }
 
   function handleViewSheet(): void {
+    if (active) updateChar(active.id, { state: "dead" });
     clearRunEnd();
     nav.openSheet();
   }
@@ -104,6 +105,8 @@ export function RunEndModal() {
       status: { bloodied: 0, soaked: 0, fever: false, pneumonia: false },
       pendingLevelUps: [],
       sideQuests,
+      // Story 6.13 — revival lifts read-only.
+      state: "alive",
     });
     clearRunEnd();
     nav.openSheet();

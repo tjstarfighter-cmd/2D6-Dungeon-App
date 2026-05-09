@@ -3,6 +3,7 @@ import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { Button } from "@/components/ui";
 import { useCharacters } from "@/hooks/useCharacters";
+import { useReadOnly } from "@/hooks/useReadOnly";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
 import {
@@ -27,6 +28,7 @@ export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
   const { notes, replaceAll: replaceAllNotes } = useNotes();
   const { maps, replaceAll: replaceAllMaps } = useMapsV2();
   const nav = useShellNav();
+  const readOnly = useReadOnly();
 
   function handleSwitch(id: string) {
     setActive(id);
@@ -120,7 +122,11 @@ export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
           <Button onClick={handleNew} variant="primary">
             + New character
           </Button>
-          <Button onClick={handleImport}>Import…</Button>
+          {/* Story 6.13 — Import disabled while the active character
+              is dead so the read-only run can't be polluted. */}
+          <Button onClick={handleImport} disabled={readOnly}>
+            Import…
+          </Button>
         </div>
       </section>
 

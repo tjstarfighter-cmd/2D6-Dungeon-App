@@ -16,6 +16,7 @@ import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import { useRoomGen } from "@/components/RoomGen";
+import { useReadOnly } from "@/hooks/useReadOnly";
 import { RestRationModal } from "@/components/RestRationModal";
 import {
   getMapTransitionFlags,
@@ -356,6 +357,7 @@ function MapV2Editor({
 }) {
   const { active: activeCharacter, update: updateActiveCharacter } =
     useCharacters();
+  const readOnly = useReadOnly();
   const { encounter, start: startEncounter } = useEncounter();
   const { openCombat } = useShellNav();
   const navigate = useNavigate();
@@ -1292,6 +1294,7 @@ function MapV2Editor({
           onTool={setTool}
           exitType={exitType}
           onExitType={setExitType}
+          disabled={readOnly}
           className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 lg:bottom-auto lg:left-2 lg:top-2 lg:translate-x-0"
         />
         <SizeRollBanner
@@ -1593,6 +1596,7 @@ function MapV2Editor({
                       // Story 2.3/2.4: Pin tool taps prompt for kind on
                       // unpinned regions; tap pinned with Pin active opens
                       // the edit modal (Story 2.4).
+                      if (readOnly) return;
                       if (tool === "pin") {
                         if (!r.meta?.kind) setPinPromptHash(r.hash);
                         else setPinEditHash(r.hash);
@@ -2399,12 +2403,15 @@ function ToolPalette({
   exitType,
   onExitType,
   className = "",
+  disabled = false,
 }: {
   tool: Tool;
   onTool: (t: Tool) => void;
   exitType: ExitType;
   onExitType: (t: ExitType) => void;
   className?: string;
+  /** Story 6.13 — read-only mode greys + disables every tool button. */
+  disabled?: boolean;
 }) {
   const tools: { id: Tool; glyph: string; label: string; hint: string }[] = [
     { id: "pan", glyph: "✋", label: "Pan", hint: "Drag to move the map. Two-finger pinch to zoom." },
@@ -2439,9 +2446,10 @@ function ToolPalette({
           onClick={() => pick(t.id)}
           aria-label={t.label}
           aria-pressed={tool === t.id}
+          disabled={disabled}
           data-tour-anchor={t.id === "pin" ? "pin-tool" : undefined}
           title={`${t.label} — ${t.hint}`}
-          className={`flex h-9 w-9 items-center justify-center rounded text-base transition-colors ${
+          className={`flex h-9 w-9 items-center justify-center rounded text-base transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             tool === t.id
               ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
               : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"

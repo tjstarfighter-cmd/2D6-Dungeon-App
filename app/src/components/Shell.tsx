@@ -38,6 +38,7 @@ import {
   useTryFocusRulesSearch,
 } from "@/components/RulesSearch";
 import { ToastProvider } from "@/components/Toast";
+import { useReadOnly } from "@/hooks/useReadOnly";
 import {
   WelcomeModal,
   ackFirstLaunch,
@@ -165,35 +166,44 @@ function PanelTabBar<T extends string>({
   active: T;
   onChange: (next: T) => void;
 }) {
+  // Story 6.13 — Combat tab is disabled when the active character is
+  // dead. Other tabs (Tables / Log) stay live so the player can still
+  // browse the read-only run.
+  const readOnly = useReadOnly();
   return (
     <div
       role="tablist"
       aria-label={ariaLabel}
       className="flex shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-2 py-1 dark:border-zinc-800 dark:bg-zinc-900"
     >
-      {tabs.map((t) => (
-        <button
-          key={t.key}
-          type="button"
-          role="tab"
-          aria-selected={t.key === active}
-          onClick={() => onChange(t.key)}
-          data-tour-anchor={
-            t.key === "log"
-              ? "log-tab"
-              : t.key === "combat"
-                ? "combat-tab"
-                : undefined
-          }
-          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
-            t.key === active
-              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-              : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          }`}
-        >
-          {t.label}
-        </button>
-      ))}
+      {tabs.map((t) => {
+        const isDisabled = readOnly && t.key === "combat";
+        return (
+          <button
+            key={t.key}
+            type="button"
+            role="tab"
+            aria-selected={t.key === active}
+            disabled={isDisabled}
+            title={isDisabled ? "Character is deceased" : undefined}
+            onClick={() => onChange(t.key)}
+            data-tour-anchor={
+              t.key === "log"
+                ? "log-tab"
+                : t.key === "combat"
+                  ? "combat-tab"
+                  : undefined
+            }
+            className={`rounded-md px-3 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+              t.key === active
+                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+            }`}
+          >
+            {t.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -209,6 +219,7 @@ function MapAreaTabStrip({
   onChange: (next: MiddleTab) => void;
 }) {
   const tools = useMapTools();
+  const readOnly = useReadOnly();
   const desktopTabs: { key: MiddleTab; label: string }[] = [
     { key: "map", label: "Map" },
     { key: "combat", label: "Combat" },
@@ -227,12 +238,15 @@ function MapAreaTabStrip({
         {phoneTabs.map((t) => {
           const desktopOnly = desktopTabs.some((d) => d.key === t.key);
           const visibility = desktopOnly ? "" : "lg:hidden";
+          const isDisabled = readOnly && t.key === "combat";
           return (
             <button
               key={t.key}
               type="button"
               role="tab"
               aria-selected={t.key === active}
+              disabled={isDisabled}
+              title={isDisabled ? "Character is deceased" : undefined}
               onClick={() => onChange(t.key)}
               data-tour-anchor={
                 t.key === "combat"
@@ -241,7 +255,7 @@ function MapAreaTabStrip({
                     ? "log-tab"
                     : undefined
               }
-              className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${visibility} ${
+              className={`rounded-md px-3 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${visibility} ${
                 t.key === active
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                   : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useActivePin } from "@/components/ActivePin";
+import { ReadOnlyShield } from "@/components/ReadOnlyShield";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
 import type { Note, NoteEntryType } from "@/types/notes";
@@ -110,41 +111,45 @@ export function LogPanel() {
             No entries yet. Use the chips below to add the first one.
           </p>
         ) : (
-          <ul className="space-y-2">
-            {entries.map((n) => (
-              <LogEntryRow
-                key={n.id}
-                entry={n}
-                editing={editingId === n.id}
-                pinnedOptions={pinnedOptions}
-                onStartEdit={() => setEditingId(n.id)}
-                onCommit={(patch) => {
-                  update(n.id, patch);
-                  setEditingId(null);
-                }}
-                onCancel={() => setEditingId(null)}
-                onDelete={() => {
-                  remove(n.id);
-                  setEditingId(null);
-                }}
-              />
-            ))}
-          </ul>
+          <ReadOnlyShield>
+            <ul className="space-y-2">
+              {entries.map((n) => (
+                <LogEntryRow
+                  key={n.id}
+                  entry={n}
+                  editing={editingId === n.id}
+                  pinnedOptions={pinnedOptions}
+                  onStartEdit={() => setEditingId(n.id)}
+                  onCommit={(patch) => {
+                    update(n.id, patch);
+                    setEditingId(null);
+                  }}
+                  onCancel={() => setEditingId(null)}
+                  onDelete={() => {
+                    remove(n.id);
+                    setEditingId(null);
+                  }}
+                />
+              ))}
+            </ul>
+          </ReadOnlyShield>
         )}
       </div>
 
-      <div className="mt-3 flex shrink-0 flex-wrap gap-1">
-        {QUICK_ADD.map((c) => (
-          <button
-            key={c.type}
-            type="button"
-            onClick={() => addEntry(c.type)}
-            className="rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
+      <ReadOnlyShield>
+        <div className="mt-3 flex shrink-0 flex-wrap gap-1">
+          {QUICK_ADD.map((c) => (
+            <button
+              key={c.type}
+              type="button"
+              onClick={() => addEntry(c.type)}
+              className="rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+      </ReadOnlyShield>
     </div>
   );
 }

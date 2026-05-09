@@ -10,6 +10,7 @@ import { useCharacters } from "@/hooks/useCharacters";
 import { STATUS_PIPS } from "@/lib/character";
 import { useShellNav } from "@/components/Shell";
 import { Pips, Stepper, Toggle } from "@/components/ui";
+import { ReadOnlyShield } from "@/components/ReadOnlyShield";
 
 // Story 1.4 — pinned-top of the Sheet column. Always visible while the
 // Sheet content scrolls below it. Holds the at-a-glance vitals: identity,
@@ -68,11 +69,25 @@ export function PinnedVitals({ onOpenSwitcher }: Props) {
 
   return (
     <Pinned>
-      <ActiveVitals
-        character={active}
-        onUpdate={(patch) => update(active.id, patch)}
-        onOpenSwitcher={onOpenSwitcher}
-      />
+      <ReadOnlyShield>
+        <ActiveVitals
+          character={active}
+          onUpdate={(patch) => update(active.id, patch)}
+          onOpenSwitcher={onOpenSwitcher}
+        />
+      </ReadOnlyShield>
+      {/* Story 6.13 — Switch character escape hatch lives outside the
+          read-only shield so the player can leave a deceased character. */}
+      {active.state === "dead" && (
+        <button
+          type="button"
+          onClick={onOpenSwitcher}
+          aria-label="Switch character"
+          className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+        >
+          ↻ Switch character (current is deceased)
+        </button>
+      )}
     </Pinned>
   );
 }
