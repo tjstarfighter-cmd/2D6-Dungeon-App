@@ -29,8 +29,16 @@ type ListVariant = "idle" | "mishap" | "prime" | "normal";
 
 export function EnemyTurnPanel({
   characterId,
+  onPlayerDamaged,
 }: {
   characterId: string;
+  /** Story 5.6 — fires after the player takes enemy damage so a parent
+   *  can detect HP→0 transitions and capture the killing enemy. */
+  onPlayerDamaged?: (info: {
+    prevHp: number;
+    newHp: number;
+    enemyId: string | null;
+  }) => void;
 }) {
   const { active, update } = useCharacters();
   const { encounter, updateEnemy } = useEncounter();
@@ -361,12 +369,13 @@ export function EnemyTurnPanel({
 
   function applyDamage() {
     if (!active || active.id !== characterId) return;
-    update(active.id, {
-      hp: { ...active.hp, current: Math.max(0, active.hp.current - finalDamage) },
-    });
+    const prevHp = active.hp.current;
+    const newHp = Math.max(0, prevHp - finalDamage);
+    update(active.id, { hp: { ...active.hp, current: newHp } });
     if (selectedEnemyId) {
       updateEnemy(selectedEnemyId, { attackedRound: round });
     }
+    onPlayerDamaged?.({ prevHp, newHp, enemyId: selectedEnemyId || null });
     clearRoll();
     setManualDamage(1);
   }
