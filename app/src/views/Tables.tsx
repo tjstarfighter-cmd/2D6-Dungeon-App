@@ -175,7 +175,7 @@ export default function TablesView() {
   return (
     <section>
       <div>
-        <div className="space-y-3">
+        <div className="space-y-3" data-tour-anchor="tables-panel">
           <input
             ref={searchInputRef}
             type="search"
@@ -188,7 +188,11 @@ export default function TablesView() {
               expanded table resolves to text containing other table IDs.
               Hidden when empty per AC. */}
           {!searching && nextEntries.length > 0 && (
-            <section aria-label="NEXT tables" className="space-y-1">
+            <section
+              aria-label="NEXT tables"
+              data-tour-anchor="tables-next"
+              className="space-y-1"
+            >
               <h3 className="px-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 NEXT
               </h3>

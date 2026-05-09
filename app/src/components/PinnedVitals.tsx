@@ -80,7 +80,10 @@ export function PinnedVitals({ onOpenSwitcher }: Props) {
 // Wrapper holds the sticky-top styling so empty states share it.
 function Pinned({ children }: { children: React.ReactNode }) {
   return (
-    <div className="shrink-0 border-b border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+    <div
+      data-tour-anchor="sheet-vitals"
+      className="shrink-0 border-b border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900"
+    >
       {children}
     </div>
   );

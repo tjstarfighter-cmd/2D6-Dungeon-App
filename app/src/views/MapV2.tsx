@@ -2130,6 +2130,7 @@ function ToolPalette({
     <div
       role="toolbar"
       aria-label="Map drawing tools"
+      data-tour-anchor="map-tools"
       className={`flex flex-row gap-1 rounded-md border border-zinc-300 bg-white/95 p-1 shadow lg:flex-col dark:border-zinc-700 dark:bg-zinc-900/95 ${className}`}
     >
       {tools.map((t) => (
@@ -2139,6 +2140,7 @@ function ToolPalette({
           onClick={() => pick(t.id)}
           aria-label={t.label}
           aria-pressed={tool === t.id}
+          data-tour-anchor={t.id === "pin" ? "pin-tool" : undefined}
           title={`${t.label} — ${t.hint}`}
           className={`flex h-9 w-9 items-center justify-center rounded text-base transition-colors ${
             tool === t.id

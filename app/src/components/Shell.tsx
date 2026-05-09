@@ -37,7 +37,7 @@ import {
   RulesSearchProvider,
   useTryFocusRulesSearch,
 } from "@/components/RulesSearch";
-import { ToastProvider, useToast } from "@/components/Toast";
+import { ToastProvider } from "@/components/Toast";
 import {
   WelcomeModal,
   ackFirstLaunch,
@@ -47,6 +47,11 @@ import {
   CharacterCreateWizard,
   type CreatedCharacterInput,
 } from "@/components/CharacterCreateWizard";
+import {
+  OnboardingTour,
+  isOnboardingTourSeen,
+  type TourStep,
+} from "@/components/OnboardingTour";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -156,6 +161,13 @@ function PanelTabBar<T extends string>({
           role="tab"
           aria-selected={t.key === active}
           onClick={() => onChange(t.key)}
+          data-tour-anchor={
+            t.key === "log"
+              ? "log-tab"
+              : t.key === "combat"
+                ? "combat-tab"
+                : undefined
+          }
           className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
             t.key === active
               ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
@@ -189,7 +201,10 @@ function MapAreaTabStrip({
     { key: "log", label: "Log" },
   ];
   return (
-    <div className="flex shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-2 py-1 dark:border-zinc-800 dark:bg-zinc-900">
+    <div
+      data-tour-anchor="map-area"
+      className="flex shrink-0 items-center gap-1 border-b border-zinc-200 bg-white px-2 py-1 dark:border-zinc-800 dark:bg-zinc-900"
+    >
       <div role="tablist" aria-label="Map area" className="flex items-center gap-1">
         {/* Phone shows three tabs (Map/Combat/Log); desktop hides Log */}
         {phoneTabs.map((t) => {
@@ -202,6 +217,13 @@ function MapAreaTabStrip({
               role="tab"
               aria-selected={t.key === active}
               onClick={() => onChange(t.key)}
+              data-tour-anchor={
+                t.key === "combat"
+                  ? "combat-tab"
+                  : t.key === "log"
+                    ? "log-tab"
+                    : undefined
+              }
               className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${visibility} ${
                 t.key === active
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
@@ -321,7 +343,8 @@ type ModalKey =
   | "backup"
   | "switcher"
   | "welcome"
-  | "wizard";
+  | "wizard"
+  | "tour";
 
 // Global keyboard shortcuts (Story 1.12). Lives inside TablesSearchProvider
 // so it can resolve the focus handler registered by views/Tables.
@@ -426,18 +449,19 @@ function ConnectedWelcomeModal({ onDismiss }: { onDismiss: () => void }) {
 
 // Story 6.2 — adapter that fills the new character with the wizard's
 // selections plus the auto-applied starting kit, sets it active, and
-// surfaces a placeholder toast for Story 6.3's onboarding tour.
+// fires the Story 6.3 onboarding tour (suppressed if already seen).
 function ConnectedCreateWizard({
   setPhoneTab,
   setSheetSubTab,
+  setModal,
   onDismiss,
 }: {
   setPhoneTab: Dispatch<SetStateAction<PhoneTab>>;
   setSheetSubTab: Dispatch<SetStateAction<SheetSubTab>>;
+  setModal: Dispatch<SetStateAction<ModalKey | null>>;
   onDismiss: () => void;
 }) {
   const { create, update } = useCharacters();
-  const toast = useToast();
 
   function handleCreate(input: CreatedCharacterInput) {
     const c = create(input.name);
@@ -468,18 +492,105 @@ function ConnectedCreateWizard({
     onDismiss();
     setPhoneTab("sheet");
     setSheetSubTab("loadout");
-    toast.suggestion({
-      message:
-        "Welcome, " +
-        input.name +
-        "! The 6-step onboarding tour arrives in Story 6.3.",
-      primary: { label: "OK", onClick: () => {} },
-    });
+    if (!isOnboardingTourSeen()) {
+      // Defer one tick so the wizard's modal can fully unmount before
+      // the tour overlay measures its anchors.
+      setTimeout(() => setModal("tour"), 50);
+    }
   }
 
   return (
     <CharacterCreateWizard onCreate={handleCreate} onCancel={onDismiss} />
   );
+}
+
+// Story 6.3 — tour adapter. Builds steps that orchestrate tab/sub-tab
+// state via prepare() so each anchor is on-screen before the tooltip
+// measures its bounding rect. On phone the tour walks across columns;
+// on desktop the prepare()s are no-ops for already-visible anchors.
+function ConnectedOnboardingTour({
+  setPhoneTab,
+  setMiddleTab,
+  setRightTab,
+  setSheetSubTab,
+  onDismiss,
+}: {
+  setPhoneTab: Dispatch<SetStateAction<PhoneTab>>;
+  setMiddleTab: Dispatch<SetStateAction<MiddleTab>>;
+  setRightTab: Dispatch<SetStateAction<RightTab>>;
+  setSheetSubTab: Dispatch<SetStateAction<SheetSubTab>>;
+  onDismiss: () => void;
+}) {
+  const steps: TourStep[] = [
+    {
+      selectors: ['[data-tour-anchor="sheet-vitals"]'],
+      title: "Your character lives here",
+      body: "HP, status, and identity. Sub-tabs below swap Loadout, Magic, Pack, and Lore.",
+      prepare: () => {
+        setPhoneTab("sheet");
+        setSheetSubTab("loadout");
+      },
+    },
+    {
+      selectors: [
+        '[data-tour-anchor="map-tools"]',
+        '[data-tour-anchor="map-area"]',
+      ],
+      title: "Draw your dungeon",
+      body: "Pan, draw walls, erase, place exits. Create a map to unlock the full tool palette.",
+      prepare: () => {
+        setPhoneTab("map");
+        setMiddleTab("map");
+      },
+    },
+    {
+      selectors: [
+        '[data-tour-anchor="pin-tool"]',
+        '[data-tour-anchor="map-area"]',
+      ],
+      title: "Pins anchor everything",
+      body: "Once you have a map, the Pin tool labels rooms and hallways. Pins drive the per-room log and combat picker.",
+      prepare: () => {
+        setPhoneTab("map");
+        setMiddleTab("map");
+      },
+    },
+    {
+      selectors: ['[data-tour-anchor="combat-tab"]'],
+      title: "Combat overlay",
+      body: "Switch here to manage encounters: roster, round-by-round resolution, and a full combat log.",
+      prepare: () => {
+        setPhoneTab("map");
+        setMiddleTab("map");
+      },
+    },
+    {
+      selectors: [
+        '[data-tour-anchor="tables-next"]',
+        '[data-tour-anchor="tables-panel"]',
+      ],
+      title: "Tables — and what comes NEXT",
+      body: "Search 170 tables. Resolved rolls auto-populate a NEXT section here so you don't lose your place.",
+      prepare: () => {
+        setPhoneTab("tables");
+        setRightTab("tables");
+      },
+    },
+    {
+      selectors: ['[data-tour-anchor="log-tab"]'],
+      title: "Per-room log",
+      body: "Capture loot, rolls, and notes against the active pin. Pending entries promote to resolved as you finish them.",
+      prepare: () => {
+        // Phone: surface the Map column's Log inner-tab. Desktop: the
+        // right-column Log tab is the primary anchor — switch the right
+        // tab so it's selected when the highlight ring lands.
+        setPhoneTab("map");
+        setMiddleTab("log");
+        setRightTab("log");
+      },
+    },
+  ];
+  return <OnboardingTour steps={steps} onClose={onDismiss} />;
 }
 
 export function Shell() {
@@ -623,6 +734,16 @@ export function Shell() {
       {modal === "wizard" && (
         <ConnectedCreateWizard
           setPhoneTab={setPhoneTab}
+          setSheetSubTab={setSheetSubTab}
+          setModal={setModal}
+          onDismiss={closeModal}
+        />
+      )}
+      {modal === "tour" && (
+        <ConnectedOnboardingTour
+          setPhoneTab={setPhoneTab}
+          setMiddleTab={setMiddleTab}
+          setRightTab={setRightTab}
           setSheetSubTab={setSheetSubTab}
           onDismiss={closeModal}
         />
