@@ -26,6 +26,8 @@ import {
   SHEET_SUB_TABS,
   type SheetSubTab,
 } from "@/components/SheetTabs";
+import { ActivePinProvider } from "@/components/ActivePin";
+import { LogPanel } from "@/components/LogPanel";
 import { MapToolsProvider, useMapTools } from "@/components/MapTools";
 import {
   TablesSearchProvider,
@@ -74,20 +76,6 @@ function Loader() {
 }
 
 // Log tab placeholder until the per-room log threads ship in Epic 2.
-// The legacy global Notes view (views/Notes.tsx) was deleted in Story 1.9
-// per AR12; character notes moved into the Sheet's Lore sub-tab.
-function LogPlaceholder() {
-  return (
-    <div className="space-y-3 text-sm text-zinc-500">
-      <p>📌 Tap a pin on the Map to view its log thread.</p>
-      <p className="text-xs">
-        Per-room game logs (rolls, combat summaries, loot, events) ship in
-        Epic 2.
-      </p>
-    </div>
-  );
-}
-
 // Phone-only persistent vitals strip. Tap → focuses the Sheet bottom tab.
 function PhoneVitals({ onTap }: { onTap: () => void }) {
   const { active } = useCharacters();
@@ -428,6 +416,7 @@ export function Shell() {
   return (
     <ShellNavContext.Provider value={shellNav}>
      <ToastProvider>
+      <ActivePinProvider>
       <TablesSearchProvider>
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
@@ -462,7 +451,7 @@ export function Shell() {
                   {middleTab === "combat" ? (
                     <CombatView />
                   ) : middleTab === "log" ? (
-                    <LogPlaceholder />
+                    <LogPanel />
                   ) : (
                     <MapView />
                   )}
@@ -484,7 +473,7 @@ export function Shell() {
             />
             <div className="flex-1 overflow-auto p-4">
               <Suspense fallback={<Loader />}>
-                {rightTab === "tables" ? <TablesView /> : <LogPlaceholder />}
+                {rightTab === "tables" ? <TablesView /> : <LogPanel />}
               </Suspense>
             </div>
           </Column>
@@ -499,6 +488,7 @@ export function Shell() {
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
       {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
       </TablesSearchProvider>
+      </ActivePinProvider>
      </ToastProvider>
     </ShellNavContext.Provider>
   );

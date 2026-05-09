@@ -11,6 +11,7 @@ import {
 import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2, type CreateMapV2Options } from "@/hooks/useMapsV2";
+import { useSetActivePin } from "@/components/ActivePin";
 import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
@@ -592,6 +593,24 @@ function MapV2Editor({
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [selectedHash]);
+
+  // Story 4.2 — sync the shell-level active pin so the Log surface can
+  // render the matching per-room thread. Only pinned regions (those with
+  // a kind) drive the pin context; unpinned region selections leave it
+  // untouched (the Log surface keeps its previous thread or empty state).
+  const setActivePin = useSetActivePin();
+  useEffect(() => {
+    if (!selectedHash) {
+      setActivePin(null);
+      return;
+    }
+    const meta = map.regions.find((r) => r.tilesHash === selectedHash);
+    if (meta?.kind) {
+      setActivePin({ tilesHash: selectedHash });
+    } else {
+      setActivePin(null);
+    }
+  }, [selectedHash, map.regions, setActivePin]);
 
   function zoomAtCursor(cursorX: number, cursorY: number, factor: number) {
     const container = containerRef.current;
