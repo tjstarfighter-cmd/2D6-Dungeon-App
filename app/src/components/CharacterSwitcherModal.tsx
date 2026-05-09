@@ -128,10 +128,7 @@ export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
         <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
           Past runs
         </h3>
-        <p className="text-sm text-zinc-500">
-          No past runs yet. Archived runs from death or dungeon exit appear
-          here (Epic 6).
-        </p>
+        <PastRunsList characters={characters} />
       </section>
     </Modal>
   );
@@ -192,4 +189,107 @@ function CharacterRow({
       </div>
     </li>
   );
+}
+
+// ---------------------------------------------------------------------------
+
+// Story 6.12 — Past Runs section. Renders one row per archived run
+// across all characters, newest first. View read-only / Export PDF
+// land in Story 6.13 / Epic 8 — placeholders for now.
+function PastRunsList({ characters }: { characters: Character[] }) {
+  const rows = characters
+    .flatMap((c) =>
+      (c.runs ?? []).map((r) => ({ character: c, run: r })),
+    )
+    .sort((a, b) => b.run.endedAt.localeCompare(a.run.endedAt));
+
+  if (rows.length === 0) {
+    return (
+      <p className="text-sm text-zinc-500">
+        No past runs yet. Archived runs from death or dungeon exit appear here.
+      </p>
+    );
+  }
+
+  return (
+    <ul className="space-y-2">
+      {rows.map(({ character, run }) => {
+        const stats = run.summaryStats;
+        const treasure = formatCoinsLine(stats.treasureCoins);
+        const causeWord = stats.cause.kind === "combat" ? "Killed by" : "Fell to";
+        return (
+          <li
+            key={run.id}
+            className="rounded-md border border-zinc-200 p-2 text-sm dark:border-zinc-800"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <div className="min-w-0">
+                <div className="font-medium">
+                  {character.name} · Lvl {stats.levelsReached}
+                </div>
+                <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                  {causeWord} {stats.cause.source}
+                  {stats.cause.roomLabel ? ` in ${stats.cause.roomLabel}` : ""}
+                  {" · "}
+                  {new Date(run.endedAt).toLocaleDateString()}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <button
+                  type="button"
+                  onClick={() =>
+                    alert(
+                      "Read-only run viewer ships in Story 6.13. For now this is a placeholder.",
+                    )
+                  }
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-0.5 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                >
+                  View read-only
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    alert(
+                      "PDF export ships in Epic 8. For now this is a placeholder.",
+                    )
+                  }
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-0.5 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                >
+                  Export PDF
+                </button>
+              </div>
+            </div>
+            <dl className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+              <span>
+                <dt className="inline font-medium text-zinc-500">Rooms</dt>{" "}
+                <dd className="inline tabular-nums">{stats.roomsEntered}</dd>
+              </span>
+              <span>
+                <dt className="inline font-medium text-zinc-500">Kills</dt>{" "}
+                <dd className="inline tabular-nums">{stats.killsTotal}</dd>
+              </span>
+              <span>
+                <dt className="inline font-medium text-zinc-500">XP</dt>{" "}
+                <dd className="inline tabular-nums">{stats.xp}</dd>
+              </span>
+              {treasure && (
+                <span>
+                  <dt className="inline font-medium text-zinc-500">Treasure</dt>{" "}
+                  <dd className="inline">{treasure}</dd>
+                </span>
+              )}
+            </dl>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function formatCoinsLine(c: { gc: number; sc: number; cc: number }): string {
+  const parts: string[] = [];
+  if (c.gc) parts.push(`${c.gc}gc`);
+  if (c.sc) parts.push(`${c.sc}sc`);
+  if (c.cc) parts.push(`${c.cc}cc`);
+  return parts.join(" · ");
 }

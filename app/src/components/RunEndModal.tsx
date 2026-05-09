@@ -8,7 +8,7 @@ import { useShellNav } from "@/components/Shell";
 import { useToast } from "@/components/Toast";
 import { detectRegions, tilesHash } from "@/lib/mapv2";
 import { tierFor } from "@/lib/level-up";
-import { archiveRun } from "@/lib/run-archive";
+import { appendRunToCharacter, buildRunRecord } from "@/lib/run-archive";
 import { downloadText } from "@/lib/io";
 import { wallSetFromList, type MapDocV2 } from "@/types/mapv2";
 import type { Character } from "@/types/character";
@@ -40,8 +40,18 @@ export function RunEndModal() {
   if (!cause || !active || !stats) return null;
   const tier = tierFor(active.level);
 
-  function archiveAndClose(): void {
-    archiveRun({ character: active!, allMaps: maps, allNotes: notes, cause: cause! });
+  function archive(extraPatch: Partial<Character> = {}): void {
+    if (!active || !cause) return;
+    const record = buildRunRecord({
+      character: active,
+      allMaps: maps,
+      allNotes: notes,
+      cause,
+    });
+    updateChar(active.id, {
+      ...appendRunToCharacter(active, record),
+      ...extraPatch,
+    });
   }
 
   function handleViewSheet(): void {
@@ -82,27 +92,25 @@ export function RunEndModal() {
       )
     )
       return;
-    archiveAndClose();
     // Reset run-scoped state. Keep equipment, level, manoeuvres, stats —
     // only HP / XP / status / pending choices reset, plus side quests
     // are marked abandoned (pre-existing completed ones stay completed).
     const sideQuests = active.sideQuests.map((q) =>
       q.status === "active" ? { ...q, status: "abandoned" as const } : q,
     );
-    const revived: Partial<Character> = {
+    archive({
       hp: { ...active.hp, current: active.hp.baseline },
       xp: 0,
       status: { bloodied: 0, soaked: 0, fever: false, pneumonia: false },
       pendingLevelUps: [],
       sideQuests,
-    };
-    updateChar(active.id, revived);
+    });
     clearRunEnd();
     nav.openSheet();
   }
 
   function handleNewCharacter(): void {
-    archiveAndClose();
+    archive();
     clearRunEnd();
     nav.openWizard();
   }

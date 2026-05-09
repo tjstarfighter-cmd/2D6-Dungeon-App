@@ -94,6 +94,36 @@ export interface Character {
    *  (stat bump + optional manoeuvre swap). HP and the level number
    *  itself were applied silently when the threshold was crossed. */
   pendingLevelUps?: { fromLevel: number; toLevel: number }[];
+  /** Story 6.12 — append-only archive of completed runs. Display order
+   *  in the CharacterSwitcher's Past runs section is reverse-chronological;
+   *  the array itself stays append-only so indexes are stable. */
+  runs?: RunRecord[];
   createdAt: string;
   updatedAt: string;
+}
+
+// ---- Story 6.12: RunRecord ------------------------------------------------
+
+export type RunEndReason = "death" | "exit_shaft";
+
+export interface RunSummaryStats {
+  cause: { kind: "combat" | "non_combat"; source: string; roomLabel?: string };
+  levelsReached: number;
+  roomsEntered: number;
+  killsTotal: number;
+  killBreakdown: { name: string; count: number }[];
+  xp: number;
+  treasureCoins: { gc: number; sc: number; cc: number };
+  /** Map ids the run touched. Maps live in their own store; the record
+   *  references them by id so an archived run can render thumbnails
+   *  without duplicating wall data. */
+  mapIds: string[];
+}
+
+export interface RunRecord {
+  id: string;
+  startedAt: string;
+  endedAt: string;
+  endReason: RunEndReason;
+  summaryStats: RunSummaryStats;
 }
