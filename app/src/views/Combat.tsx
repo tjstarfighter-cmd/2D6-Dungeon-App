@@ -16,7 +16,7 @@ import {
 import { CombatCloseSummary } from "@/components/combat/CombatCloseSummary";
 import { CombatLogPanel } from "@/components/combat/CombatLogPanel";
 import { CreaturePicker } from "@/components/combat/CreaturePicker";
-import { RunEndPlaceholderModal } from "@/components/combat/RunEndPlaceholderModal";
+import { useRunEnd } from "@/components/RunEnd";
 import { NotesPanel } from "@/components/NotesPanel";
 import { useNotes } from "@/hooks/useNotes";
 import { fearfulMomentumBonus } from "@/lib/combat";
@@ -50,12 +50,10 @@ export default function CombatView() {
   const [turnTab, setTurnTab] = useState<TurnTab>("player");
   // Story 5.5 — when set, the combat-close summary modal is open.
   const [closing, setClosing] = useState(false);
-  // Story 5.6 — when set, the player has been killed mid-combat. The
-  // overlay stays open behind this modal per AC5.
-  const [deathCause, setDeathCause] = useState<{
-    enemyName: string | null;
-    roomLabel: string | null;
-  } | null>(null);
+  // Story 6.10 — combat-path HP→0 funnels into the run-end modal via
+  // RunEndContext. Replaces the placeholder modal that shipped with
+  // Story 5.6.
+  const { triggerRunEnd } = useRunEnd();
 
   // Warm the creatures.json chunk while the user is on the pre-combat screen
   // so starting combat doesn't suspend the whole view on first load.
@@ -173,9 +171,10 @@ export default function CombatView() {
               onPlayerDamaged={({ prevHp, newHp, enemyId }) => {
                 if (prevHp > 0 && newHp === 0) {
                   const enemy = encounter.enemies.find((e) => e.id === enemyId);
-                  setDeathCause({
-                    enemyName: enemy?.name ?? null,
-                    roomLabel: encounter.roomLabel ?? null,
+                  triggerRunEnd({
+                    kind: "combat",
+                    source: enemy?.name ?? "an enemy",
+                    roomLabel: encounter.roomLabel ?? undefined,
                   });
                 }
               }}
@@ -203,14 +202,6 @@ export default function CombatView() {
           />
         </div>
       </div>
-      {deathCause && (
-        <RunEndPlaceholderModal
-          enemyName={deathCause.enemyName}
-          roomLabel={deathCause.roomLabel}
-          characterName={active.name}
-          onClose={() => setDeathCause(null)}
-        />
-      )}
       {closing && (
         <CombatCloseSummary
           enemies={encounter.enemies}

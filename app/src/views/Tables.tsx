@@ -9,6 +9,7 @@ import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import { useNotes } from "@/hooks/useNotes";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
 import { useRoomGen, useRoomGenPendingReader } from "@/components/RoomGen";
+import { useRunEnd } from "@/components/RunEnd";
 import { parseContentsCellText } from "@/lib/contents-parser";
 import { useCharacters } from "@/hooks/useCharacters";
 import {
@@ -51,6 +52,7 @@ export default function TablesView() {
   // primed the player to roll on RFUT1).
   const { active: activeChar, update: updateChar } = useCharacters();
   const rfut1Toast = useToast();
+  const { triggerRunEnd } = useRunEnd();
   // Story 3.3 — inline expansion. Multiple tables can be open at once.
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const toggleExpand = (k: string) =>
@@ -86,8 +88,9 @@ export default function TablesView() {
             message: `Recovery! ${activeChar.name} is back at ${outcome.hp} HP.`,
           });
         } else if (outcome.kind === "death") {
-          rfut1Toast.error({
-            message: `RFUT1 ${rollValue}: ${activeChar.name} has fallen. Story 6.10 will surface the run-end modal.`,
+          triggerRunEnd({
+            kind: "non_combat",
+            source: `RFUT1 ${rollValue} — ${matchedText.slice(0, 80)}`,
           });
         } else {
           rfut1Toast.suggestion({
@@ -171,6 +174,7 @@ export default function TablesView() {
       activeChar,
       updateChar,
       rfut1Toast,
+      triggerRunEnd,
     ],
   );
 
