@@ -3,6 +3,7 @@ import { useMatch } from "react-router-dom";
 
 import { Button, Card } from "@/components/ui";
 import { useRegisterTablesSearch } from "@/components/TablesSearch";
+import { useToast } from "@/components/Toast";
 import { useTablesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
@@ -451,6 +452,7 @@ function TableDetail({
   const kind = rollKindFor(table);
   const [roll, setRoll] = useState<RollValue | null>(null);
   const { publishResolved: publishRollResolved } = useCurrentRoll();
+  const toast = useToast();
 
   // Publish to the OBS roll overlay whenever the user lands on a roll
   // for this table. We summarise the matched row by joining all but the
@@ -484,7 +486,21 @@ function TableDetail({
     if (onResolveRoll && headline !== "(no matching row)") {
       onResolveRoll(tableKey, headline);
     }
-  }, [roll, table, tableKey, kind, publishRollResolved, onResolveRoll]);
+    // Story 3.7 — when no pending log entry references this table (always
+    // the case until Epic 4 ships the log), prompt to add the roll to the
+    // active room's log. Add/Edit are stubs for now; Epic 4 wires them
+    // through to the per-pin log thread or the Unattributed bucket.
+    if (headline !== "(no matching row)") {
+      const id = toast.suggestion({
+        message: `Add roll to log? ${tableKey} → ${roll}`,
+        primary: {
+          label: "Add",
+          onClick: () => toast.dismiss(id),
+        },
+        edit: () => toast.dismiss(id),
+      });
+    }
+  }, [roll, table, tableKey, kind, publishRollResolved, onResolveRoll, toast]);
 
   return (
     <Card>
