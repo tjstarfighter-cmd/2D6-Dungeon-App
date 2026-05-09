@@ -10,6 +10,7 @@ const PresentCard = lazy(() => import("@/views/present/Card"));
 const PresentTable = lazy(() => import("@/views/present/Table"));
 const PresentRoll = lazy(() => import("@/views/present/Roll"));
 const PresentVitals = lazy(() => import("@/views/present/Vitals"));
+const PresentCombat = lazy(() => import("@/views/present/Combat"));
 
 function Loader() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         path="present/vitals/:characterId"
         element={<Lazy><PresentVitals /></Lazy>}
       />
+      <Route path="present/combat" element={<Lazy><PresentCombat /></Lazy>} />
 
       {/* Everything else lands in the new Shell. The Shell renders Sheet,
           Map, Combat, Tables, and Log panels directly; legacy URLs like

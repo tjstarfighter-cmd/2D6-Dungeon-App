@@ -75,6 +75,11 @@ export default function PresentIndex() {
               title="Roll context"
               subtitle="Transparent overlay — pending and resolved dice rolls from Combat and Tables"
             />
+            <PresenterRow
+              to="/present/combat"
+              title="Combat"
+              subtitle="Round, room, momentum, enemy roster (HP), last 6 log entries"
+            />
           </ul>
         </Section>
 
