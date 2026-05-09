@@ -1,6 +1,7 @@
 import type { Character } from "@/types/character";
 import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
+import { useMidRunGuard } from "@/components/MidRunGuard";
 import { Button } from "@/components/ui";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useReadOnly } from "@/hooks/useReadOnly";
@@ -29,10 +30,15 @@ export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
   const { maps, replaceAll: replaceAllMaps } = useMapsV2();
   const nav = useShellNav();
   const readOnly = useReadOnly();
+  const guard = useMidRunGuard();
 
   function handleSwitch(id: string) {
-    setActive(id);
-    onClose();
+    // Story 6.14 — mid-run guard. If a combat encounter is live the
+    // modal interposes; otherwise the switch runs immediately.
+    guard.requestSwitch(() => {
+      setActive(id);
+      onClose();
+    });
   }
 
   function handleNew() {

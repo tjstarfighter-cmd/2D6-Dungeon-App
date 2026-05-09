@@ -17,6 +17,7 @@ import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import { useRoomGen } from "@/components/RoomGen";
 import { useReadOnly } from "@/hooks/useReadOnly";
+import { useMidRunGuard } from "@/components/MidRunGuard";
 import { RestRationModal } from "@/components/RestRationModal";
 import {
   getMapTransitionFlags,
@@ -110,6 +111,11 @@ function clamp(n: number, lo: number, hi: number): number {
 
 export default function MapV2View() {
   const { maps, active, create, update, remove, setActive } = useMapsV2();
+  const guard = useMidRunGuard();
+  // Story 6.14 — wrap map setActive so switching maps during a live
+  // encounter prompts the guard modal first.
+  const guardedSetActive = (id: string) =>
+    guard.requestSwitch(() => setActive(id));
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-7xl space-y-4 overflow-x-hidden">
@@ -119,7 +125,7 @@ export default function MapV2View() {
             <MapV2Switcher
               maps={maps}
               active={active}
-              onSelect={setActive}
+              onSelect={guardedSetActive}
               onCreate={(opts) => create(opts)}
               onDelete={() => {}}
             />
@@ -136,7 +142,7 @@ export default function MapV2View() {
           map={active}
           onUpdate={(patch) => update(active.id, patch)}
           maps={maps}
-          onSelectMap={setActive}
+          onSelectMap={guardedSetActive}
           onCreateMap={(opts) => create(opts)}
           onDeleteMap={() => {
             if (
