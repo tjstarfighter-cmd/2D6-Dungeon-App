@@ -16,6 +16,15 @@ import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import {
+  deriveContentsTableId,
+  levelAlternates,
+  sizeCategoryFor,
+  sizeLabel,
+  type SizeCategory,
+} from "@/lib/contents-roll";
+import { useTablesData } from "@/data/lazy";
+import { useNavigate } from "react-router-dom";
+import {
   Button,
   Card,
   Field,
@@ -331,6 +340,8 @@ function MapV2Editor({
   const { active: activeCharacter } = useCharacters();
   const { encounter, start: startEncounter } = useEncounter();
   const { openCombat } = useShellNav();
+  const navigate = useNavigate();
+  const tables = useTablesData();
 
   const [tool, setTool] = useState<Tool>("pan");
   const [exitType, setExitType] = useState<ExitType>("door");
@@ -423,6 +434,18 @@ function MapV2Editor({
   // Ephemeral — not persisted. `targetTiles` drives the HUD (Step 10).
   const [lastRoll, setLastRoll] = useState<RoomRoll | null>(null);
   const [exitRoll, setExitRoll] = useState<number | null>(null);
+
+  // Story 6.4: contents-roll auto-prompt state. Set right after a pin
+  // is applied — the banner derives a table ID from level + ancestry +
+  // pin kind + (lastRoll | tile count) and offers Roll / Skip / Use
+  // different table…. `null` = no prompt; `{ pickerOpen: true }` shows
+  // the alternates list.
+  const [contentsPrompt, setContentsPrompt] = useState<{
+    hash: string;
+    size: SizeCategory;
+    derivedTableId: string | null;
+    pickerOpen: boolean;
+  } | null>(null);
   const [targetTiles, setTargetTiles] = useState<number | null>(null);
 
   // Story 1.11 — expose Setup / Roll / Undo / Zoom-to-fit to the Shell's
@@ -534,6 +557,24 @@ function MapV2Editor({
     });
     // Story 2.7: pinning the new region completes the size-roll flow.
     dismissSizeRoll();
+    // Story 6.4: auto-prompt the contents roll for the freshly-pinned
+    // region. The banner derives the table ID from this map's level +
+    // ancestry, the chosen pin kind, and (preferring) the latest size
+    // roll — falling back to the region's actual tile count when the
+    // player skipped the size flow.
+    const fallbackTiles =
+      regionInfos.find((r) => r.hash === hash)?.tiles.length ?? 1;
+    const size = sizeCategoryFor(kind, lastRoll, fallbackTiles);
+    setContentsPrompt({
+      hash,
+      size,
+      derivedTableId: deriveContentsTableId({
+        level: map.level,
+        ancestry: map.ancestry,
+        size,
+      }),
+      pickerOpen: false,
+    });
   }
 
   // Story 2.4: flip a pinned region's kind and renumber every pin so
@@ -1227,6 +1268,35 @@ function MapV2Editor({
           }
           onDismiss={dismissSizeRoll}
         />
+        {contentsPrompt && (
+          <ContentsRollBanner
+            level={map.level}
+            ancestry={map.ancestry}
+            size={contentsPrompt.size}
+            derivedTableId={contentsPrompt.derivedTableId}
+            pickerOpen={contentsPrompt.pickerOpen}
+            alternateIds={levelAlternates(
+              map.level,
+              map.ancestry,
+              Object.keys(tables),
+            )}
+            tableTitle={(id) => tables[id]?.title}
+            onRoll={(id) => {
+              setContentsPrompt(null);
+              setLastRoll(null);
+              navigate(`/tables/${id}`);
+            }}
+            onSkip={() => {
+              setContentsPrompt(null);
+              setLastRoll(null);
+            }}
+            onTogglePicker={() =>
+              setContentsPrompt((prev) =>
+                prev ? { ...prev, pickerOpen: !prev.pickerOpen } : prev,
+              )
+            }
+          />
+        )}
         <div
           ref={containerRef}
           className="w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
@@ -2003,6 +2073,116 @@ function SizeRollBanner({
           onClick={onDismiss}
           aria-label="Dismiss size roll banner"
           className="rounded-md border border-amber-300 bg-white px-1.5 py-0 text-amber-800 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-100 dark:hover:bg-amber-800"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Story 6.4 — post-pin contents-roll banner. Mirrors SizeRollBanner's
+// position/styling (top-centre) so the room-gen flow stays anchored to
+// the map. Roll/Skip dismiss; Use different table… toggles an inline
+// picker that lists every L<level><ancestry|SR|LR> table the codex
+// knows about.
+function ContentsRollBanner({
+  level,
+  ancestry,
+  size,
+  derivedTableId,
+  pickerOpen,
+  alternateIds,
+  tableTitle,
+  onRoll,
+  onSkip,
+  onTogglePicker,
+}: {
+  level: number;
+  ancestry: string;
+  size: SizeCategory;
+  derivedTableId: string | null;
+  pickerOpen: boolean;
+  alternateIds: string[];
+  tableTitle: (id: string) => string | undefined;
+  onRoll: (id: string) => void;
+  onSkip: () => void;
+  onTogglePicker: () => void;
+}) {
+  const derivedExists =
+    derivedTableId != null && tableTitle(derivedTableId) !== undefined;
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Contents roll prompt"
+      className="pointer-events-auto absolute left-1/2 top-2 z-20 max-w-[min(28rem,90%)] -translate-x-1/2 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 shadow-lg dark:border-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-100"
+    >
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="font-medium">
+            Roll Level {level} {sizeLabel(size)} table ({ancestry})?
+          </div>
+          {derivedTableId && (
+            <div className="text-xs text-emerald-800 dark:text-emerald-200">
+              Auto-derived: <span className="font-mono">{derivedTableId}</span>
+              {!derivedExists && " — not in codex (pick alternate below)"}
+            </div>
+          )}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              disabled={!derivedExists || derivedTableId == null}
+              onClick={() => derivedTableId && onRoll(derivedTableId)}
+              className="rounded-md border border-emerald-700 bg-white px-2.5 py-1 text-xs font-semibold text-emerald-900 hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-emerald-300 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800"
+            >
+              Roll
+            </button>
+            <button
+              type="button"
+              onClick={onSkip}
+              className="rounded-md border border-emerald-300 bg-white px-2.5 py-1 text-xs text-emerald-800 hover:bg-emerald-100 dark:border-emerald-600 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800"
+            >
+              Skip
+            </button>
+            <button
+              type="button"
+              onClick={onTogglePicker}
+              aria-expanded={pickerOpen}
+              className="rounded-md border border-emerald-300 bg-white px-2.5 py-1 text-xs text-emerald-800 hover:bg-emerald-100 dark:border-emerald-600 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800"
+            >
+              Use different table… {pickerOpen ? "▴" : "▾"}
+            </button>
+          </div>
+          {pickerOpen && (
+            <ul className="max-h-40 space-y-0.5 overflow-auto rounded border border-emerald-200 bg-white p-1 text-xs dark:border-emerald-800 dark:bg-emerald-950">
+              {alternateIds.length === 0 && (
+                <li className="px-2 py-1 text-emerald-700 dark:text-emerald-300">
+                  No L{level} tables in codex.
+                </li>
+              )}
+              {alternateIds.map((id) => (
+                <li key={id}>
+                  <button
+                    type="button"
+                    onClick={() => onRoll(id)}
+                    className="flex w-full items-baseline gap-2 rounded px-2 py-1 text-left text-emerald-900 hover:bg-emerald-100 dark:text-emerald-100 dark:hover:bg-emerald-900"
+                  >
+                    <span className="font-mono text-[11px]">{id}</span>
+                    <span className="min-w-0 flex-1 truncate text-[11px] text-emerald-700 dark:text-emerald-300">
+                      {tableTitle(id) ?? "(unknown)"}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onSkip}
+          aria-label="Dismiss contents roll prompt"
+          className="rounded-md border border-emerald-300 bg-white px-1.5 py-0 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-600 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800"
         >
           ✕
         </button>
