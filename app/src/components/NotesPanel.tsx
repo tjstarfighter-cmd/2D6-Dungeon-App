@@ -24,7 +24,7 @@ export function NotesPanel({ target, title = "Notes", compact = false }: Props) 
 
   function commitDraft() {
     const body = draftBody.trim();
-    if (body) create(body, target);
+    if (body) create({ body, target });
     setDraftBody("");
     setDrafting(false);
   }

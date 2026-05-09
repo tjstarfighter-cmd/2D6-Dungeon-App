@@ -1,25 +1,59 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-import type { Note, NoteTarget } from "@/types/notes";
+import type {
+  Note,
+  NoteEntryType,
+  NoteState,
+  NoteTarget,
+} from "@/types/notes";
 
 const NOTES_KEY = "2d6d.notes";
+const NOTES_SCHEMA = 2;
 
 type NotesById = Record<string, Note>;
 
-function readJson<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
+interface NotesEnvelopeV2 {
+  schema: 2;
+  notes: NotesById;
+}
+
+function readEnvelope(): NotesById {
+  if (typeof window === "undefined") return {};
   try {
-    const raw = window.localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw) as T;
+    const raw = window.localStorage.getItem(NOTES_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object") return {};
+    // v2 envelope: { schema: 2, notes: {...} }
+    if ((parsed as { schema?: number }).schema === NOTES_SCHEMA) {
+      const env = parsed as NotesEnvelopeV2;
+      return migrateEntries(env.notes ?? {});
+    }
+    // v1 (legacy): bare {id: Note} map. Wrap in v2 envelope on the way
+    // through and inject defaults for the new fields per Story 4.1 AC5.
+    return migrateEntries(parsed as NotesById);
   } catch {
-    return fallback;
+    return {};
   }
 }
 
-function writeJson(key: string, value: unknown): void {
+function migrateEntries(input: NotesById): NotesById {
+  const out: NotesById = {};
+  for (const [id, n] of Object.entries(input)) {
+    if (!n || typeof n !== "object") continue;
+    out[id] = {
+      ...(n as Note),
+      entryType: ((n as Partial<Note>).entryType ?? "Note") as NoteEntryType,
+      state: ((n as Partial<Note>).state ?? "resolved") as NoteState,
+    };
+  }
+  return out;
+}
+
+function writeEnvelope(notes: NotesById): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+  const env: NotesEnvelopeV2 = { schema: NOTES_SCHEMA, notes };
+  window.localStorage.setItem(NOTES_KEY, JSON.stringify(env));
 }
 
 function newId(): string {
@@ -42,7 +76,7 @@ function targetEquals(
 // Single source of truth shared by every useNotes() consumer. We use
 // useSyncExternalStore so multiple components stay in sync on every change
 // without needing a Context provider.
-let store: NotesById = readJson<NotesById>(NOTES_KEY, {});
+let store: NotesById = readEnvelope();
 const listeners = new Set<() => void>();
 
 function notify(): void {
@@ -62,17 +96,30 @@ function getSnapshot(): NotesById {
 
 function setStore(next: NotesById): void {
   store = next;
-  writeJson(NOTES_KEY, next);
+  writeEnvelope(next);
   notify();
 }
 
 // ---- Public hook ----------------------------------------------------------
 
+export interface CreateNoteInput {
+  body: string;
+  target?: NoteTarget;
+  entryType?: NoteEntryType;
+  state?: NoteState;
+}
+
 export interface UseNotesResult {
   notes: Note[];
   notesFor: (target?: NoteTarget) => Note[];
-  create: (body: string, target?: NoteTarget) => Note;
-  update: (id: string, patch: Partial<Pick<Note, "body" | "target">>) => void;
+  /** Returns the chronological log thread for a region (room / hallway).
+   *  Story 4.1 — used by Epic 4 surfaces to render per-pin threads. */
+  notesForRegion: (regionHash: string) => Note[];
+  create: (input: CreateNoteInput) => Note;
+  update: (
+    id: string,
+    patch: Partial<Pick<Note, "body" | "target" | "entryType" | "state">>,
+  ) => void;
   remove: (id: string) => void;
   replaceAll: (next: Note[]) => void;
 }
@@ -93,21 +140,38 @@ export function useNotes(): UseNotesResult {
     [notes],
   );
 
-  const create = useCallback((body: string, target?: NoteTarget) => {
+  // Story 4.1: chronological per-region thread (oldest first). Filters
+  // notes whose target points at the room with the given tilesHash.
+  const notesForRegion = useCallback(
+    (regionHash: string) =>
+      notes
+        .filter(
+          (n) => n.target?.kind === "room" && n.target.id === regionHash,
+        )
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+    [notes],
+  );
+
+  const create = useCallback((input: CreateNoteInput) => {
     const now = new Date().toISOString();
     const n: Note = {
       id: newId(),
-      body,
+      body: input.body,
       createdAt: now,
       updatedAt: now,
-      target,
+      target: input.target,
+      entryType: input.entryType ?? "Note",
+      state: input.state ?? "resolved",
     };
     setStore({ ...store, [n.id]: n });
     return n;
   }, []);
 
   const update = useCallback(
-    (id: string, patch: Partial<Pick<Note, "body" | "target">>) => {
+    (
+      id: string,
+      patch: Partial<Pick<Note, "body" | "target" | "entryType" | "state">>,
+    ) => {
       const existing = store[id];
       if (!existing) return;
       setStore({
@@ -131,5 +195,13 @@ export function useNotes(): UseNotesResult {
     setStore(map);
   }, []);
 
-  return { notes, notesFor, create, update, remove, replaceAll };
+  return {
+    notes,
+    notesFor,
+    notesForRegion,
+    create,
+    update,
+    remove,
+    replaceAll,
+  };
 }

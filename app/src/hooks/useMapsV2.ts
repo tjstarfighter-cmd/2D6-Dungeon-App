@@ -56,7 +56,6 @@ export function createMapDocV2(opts: CreateMapV2Options = {}): MapDocV2 {
     gridH: opts.gridH ?? DEFAULT_GRID_H,
     walls: [],
     regions: [],
-    notes: [],
     createdAt: now,
     updatedAt: now,
     schema: 2,

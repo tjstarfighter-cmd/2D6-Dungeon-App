@@ -6,7 +6,7 @@
 // directly. Regions are derived (flood-fill from "outside") and live in
 // transient memory; only walls + region metadata are persisted.
 
-import type { ExitType, MapNote } from "@/types/map";
+import type { ExitType } from "@/types/map";
 
 // A wall segment between two adjacent dots. Always stored canonically:
 // (ax, ay) precedes (bx, by) in row-major dot order, so two physically
@@ -57,7 +57,6 @@ export interface MapDocV2 {
   gridH: number;
   walls: Wall[];
   regions: RegionMeta[];
-  notes: MapNote[];
   /** Story 2.5: persisted character-token grid coords for this map.
    *  Optional so legacy maps load unchanged; missing → center default. */
   tokenPosition?: { x: number; y: number };

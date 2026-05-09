@@ -10,9 +10,3 @@ export type ExitType =
   | "magical"
   | "secret";
 
-export interface MapNote {
-  id: string;
-  x: number;
-  y: number;
-  text: string;
-}
