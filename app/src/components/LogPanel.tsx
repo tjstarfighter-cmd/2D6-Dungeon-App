@@ -23,7 +23,7 @@ const QUICK_ADD: { type: NoteEntryType; label: string }[] = [
 export function LogPanel() {
   const pin = useActivePin();
   const { active: activeMap } = useMapsV2();
-  const { notesForRegion, create, update } = useNotes();
+  const { notesForRegion, create, update, remove } = useNotes();
 
   const region = useMemo(() => {
     if (!pin || !activeMap) return null;
@@ -91,11 +91,15 @@ export function LogPanel() {
                 entry={n}
                 editing={editingId === n.id}
                 onStartEdit={() => setEditingId(n.id)}
-                onCommit={(body) => {
-                  update(n.id, { body });
+                onCommit={(patch) => {
+                  update(n.id, patch);
                   setEditingId(null);
                 }}
                 onCancel={() => setEditingId(null)}
+                onDelete={() => {
+                  remove(n.id);
+                  setEditingId(null);
+                }}
               />
             ))}
           </ul>
@@ -118,29 +122,41 @@ export function LogPanel() {
   );
 }
 
+const ENTRY_TYPES: NoteEntryType[] = ["Roll", "Loot", "Combat", "Event", "Note"];
+
 function LogEntryRow({
   entry,
   editing,
   onStartEdit,
   onCommit,
   onCancel,
+  onDelete,
 }: {
   entry: Note;
   editing: boolean;
   onStartEdit: () => void;
-  onCommit: (body: string) => void;
+  onCommit: (
+    patch: Partial<Pick<Note, "body" | "entryType" | "state">>,
+  ) => void;
   onCancel: () => void;
+  onDelete: () => void;
 }) {
   const [draft, setDraft] = useState(entry.body);
+  const [draftType, setDraftType] = useState<NoteEntryType>(entry.entryType);
+  const [draftResolved, setDraftResolved] = useState(entry.state === "resolved");
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // When entering edit mode, focus the textarea and seed the draft.
+  // When entering edit mode, seed draft state from the entry and focus.
   useEffect(() => {
     if (editing) {
       setDraft(entry.body);
+      setDraftType(entry.entryType);
+      setDraftResolved(entry.state === "resolved");
+      setConfirmDelete(false);
       inputRef.current?.focus();
     }
-  }, [editing, entry.body]);
+  }, [editing, entry.body, entry.entryType, entry.state]);
 
   const dim = entry.state === "pending";
   return (
@@ -163,7 +179,7 @@ function LogEntryRow({
         </time>
       </div>
       {editing ? (
-        <div className="space-y-1">
+        <div className="space-y-2">
           <textarea
             ref={inputRef}
             value={draft}
@@ -172,10 +188,42 @@ function LogEntryRow({
             className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
             placeholder="Describe this entry…"
           />
-          <div className="flex gap-1">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <label className="flex items-center gap-1">
+              <span className="text-zinc-500">Type</span>
+              <select
+                value={draftType}
+                onChange={(e) =>
+                  setDraftType(e.target.value as NoteEntryType)
+                }
+                className="rounded border border-zinc-300 bg-white px-1 py-0.5 dark:border-zinc-700 dark:bg-zinc-950"
+              >
+                {ENTRY_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={draftResolved}
+                onChange={(e) => setDraftResolved(e.target.checked)}
+              />
+              <span>Resolved</span>
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-1">
             <button
               type="button"
-              onClick={() => onCommit(draft.trim())}
+              onClick={() =>
+                onCommit({
+                  body: draft.trim(),
+                  entryType: draftType,
+                  state: draftResolved ? "resolved" : "pending",
+                })
+              }
               className="rounded bg-zinc-900 px-2 py-0.5 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
             >
               Save
@@ -187,6 +235,33 @@ function LogEntryRow({
             >
               Cancel
             </button>
+            {!confirmDelete ? (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="ml-auto rounded border border-rose-300 px-2 py-0.5 text-xs text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/30"
+              >
+                Delete
+              </button>
+            ) : (
+              <span className="ml-auto flex items-center gap-1 text-xs text-rose-800 dark:text-rose-200">
+                <span>Sure?</span>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="rounded bg-rose-700 px-2 py-0.5 font-medium text-white hover:bg-rose-800 dark:bg-rose-800 dark:hover:bg-rose-700"
+                >
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="rounded border border-zinc-300 px-2 py-0.5 text-zinc-600 dark:border-zinc-700 dark:text-zinc-300"
+                >
+                  Cancel
+                </button>
+              </span>
+            )}
           </div>
         </div>
       ) : (
