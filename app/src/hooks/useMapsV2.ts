@@ -43,14 +43,18 @@ export interface CreateMapV2Options {
   ancestry?: string;
   gridW?: number;
   gridH?: number;
+  /** Story 6.6 — dungeon level. Defaults to 1 (no transition flow);
+   *  values > 1 trigger the rest/ration prompt + entrance banner. */
+  level?: number;
 }
 
 export function createMapDocV2(opts: CreateMapV2Options = {}): MapDocV2 {
   const now = new Date().toISOString();
+  const level = opts.level && opts.level > 0 ? Math.floor(opts.level) : 1;
   return {
     id: newId("mapv2"),
     name: opts.name ?? "New Map",
-    level: 1,
+    level,
     ancestry: opts.ancestry ?? DEFAULT_ANCESTRY,
     gridW: opts.gridW ?? DEFAULT_GRID_W,
     gridH: opts.gridH ?? DEFAULT_GRID_H,

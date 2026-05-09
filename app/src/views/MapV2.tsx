@@ -16,6 +16,11 @@ import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
 import { useRoomGen } from "@/components/RoomGen";
+import { RestRationModal } from "@/components/RestRationModal";
+import {
+  getMapTransitionFlags,
+  setMapTransitionFlag,
+} from "@/lib/map-transition";
 import {
   deriveContentsTableId,
   levelAlternates,
@@ -225,6 +230,7 @@ function NewMapPicker({
   // snapping back to 1. Parsed and clamped at commit time.
   const [wStr, setWStr] = useState("25");
   const [hStr, setHStr] = useState("25");
+  const [levelStr, setLevelStr] = useState("1");
 
   function parseDim(s: string): number {
     const n = parseInt(s, 10);
@@ -241,11 +247,13 @@ function NewMapPicker({
   const overCap = wantW > MAX_GRID || wantH > MAX_GRID;
 
   function commit(opts: { gridW: number; gridH: number }) {
+    const lvl = parseInt(levelStr, 10);
     onCreate({
       name: name.trim() || "New Map",
       ancestry,
       gridW: clamp(Math.round(opts.gridW), 1, MAX_GRID),
       gridH: clamp(Math.round(opts.gridH), 1, MAX_GRID),
+      level: Number.isFinite(lvl) && lvl >= 1 ? lvl : 1,
     });
   }
 
@@ -284,6 +292,14 @@ function NewMapPicker({
             value={hStr}
             onChange={(e) => setHStr(e.target.value)}
             className="w-20"
+          />
+        </Field>
+        <Field label="Level">
+          <NumberField
+            min={1}
+            value={levelStr}
+            onChange={(e) => setLevelStr(e.target.value)}
+            className="w-16"
           />
         </Field>
         <Button
@@ -338,7 +354,8 @@ function MapV2Editor({
   onCreateMap: (opts: CreateMapV2Options) => void;
   onDeleteMap: () => void;
 }) {
-  const { active: activeCharacter } = useCharacters();
+  const { active: activeCharacter, update: updateActiveCharacter } =
+    useCharacters();
   const { encounter, start: startEncounter } = useEncounter();
   const { openCombat } = useShellNav();
   const navigate = useNavigate();
@@ -448,6 +465,25 @@ function MapV2Editor({
     derivedTableId: string | null;
     pickerOpen: boolean;
   } | null>(null);
+
+  // Story 6.6 — level transition flow. Per-map flags decide whether the
+  // rest/ration modal and entrance banner have already been shown for
+  // this map id. The modal fires when level > 1 AND the rest prompt
+  // hasn't resolved yet; the banner fires after the prompt resolves
+  // and persists until manually dismissed.
+  const [transitionFlags, setTransitionFlags] = useState(() =>
+    getMapTransitionFlags(map.id),
+  );
+  // Re-load flags when the active map changes (switching maps in the
+  // editor without re-mounting the component).
+  useEffect(() => {
+    setTransitionFlags(getMapTransitionFlags(map.id));
+  }, [map.id]);
+  const showRestModal = map.level > 1 && !transitionFlags.restPromptResolved;
+  const showEntranceBanner =
+    map.level > 1 &&
+    transitionFlags.restPromptResolved &&
+    !transitionFlags.entranceBannerDismissed;
   const [targetTiles, setTargetTiles] = useState<number | null>(null);
 
   // Story 1.11 — expose Setup / Roll / Undo / Zoom-to-fit to the Shell's
@@ -1270,6 +1306,35 @@ function MapV2Editor({
           }
           onDismiss={dismissSizeRoll}
         />
+        {showEntranceBanner && (
+          <div
+            role="status"
+            aria-live="polite"
+            aria-label="Entrance reminder banner"
+            className="pointer-events-auto absolute left-1/2 top-2 z-20 max-w-[min(32rem,90%)] -translate-x-1/2 rounded-md border border-sky-300 bg-sky-50 px-3 py-2 text-sm text-sky-900 shadow-lg dark:border-sky-700 dark:bg-sky-950/80 dark:text-sky-100"
+          >
+            <div className="flex items-start gap-2">
+              <div className="min-w-0 flex-1">
+                Draw stairs in middle of an Outer Boundary, exit square, 3
+                archways. No encounter on the entrance room.
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setMapTransitionFlag(map.id, "entranceBannerDismissed", true);
+                  setTransitionFlags((p) => ({
+                    ...p,
+                    entranceBannerDismissed: true,
+                  }));
+                }}
+                aria-label="Dismiss entrance banner"
+                className="rounded-md border border-sky-300 bg-white px-1.5 py-0 text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:bg-sky-900 dark:text-sky-100 dark:hover:bg-sky-800"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
         {contentsPrompt && (
           <ContentsRollBanner
             level={map.level}
@@ -1840,6 +1905,44 @@ function MapV2Editor({
             setPinPromptHash(null);
           }}
           onClose={() => setPinPromptHash(null)}
+        />
+      )}
+      {showRestModal && activeCharacter && (
+        <RestRationModal
+          level={map.level}
+          currentHp={activeCharacter.hp.current}
+          currentRations={parseRationsCount(
+            activeCharacter.backpack?.rations,
+          )}
+          onResolve={({ hpDelta, rationsConsumed }) => {
+            const nextHp = Math.max(
+              0,
+              Math.min(
+                activeCharacter.hp.baseline,
+                activeCharacter.hp.current + hpDelta,
+              ),
+            );
+            const remainingRations = Math.max(
+              0,
+              parseRationsCount(activeCharacter.backpack?.rations) -
+                rationsConsumed,
+            );
+            updateActiveCharacter(activeCharacter.id, {
+              hp: { ...activeCharacter.hp, current: nextHp },
+              backpack: {
+                ...activeCharacter.backpack,
+                rations: String(remainingRations),
+              },
+            });
+            setMapTransitionFlag(map.id, "restPromptResolved", true);
+            setTransitionFlags((p) => ({ ...p, restPromptResolved: true }));
+          }}
+          onClose={() => {
+            // Closing without picking is treated as an explicit Skip path
+            // — same flag flip so the modal doesn't keep nagging.
+            setMapTransitionFlag(map.id, "restPromptResolved", true);
+            setTransitionFlags((p) => ({ ...p, restPromptResolved: true }));
+          }}
         />
       )}
       {pinEditHash &&
@@ -2657,6 +2760,18 @@ function RollPanel({
       </div>
     </Card>
   );
+}
+
+// Story 6.6 — backpack.rations is a free-form string on the schema
+// (Sheet UI accepts notes like "3 + 2 trail"). Coerce to a non-negative
+// integer for the rest/ration prompt's deduction; fall back to 0 when
+// the field is non-numeric.
+function parseRationsCount(value: string | undefined): number {
+  if (!value) return 0;
+  const m = value.match(/-?\d+/);
+  if (!m) return 0;
+  const n = parseInt(m[0], 10);
+  return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
 function kindClass(kind: RoomRoll["kind"]): string {
