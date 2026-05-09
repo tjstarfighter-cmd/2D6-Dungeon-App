@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useTablesData, useCardsData } from "@/data/lazy";
 import { useTheme } from "@/hooks/useTheme";
+import { tierFor } from "@/lib/level-up";
 
 /**
  * Presenter index: a chrome-less directory for picking which view to
@@ -16,6 +18,7 @@ export default function PresentIndex() {
   const [theme, setTheme] = useTheme();
 
   const { maps } = useMapsV2();
+  const { characters } = useCharacters();
   const tables = useTablesData();
   const cards = useCardsData();
   const [cardQuery, setCardQuery] = useState("");
@@ -73,6 +76,26 @@ export default function PresentIndex() {
               subtitle="Transparent overlay — pending and resolved dice rolls from Combat and Tables"
             />
           </ul>
+        </Section>
+
+        <Section title={`Vitals (${characters.length})`}>
+          {characters.length === 0 ? (
+            <Empty>No characters yet — create one in the Sheet column.</Empty>
+          ) : (
+            <ul className="space-y-2">
+              {characters.map((c) => {
+                const tier = tierFor(c.level);
+                return (
+                  <PresenterRow
+                    key={c.id}
+                    to={`/present/vitals/${c.id}`}
+                    title={c.name}
+                    subtitle={`Lvl ${c.level} ${tier.tier} · HP ${c.hp.current}/${c.hp.baseline} · XP ${c.xp}`}
+                  />
+                );
+              })}
+            </ul>
+          )}
         </Section>
 
         <Section title={`Maps (${maps.length})`}>
