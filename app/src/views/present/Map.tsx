@@ -1,11 +1,15 @@
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import {
+  defaultTokenPosition,
   detectRegions,
   regionCentroidTile,
   tilesHash,
+  tokenColorFor,
+  tokenInitialFor,
 } from "@/lib/mapv2";
 import { wallSetFromList, type MapDocV2 } from "@/types/mapv2";
 import type { ExitType } from "@/types/map";
@@ -20,6 +24,7 @@ const CELL = 24;
 export default function PresentMap() {
   const { id } = useParams();
   const { maps } = useMapsV2();
+  const { active } = useCharacters();
   const map = maps.find((m) => m.id === id);
 
   if (!map) {
@@ -57,7 +62,17 @@ export default function PresentMap() {
           preserveAspectRatio="xMidYMid meet"
           className="size-full"
         >
-          <MapSvgContents map={map} />
+          <MapSvgContents
+            map={map}
+            character={
+              active
+                ? {
+                    id: active.id,
+                    name: active.name,
+                  }
+                : null
+            }
+          />
         </svg>
       </div>
     </main>
@@ -68,7 +83,13 @@ export default function PresentMap() {
 // Read-only render of v2 map contents. Kept inline (vs. shared component) so
 // the editor and presenter can evolve their visuals independently.
 
-function MapSvgContents({ map }: { map: MapDocV2 }) {
+function MapSvgContents({
+  map,
+  character,
+}: {
+  map: MapDocV2;
+  character: { id: string; name: string } | null;
+}) {
   const wallSet = useMemo(() => wallSetFromList(map.walls), [map.walls]);
   const regions = useMemo(
     () => detectRegions(wallSet, map.gridW, map.gridH),
@@ -175,6 +196,84 @@ function MapSvgContents({ map }: { map: MapDocV2 }) {
           </g>
         );
       })}
+
+      {/* Story 7.2 — pin markers (numbered circle + Room/Hall glyph)
+          for any region with kind metadata set. */}
+      {regions.regions.map((tiles, i) => {
+        const hash = tilesHash(tiles);
+        const meta = metaByHash.get(hash);
+        if (!meta?.kind || typeof meta.number !== "number") return null;
+        const [cx, cy] = regionCentroidTile(tiles);
+        const x = (cx + 0.5) * CELL;
+        const y = (cy + 0.5) * CELL;
+        const cleared = !!meta.cleared;
+        const r = CELL * 0.42;
+        const label = `${meta.kind === "room" ? "R" : "H"}${meta.number}`;
+        const kindGlyph = meta.kind === "room" ? "▣" : "┊";
+        return (
+          <g key={`p${i}`} pointerEvents="none">
+            <circle
+              cx={x}
+              cy={y}
+              r={r}
+              fill={cleared ? "#52525b" : "#fef3c7"}
+              stroke={cleared ? "#a1a1aa" : "#92400e"}
+              strokeWidth={2}
+            />
+            <text
+              x={x}
+              y={y + CELL * 0.18}
+              textAnchor="middle"
+              fontSize={CELL * 0.5}
+              fontWeight={700}
+              fill="#18181b"
+            >
+              {label}
+            </text>
+            <text
+              x={x + CELL * 0.36}
+              y={y - CELL * 0.18}
+              textAnchor="middle"
+              fontSize={CELL * 0.32}
+              fill="#3f3f46"
+            >
+              {kindGlyph}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Story 7.2 — active character token. Hidden when no active
+          character. Position uses map.tokenPosition or the centre
+          default; deterministic colour from the character id. */}
+      {character && (() => {
+        const pos = map.tokenPosition ?? defaultTokenPosition(map);
+        const x = (pos.x + 0.5) * CELL;
+        const y = (pos.y + 0.5) * CELL;
+        const r = CELL * 0.4;
+        return (
+          <g pointerEvents="none">
+            <circle
+              cx={x}
+              cy={y}
+              r={r}
+              fill={tokenColorFor(character.id)}
+              stroke="#0f172a"
+              strokeWidth={2}
+            />
+            <text
+              x={x}
+              y={y + CELL * 0.16}
+              textAnchor="middle"
+              fontSize={CELL * 0.55}
+              fontWeight={700}
+              fill="#f8fafc"
+            >
+              {tokenInitialFor(character.name)}
+            </text>
+          </g>
+        );
+      })()}
 
       {/* Region labels — at the centroid tile, big enough to read in a video. */}
       {regions.regions.map((tiles, i) => {
