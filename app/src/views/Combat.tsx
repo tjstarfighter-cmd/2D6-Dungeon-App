@@ -11,9 +11,11 @@ import {
   Field,
   NumberField,
 } from "@/components/ui";
+import { CombatCloseSummary } from "@/components/combat/CombatCloseSummary";
 import { CombatLogPanel } from "@/components/combat/CombatLogPanel";
 import { CreaturePicker } from "@/components/combat/CreaturePicker";
 import { NotesPanel } from "@/components/NotesPanel";
+import { useNotes } from "@/hooks/useNotes";
 import { fearfulMomentumBonus } from "@/lib/combat";
 import { cardImageUrl } from "@/lib/cards";
 import type { CardRecord } from "@/types/cards";
@@ -40,8 +42,11 @@ export default function CombatView() {
     addManualNote,
   } = useEncounter();
   const { active: activeMap, update: updateMap } = useMapsV2();
+  const { create: createNote } = useNotes();
   const [xpAtEnd, setXpAtEnd] = useState(0);
   const [turnTab, setTurnTab] = useState<TurnTab>("player");
+  // Story 5.5 — when set, the combat-close summary modal is open.
+  const [closing, setClosing] = useState(false);
 
   // Warm the creatures.json chunk while the user is on the pre-combat screen
   // so starting combat doesn't suspend the whole view on first load.
@@ -122,35 +127,7 @@ export default function CombatView() {
         nextRoundNumber={encounter.round + 1}
         xpAtEnd={xpAtEnd}
         onXpAtEndChange={setXpAtEnd}
-        onEndCombat={() => {
-          const xp = xpAtEnd > 0 ? ` and grant +${xpAtEnd} XP to ${active.name}` : "";
-          if (!confirm(`End combat${xp}?`)) return;
-          if (xpAtEnd > 0) {
-            updateCharacter(active.id, { xp: active.xp + xpAtEnd });
-          }
-          if (encounter.roomId && activeMap) {
-            const region = activeMap.regions.find(
-              (r) => r.tilesHash === encounter.roomId,
-            );
-            if (region && !region.cleared) {
-              const label =
-                encounter.roomLabel ||
-                region.label ||
-                region.type ||
-                "this room";
-              if (confirm(`Mark "${label}" cleared on the map?`)) {
-                const nextRegions = activeMap.regions.map((r) =>
-                  r.tilesHash === encounter.roomId
-                    ? { ...r, cleared: true }
-                    : r,
-                );
-                updateMap(activeMap.id, { regions: nextRegions });
-              }
-            }
-          }
-          setXpAtEnd(0);
-          end();
-        }}
+        onEndCombat={() => setClosing(true)}
       />
 
       <Card>
@@ -206,6 +183,60 @@ export default function CombatView() {
           />
         </div>
       </div>
+      {closing && (
+        <CombatCloseSummary
+          enemies={encounter.enemies}
+          initialXp={xpAtEnd}
+          characterName={active.name}
+          onCancel={() => {
+            // Story 5.5 AC5 — explicit opt-out: end without posting.
+            setClosing(false);
+            setXpAtEnd(0);
+            end();
+          }}
+          onConfirm={({ summary, notes, xp }) => {
+            // Combine summary + notes + XP into the per-room log entry's body.
+            const bodyParts = [summary];
+            if (notes) bodyParts.push(notes);
+            if (xp > 0) bodyParts.push(`+${xp} XP`);
+            createNote({
+              body: bodyParts.join("\n\n"),
+              entryType: "Combat",
+              state: "resolved",
+              target: encounter.roomId
+                ? { kind: "room", id: encounter.roomId }
+                : undefined,
+            });
+            if (xp > 0) {
+              updateCharacter(active.id, { xp: active.xp + xp });
+            }
+            // Preserve the existing "mark room cleared?" prompt.
+            if (encounter.roomId && activeMap) {
+              const region = activeMap.regions.find(
+                (r) => r.tilesHash === encounter.roomId,
+              );
+              if (region && !region.cleared) {
+                const label =
+                  encounter.roomLabel ||
+                  region.label ||
+                  region.type ||
+                  "this room";
+                if (confirm(`Mark "${label}" cleared on the map?`)) {
+                  const nextRegions = activeMap.regions.map((r) =>
+                    r.tilesHash === encounter.roomId
+                      ? { ...r, cleared: true }
+                      : r,
+                  );
+                  updateMap(activeMap.id, { regions: nextRegions });
+                }
+              }
+            }
+            setClosing(false);
+            setXpAtEnd(0);
+            end();
+          }}
+        />
+      )}
     </section>
   );
 }
