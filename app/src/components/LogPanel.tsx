@@ -209,8 +209,13 @@ function LogEntryRow({
             pending
           </span>
         )}
+        {entry.tableRef && (
+          <span className="rounded bg-emerald-50 px-1.5 py-0.5 font-mono text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200">
+            {entry.tableRef}
+          </span>
+        )}
         <time className="ml-auto font-mono text-[10px] text-zinc-400">
-          {entry.createdAt.slice(11, 16)}
+          {(entry.resolvedAt ?? entry.createdAt).slice(11, 16)}
         </time>
       </div>
       {editing ? (
@@ -321,10 +326,17 @@ function LogEntryRow({
         <button
           type="button"
           onClick={onStartEdit}
-          className="block w-full text-left text-zinc-800 dark:text-zinc-200"
+          className="block w-full space-y-0.5 text-left text-zinc-800 dark:text-zinc-200"
         >
-          {entry.body || (
-            <span className="italic text-zinc-400">(empty — tap to edit)</span>
+          <div>
+            {entry.body || (
+              <span className="italic text-zinc-400">(empty — tap to edit)</span>
+            )}
+          </div>
+          {entry.state === "resolved" && entry.resolvedValue && (
+            <div className="font-mono text-xs text-emerald-700 dark:text-emerald-400">
+              → {entry.resolvedValue}
+            </div>
           )}
         </button>
       )}

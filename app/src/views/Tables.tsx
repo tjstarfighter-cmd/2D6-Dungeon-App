@@ -6,6 +6,7 @@ import { useRegisterTablesSearch } from "@/components/TablesSearch";
 import { useToast } from "@/components/Toast";
 import { useTablesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
+import { useNotes } from "@/hooks/useNotes";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
 import {
   categoryFor,
@@ -31,6 +32,8 @@ export default function TablesView() {
   const tables = useTablesData();
   // Story 3.1 — Pinned + Recent sections.
   const { pinned, recent, togglePinned, pushRecent } = useTablesPrefs();
+  // Story 4.6 — silent-resolve hook for pending log entries.
+  const { resolvePendingForTable } = useNotes();
   // Story 3.3 — inline expansion. Multiple tables can be open at once.
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const toggleExpand = (k: string) =>
@@ -46,34 +49,43 @@ export default function TablesView() {
     Array<{ id: string; from: string; depth: number }>
   >([]);
   const handleResolveRoll = useCallback(
-    (sourceKey: string, matchedText: string) => {
+    (sourceKey: string, matchedText: string, rollValue: string) => {
       const knownIds = Object.keys(tables);
       const refs = extractReferencedTableIds(matchedText, knownIds).filter(
         (refId) => refId !== sourceKey,
       );
-      if (refs.length === 0) return;
-      setNextEntries((prev) => {
-        const sourceEntry = prev.find((e) => e.id === sourceKey);
-        const sourceDepth = sourceEntry?.depth ?? 0;
-        const newDepth = sourceDepth + 1;
-        if (newDepth > 2) return prev;
-        const next = prev.slice();
-        for (const refId of refs) {
-          const idx = next.findIndex((e) => e.id === refId);
-          const entry = { id: refId, from: sourceKey, depth: newDepth };
-          if (idx >= 0) next[idx] = entry;
-          else next.push(entry);
-        }
-        return next;
-      });
-      // Auto-expand cascaded entries so the player sees them ready to roll.
-      setExpanded((s) => {
-        const next = new Set(s);
-        for (const refId of refs) next.add(refId);
-        return next;
-      });
+      if (refs.length > 0) {
+        setNextEntries((prev) => {
+          const sourceEntry = prev.find((e) => e.id === sourceKey);
+          const sourceDepth = sourceEntry?.depth ?? 0;
+          const newDepth = sourceDepth + 1;
+          if (newDepth > 2) return prev;
+          const next = prev.slice();
+          for (const refId of refs) {
+            const idx = next.findIndex((e) => e.id === refId);
+            const entry = { id: refId, from: sourceKey, depth: newDepth };
+            if (idx >= 0) next[idx] = entry;
+            else next.push(entry);
+          }
+          return next;
+        });
+        // Auto-expand cascaded entries so the player sees them ready to roll.
+        setExpanded((s) => {
+          const next = new Set(s);
+          for (const refId of refs) next.add(refId);
+          return next;
+        });
+      }
+      // Story 4.6 — try to silently resolve a pending log entry that
+      // references this table. On hit, also drop the matching NEXT entry
+      // (the resolution is the canonical "done" signal per AC2).
+      const resolved = resolvePendingForTable(sourceKey, rollValue);
+      if (resolved) {
+        setNextEntries((prev) => prev.filter((e) => e.id !== sourceKey));
+      }
+      return resolved;
     },
-    [tables],
+    [tables, resolvePendingForTable],
   );
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);
@@ -353,7 +365,11 @@ function TableRow({
   expanded: boolean;
   onTogglePin: () => void;
   onToggleExpand: () => void;
-  onResolveRoll?: (sourceKey: string, matchedText: string) => void;
+  onResolveRoll?: (
+    sourceKey: string,
+    matchedText: string,
+    rollValue: string,
+  ) => boolean;
   onDismiss?: () => void;
   badge?: string;
 }) {
@@ -447,7 +463,11 @@ function TableDetail({
 }: {
   tableKey: string;
   table: CodexTable;
-  onResolveRoll?: (sourceKey: string, matchedText: string) => void;
+  onResolveRoll?: (
+    sourceKey: string,
+    matchedText: string,
+    rollValue: string,
+  ) => boolean;
 }) {
   const kind = rollKindFor(table);
   const [roll, setRoll] = useState<RollValue | null>(null);
@@ -483,14 +503,14 @@ function TableDetail({
       value: String(roll),
       result: { headline, sub: tableKey },
     });
+    let resolved = false;
     if (onResolveRoll && headline !== "(no matching row)") {
-      onResolveRoll(tableKey, headline);
+      resolved = !!onResolveRoll(tableKey, headline, String(roll));
     }
-    // Story 3.7 — when no pending log entry references this table (always
-    // the case until Epic 4 ships the log), prompt to add the roll to the
-    // active room's log. Add/Edit are stubs for now; Epic 4 wires them
-    // through to the per-pin log thread or the Unattributed bucket.
-    if (headline !== "(no matching row)") {
+    // Story 3.7 / 4.6 — toast only fires when nothing else captured the
+    // roll. If a pending log entry silently resolved (Story 4.6), skip
+    // the prompt per UX-DR34's quietness principle.
+    if (headline !== "(no matching row)" && !resolved) {
       const id = toast.suggestion({
         message: `Add roll to log? ${tableKey} → ${roll}`,
         primary: {

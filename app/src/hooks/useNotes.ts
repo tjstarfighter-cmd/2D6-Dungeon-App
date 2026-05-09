@@ -118,10 +118,27 @@ export interface UseNotesResult {
   create: (input: CreateNoteInput) => Note;
   update: (
     id: string,
-    patch: Partial<Pick<Note, "body" | "target" | "entryType" | "state">>,
+    patch: Partial<
+      Pick<
+        Note,
+        "body"
+        | "target"
+        | "entryType"
+        | "state"
+        | "tableRef"
+        | "resolvedAt"
+        | "resolvedValue"
+      >
+    >,
   ) => void;
   remove: (id: string) => void;
   replaceAll: (next: Note[]) => void;
+  /**
+   * Story 4.6 — find the oldest pending Note whose tableRef matches the
+   * given id and transition it to resolved with the rolled value attached.
+   * Returns true if a Note was resolved, false if no pending match existed.
+   */
+  resolvePendingForTable: (tableRef: string, value: string) => boolean;
 }
 
 export function useNotes(): UseNotesResult {
@@ -182,6 +199,31 @@ export function useNotes(): UseNotesResult {
     [],
   );
 
+  const resolvePendingForTable = useCallback(
+    (tableRef: string, value: string) => {
+      // Oldest pending wins per Story 4.6 AC3. Sorting on demand keeps
+      // the hook stateless wrt ordering.
+      const candidates = Object.values(store)
+        .filter((n) => n.state === "pending" && n.tableRef === tableRef)
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      const target = candidates[0];
+      if (!target) return false;
+      const now = new Date().toISOString();
+      setStore({
+        ...store,
+        [target.id]: {
+          ...target,
+          state: "resolved",
+          resolvedValue: value,
+          resolvedAt: now,
+          updatedAt: now,
+        },
+      });
+      return true;
+    },
+    [],
+  );
+
   const remove = useCallback((id: string) => {
     if (!(id in store)) return;
     const next = { ...store };
@@ -203,5 +245,6 @@ export function useNotes(): UseNotesResult {
     update,
     remove,
     replaceAll,
+    resolvePendingForTable,
   };
 }

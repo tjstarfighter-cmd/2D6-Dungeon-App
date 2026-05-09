@@ -32,4 +32,15 @@ export interface Note {
   target?: NoteTarget;     // omit for free-floating session notes (Unattributed)
   entryType: NoteEntryType;
   state: NoteState;
+  /**
+   * Story 4.6 — when this entry references a table whose roll should
+   * resolve it, store the table id here. The auto-resolve mechanism
+   * (useNotes.resolvePendingForTable) finds the oldest pending entry
+   * with a matching tableRef on each roll.
+   */
+  tableRef?: string;
+  /** ISO timestamp recorded when state transitions to resolved. */
+  resolvedAt?: string;
+  /** The rolled value (or text-form of it) attached on resolution. */
+  resolvedValue?: string;
 }
