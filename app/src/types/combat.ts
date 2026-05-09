@@ -23,6 +23,19 @@ export interface EnemyState {
   attackedRound?: number;
 }
 
+/**
+ * Story 5.4 — internal combat log entry. Lives inside the encounter so
+ * it tears down with the fight; the per-room log gets a single Combat
+ * summary entry from Story 5.5 instead of these fine-grained lines.
+ */
+export interface CombatLogEntry {
+  id: string;
+  ts: string;
+  round: number;
+  kind: "auto" | "note";
+  text: string;
+}
+
 export interface Encounter {
   id: string;
   characterId: string;
@@ -31,6 +44,9 @@ export interface Encounter {
   active: boolean;
   startedAt: string;
   endedAt?: string;
+  /** Story 5.4 — round-by-round internal log. Optional so legacy
+   *  encounters (pre-Story-5.4) load without migration. */
+  log?: CombatLogEntry[];
   /** Optional pointer to the v2 map region this encounter happens in.
    *  Set when combat is started from "Start combat in this room" on the
    *  map; used by the End-combat dialog to offer "mark cleared?" and to

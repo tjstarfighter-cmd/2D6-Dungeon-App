@@ -11,6 +11,7 @@ import {
   Field,
   NumberField,
 } from "@/components/ui";
+import { CombatLogPanel } from "@/components/combat/CombatLogPanel";
 import { CreaturePicker } from "@/components/combat/CreaturePicker";
 import { NotesPanel } from "@/components/NotesPanel";
 import { fearfulMomentumBonus } from "@/lib/combat";
@@ -36,6 +37,7 @@ export default function CombatView() {
     damageEnemy,
     nextRound,
     setOutnumbered,
+    addManualNote,
   } = useEncounter();
   const { active: activeMap, update: updateMap } = useMapsV2();
   const [xpAtEnd, setXpAtEnd] = useState(0);
@@ -100,7 +102,9 @@ export default function CombatView() {
   }
 
   return (
-    <section className="mx-auto max-w-6xl space-y-4">
+    <section className="mx-auto max-w-6xl">
+      <div className="lg:grid lg:grid-cols-[1fr_18rem] lg:gap-4 lg:items-start">
+        <div className="space-y-4">
       <CombatHeader
         round={encounter.round}
         roomLabel={encounter.roomLabel}
@@ -194,6 +198,14 @@ export default function CombatView() {
       />
 
       <NotesPanel target={{ kind: "session" as const, id: encounter.id }} compact />
+        </div>
+        <div className="mt-4 lg:mt-0">
+          <CombatLogPanel
+            entries={encounter.log ?? []}
+            onAddNote={addManualNote}
+          />
+        </div>
+      </div>
     </section>
   );
 }

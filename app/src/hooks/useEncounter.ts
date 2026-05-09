@@ -1,6 +1,6 @@
 import { useCallback, useSyncExternalStore } from "react";
 
-import type { EnemyState, Encounter } from "@/types/combat";
+import type { CombatLogEntry, EnemyState, Encounter } from "@/types/combat";
 
 const KEY = "2d6d.encounter";
 
@@ -85,6 +85,11 @@ export interface UseEncounterResult {
   damageEnemy: (enemyId: string, amount: number) => void;
   nextRound: () => void;
   setOutnumbered: (enabled: boolean) => void;
+  /** Story 5.4 — append an auto-generated entry to the internal combat
+   *  log (e.g. round transitions, damage applied). */
+  appendLogEntry: (text: string) => void;
+  /** Story 5.4 — append a manual player-authored note to the log. */
+  addManualNote: (text: string) => void;
 }
 
 // Detect a round-1 kill in a multi-enemy fight and stamp r1Kill so that
@@ -187,26 +192,62 @@ export function useEncounter(): UseEncounterResult {
     [],
   );
 
+  // Story 5.4 — log helpers. Both kinds (auto/note) share one shape so
+  // the renderer can stay simple.
+  function appendEntry(prev: Encounter, kind: "auto" | "note", text: string): Encounter {
+    const entry: CombatLogEntry = {
+      id: newId("log"),
+      ts: new Date().toISOString(),
+      round: prev.round,
+      kind,
+      text,
+    };
+    return { ...prev, log: [...(prev.log ?? []), entry] };
+  }
+
+  const appendLogEntry = useCallback((text: string) => {
+    if (!store) return;
+    setStore(appendEntry(store, "auto", text));
+  }, []);
+
+  const addManualNote = useCallback((text: string) => {
+    if (!store) return;
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    setStore(appendEntry(store, "note", trimmed));
+  }, []);
+
   const damageEnemy = useCallback((enemyId: string, amount: number) => {
     if (!store) return;
     const prev = store;
+    let logged = prev;
     const next: Encounter = {
       ...prev,
-      enemies: prev.enemies.map((e) =>
-        e.id === enemyId
-          ? {
-              ...e,
-              hp: { ...e.hp, current: Math.max(0, e.hp.current - amount) },
-            }
-          : e,
-      ),
+      enemies: prev.enemies.map((e) => {
+        if (e.id !== enemyId) return e;
+        const newHp = Math.max(0, e.hp.current - amount);
+        const wasAlive = e.hp.current > 0;
+        const isDead = newHp === 0;
+        const name = e.name || "enemy";
+        logged = appendEntry(
+          logged,
+          "auto",
+          `Damage ${name} for ${amount} (HP ${newHp}/${e.hp.max})`,
+        );
+        if (wasAlive && isDead) {
+          logged = appendEntry(logged, "auto", `${name} defeated`);
+        }
+        return { ...e, hp: { ...e.hp, current: newHp } };
+      }),
     };
-    setStore(withR1KillDetected(prev, next));
+    setStore(withR1KillDetected(prev, { ...next, log: logged.log }));
   }, []);
 
   const nextRound = useCallback(() => {
     if (!store) return;
-    setStore({ ...store, round: store.round + 1 });
+    const prev = store;
+    const advanced = { ...prev, round: prev.round + 1 };
+    setStore(appendEntry(advanced, "auto", `Round ${prev.round} → ${advanced.round}`));
   }, []);
 
   const setOutnumbered = useCallback((enabled: boolean) => {
@@ -224,5 +265,7 @@ export function useEncounter(): UseEncounterResult {
     damageEnemy,
     nextRound,
     setOutnumbered,
+    appendLogEntry,
+    addManualNote,
   };
 }
