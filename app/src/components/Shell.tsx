@@ -26,7 +26,7 @@ import {
   SHEET_SUB_TABS,
   type SheetSubTab,
 } from "@/components/SheetTabs";
-import { ActivePinProvider } from "@/components/ActivePin";
+import { ActivePinProvider, LogAutoFlipBridge } from "@/components/ActivePin";
 import { LogPanel } from "@/components/LogPanel";
 import { MapToolsProvider, useMapTools } from "@/components/MapTools";
 import {
@@ -417,6 +417,10 @@ export function Shell() {
     <ShellNavContext.Provider value={shellNav}>
      <ToastProvider>
       <ActivePinProvider>
+      <LogAutoFlipBridge
+        setRightTab={setRightTab}
+        setMiddleTab={setMiddleTab}
+      />
       <TablesSearchProvider>
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
