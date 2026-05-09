@@ -266,7 +266,13 @@ function CombatHeader({
           <Button onClick={onNextRound}>End round → {nextRoundNumber}</Button>
         </div>
 
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
+        {/* Story 5.1 — phone-only vitals strip per UX-DR23. Desktop has
+            the Sheet column rendering the same vitals, so hide here to
+            avoid duplication (AC4). */}
+        <div
+          aria-label="Combat vitals"
+          className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm lg:hidden"
+        >
           <span className="font-medium">{characterName}</span>
           <span className="text-zinc-500">
             Lvl {characterLevel} · Shift {characterShift} ·{" "}
