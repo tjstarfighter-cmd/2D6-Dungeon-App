@@ -69,6 +69,10 @@ export interface StartEncounterOpts {
   roomId?: string;
   /** Snapshot of the region's label at start time. */
   roomLabel?: string;
+  /** Story 5.2 — pre-combat creature picker can populate the encounter
+   *  with one or more enemies up front. When omitted, start() falls back
+   *  to a single auto-generated blank for backwards compatibility. */
+  initialEnemies?: Partial<EnemyState>[];
 }
 
 export interface UseEncounterResult {
@@ -102,10 +106,26 @@ export function useEncounter(): UseEncounterResult {
 
   const start = useCallback(
     (characterId: string, opts?: StartEncounterOpts) => {
+      const initial = opts?.initialEnemies;
+      const enemies: EnemyState[] =
+        initial && initial.length > 0
+          ? initial.map((init) => {
+              const base = makeEnemy(init.name, init.hp?.max);
+              return {
+                ...base,
+                ...init,
+                id: base.id,
+                hp: {
+                  max: init.hp?.max ?? base.hp.max,
+                  current: init.hp?.current ?? init.hp?.max ?? base.hp.max,
+                },
+              };
+            })
+          : [makeEnemy()];
       const e: Encounter = {
         id: newId("enc"),
         characterId,
-        enemies: [makeEnemy()],
+        enemies,
         round: 1,
         active: true,
         startedAt: new Date().toISOString(),

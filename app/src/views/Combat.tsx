@@ -11,9 +11,11 @@ import {
   Field,
   NumberField,
 } from "@/components/ui";
+import { CreaturePicker } from "@/components/combat/CreaturePicker";
 import { NotesPanel } from "@/components/NotesPanel";
 import { fearfulMomentumBonus } from "@/lib/combat";
 import { cardImageUrl } from "@/lib/cards";
+import type { CardRecord } from "@/types/cards";
 import type { EnemyState } from "@/types/combat";
 
 import { EnemiesPanel } from "./combat/EnemiesPanel";
@@ -86,22 +88,14 @@ export default function CombatView() {
 
   if (!encounter) {
     return (
-      <Card title="Combat Helper">
-        <p className="text-sm">
-          Active character: <strong>{active.name}</strong> · Level {active.level} ·{" "}
-          {active.weapon || "(no weapon)"} · Shift {active.shift}
-        </p>
-        <div className="mt-4">
-          <Button variant="primary" onClick={() => start(active.id)}>
-            Start combat
-          </Button>
-        </div>
-        <p className="mt-3 text-xs text-zinc-500">
-          The helper auto-detects Manoeuvre matches, suggests shift costs, rolls
-          damage with the &quot;6 ≥ 1&quot; rule, and tracks enemy HP. Add multiple
-          enemies for an Outnumbered encounter.
-        </p>
-      </Card>
+      <PreCombatPicker
+        characterLevel={active.level}
+        onStart={(roster) =>
+          start(active.id, {
+            initialEnemies: roster.length > 0 ? roster : undefined,
+          })
+        }
+      />
     );
   }
 
@@ -200,6 +194,93 @@ export default function CombatView() {
       />
 
       <NotesPanel target={{ kind: "session" as const, id: encounter.id }} compact />
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+function PreCombatPicker({
+  characterLevel,
+  onStart,
+}: {
+  characterLevel: number;
+  onStart: (roster: Partial<EnemyState>[]) => void;
+}) {
+  const [roster, setRoster] = useState<
+    { init: Partial<EnemyState>; card: CardRecord; key: string }[]
+  >([]);
+  const addedFilenames = useMemo(
+    () => new Set(roster.map((r) => r.card.filename)),
+    [roster],
+  );
+  return (
+    <section className="mx-auto max-w-6xl space-y-4">
+      <header className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-base font-semibold">
+          Pick enemies for this encounter
+        </h2>
+        <span className="text-xs text-zinc-500">
+          Tap a creature card to add. {roster.length}{" "}
+          {roster.length === 1 ? "enemy" : "enemies"} selected.
+        </span>
+      </header>
+      {roster.length > 0 && (
+        <Card>
+          <div className="flex flex-wrap items-center gap-2">
+            <ul className="flex flex-wrap gap-1.5">
+              {roster.map((r) => (
+                <li key={r.key}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setRoster((prev) => prev.filter((p) => p.key !== r.key))
+                    }
+                    title={`Remove ${r.card.name} from roster`}
+                    className="inline-flex items-center gap-1 rounded-full border border-zinc-300 bg-white px-2 py-0.5 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                  >
+                    <span>{r.card.name}</span>
+                    <span aria-hidden="true" className="text-zinc-400">
+                      ✕
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <Button
+              variant="primary"
+              className="ml-auto"
+              onClick={() => onStart(roster.map((r) => r.init))}
+            >
+              Start combat →
+            </Button>
+          </div>
+        </Card>
+      )}
+      <CreaturePicker
+        defaultLevel={characterLevel}
+        addedFilenames={addedFilenames}
+        onPick={(init, card) =>
+          setRoster((prev) => [
+            ...prev,
+            // Multi-add of the same creature stays distinct via key.
+            { init, card, key: `${card.filename}-${prev.length}` },
+          ])
+        }
+      />
+      {roster.length === 0 && (
+        <p className="text-xs text-zinc-500">
+          Or start with no enemies (you can add them mid-fight via{" "}
+          <strong>+ Add</strong>).{" "}
+          <button
+            type="button"
+            onClick={() => onStart([])}
+            className="underline decoration-dotted underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+          >
+            Start blank →
+          </button>
+        </p>
+      )}
     </section>
   );
 }
