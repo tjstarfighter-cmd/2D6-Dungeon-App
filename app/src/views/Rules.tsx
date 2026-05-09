@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -19,6 +19,42 @@ interface Section {
   body: string;
 }
 
+// Story 5.7 — sessionStorage-backed state so closing + reopening the
+// slide-over restores scroll position and the set of expanded H2
+// sections. sessionStorage (not localStorage) keeps the state per-tab
+// and discards it across full reloads, matching "session" intent.
+
+const RULES_SESSION_KEY = "2d6d.rulesSession";
+interface RulesSessionState {
+  openSlugs: string[];
+  scrollTop: number;
+}
+
+function readRulesSession(): RulesSessionState {
+  if (typeof window === "undefined") return { openSlugs: [], scrollTop: 0 };
+  try {
+    const raw = window.sessionStorage.getItem(RULES_SESSION_KEY);
+    if (!raw) return { openSlugs: [], scrollTop: 0 };
+    const parsed = JSON.parse(raw) as Partial<RulesSessionState>;
+    return {
+      openSlugs: Array.isArray(parsed.openSlugs) ? parsed.openSlugs : [],
+      scrollTop:
+        typeof parsed.scrollTop === "number" ? parsed.scrollTop : 0,
+    };
+  } catch {
+    return { openSlugs: [], scrollTop: 0 };
+  }
+}
+
+function writeRulesSession(state: RulesSessionState): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(RULES_SESSION_KEY, JSON.stringify(state));
+  } catch {
+    // sessionStorage may be unavailable (private mode); silent fallback.
+  }
+}
+
 export default function RulesView({
   onInAppNavigate,
 }: {
@@ -28,6 +64,62 @@ export default function RulesView({
   const navigate = useNavigate();
   const rulesMd = useRulesData();
   const contentRef = useRef<HTMLDivElement | null>(null);
+
+  // Story 5.7 — track open H2 slugs in state so the controlled
+  // <details> rerender on toggle. A mirror ref carries the latest set
+  // into the unmount cleanup without a stale-closure problem.
+  const [openSlugs, setOpenSlugs] = useState<Set<string>>(
+    () => new Set(readRulesSession().openSlugs),
+  );
+  const openSlugsLatestRef = useRef(openSlugs);
+  useEffect(() => {
+    openSlugsLatestRef.current = openSlugs;
+  });
+  function setSectionOpen(slug: string, isOpen: boolean) {
+    setOpenSlugs((prev) => {
+      const next = new Set(prev);
+      if (isOpen) next.add(slug);
+      else next.delete(slug);
+      return next;
+    });
+  }
+
+  // Mount: restore scroll. While mounted: persist scroll on every
+  // scroll event (rAF-debounced). Reading scrollTop in an unmount
+  // cleanup is unreliable in React 19 — by the time cleanup runs, the
+  // overlay's container has been detached and scrollTop reads as 0 —
+  // so we capture continuously instead.
+  useEffect(() => {
+    const scroller = contentRef.current?.closest(".overflow-auto");
+    if (!(scroller instanceof HTMLElement)) return;
+    scroller.scrollTop = readRulesSession().scrollTop;
+
+    let raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        writeRulesSession({
+          openSlugs: Array.from(openSlugsLatestRef.current),
+          scrollTop: scroller.scrollTop,
+        });
+      });
+    }
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Persist open-section changes immediately (separate from scroll
+  // because <details> toggles don't fire scroll events).
+  useEffect(() => {
+    writeRulesSession({
+      openSlugs: Array.from(openSlugs),
+      scrollTop: readRulesSession().scrollTop,
+    });
+  }, [openSlugs]);
 
   // Chunk the markdown into a preface + per-H2 sections so each section
   // can render as a collapsible <details>. Single-pass split; slugs are
@@ -74,8 +166,13 @@ export default function RulesView({
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-7xl overflow-x-hidden">
-      <div className="grid gap-6 md:grid-cols-[16rem_minmax(0,1fr)]">
-        <Toc items={toc} onSelect={(id) => navigate(`/rules#${id}`)} />
+      <div className="space-y-3">
+        {/* Story 5.7 — Sections dropdown replaces the side-by-side Toc
+            so the layout fits inside the narrow desktop slide-over. */}
+        <SectionsDropdown
+          items={toc}
+          onSelect={(id) => navigate(`/rules#${id}`)}
+        />
         <article
           ref={contentRef}
           className="min-w-0 rounded-lg border border-zinc-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900"
@@ -94,6 +191,10 @@ export default function RulesView({
             <details
               key={s.slug}
               id={s.slug}
+              open={openSlugs.has(s.slug)}
+              onToggle={(e) =>
+                setSectionOpen(s.slug, e.currentTarget.open)
+              }
               className="group my-3 scroll-mt-4 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800"
             >
               <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-xl font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
@@ -176,7 +277,11 @@ function splitMd(md: string): { preface: string; sections: Section[] } {
 
 // ---------------------------------------------------------------------------
 
-function Toc({
+// Story 5.7 — single-column "Sections" dropdown above the article. The
+// previous side-by-side Toc didn't fit inside the narrow desktop slide-
+// over, so we collapse it into a closed-by-default details summary on
+// every viewport.
+function SectionsDropdown({
   items,
   onSelect,
 }: {
@@ -184,25 +289,15 @@ function Toc({
   onSelect: (id: string) => void;
 }) {
   if (items.length === 0) {
-    return <aside className="text-sm text-zinc-500">Building contents…</aside>;
+    return <p className="text-sm text-zinc-500">Building contents…</p>;
   }
   return (
-    <aside className="md:sticky md:top-2 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-2">
-      {/* Mobile: collapsed by default */}
-      <details className="md:hidden">
-        <summary className="cursor-pointer rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-semibold dark:border-zinc-800 dark:bg-zinc-900">
-          Contents ({items.length})
-        </summary>
-        <TocList items={items} onSelect={onSelect} className="mt-2" />
-      </details>
-      {/* Desktop: always visible */}
-      <div className="hidden md:block">
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-          Contents
-        </h2>
-        <TocList items={items} onSelect={onSelect} />
-      </div>
-    </aside>
+    <details className="rounded-md border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <summary className="cursor-pointer list-none px-3 py-2 text-sm font-semibold">
+        Sections ({items.length}) ▾
+      </summary>
+      <TocList items={items} onSelect={onSelect} className="border-t border-zinc-200 px-3 py-2 dark:border-zinc-800" />
+    </details>
   );
 }
 

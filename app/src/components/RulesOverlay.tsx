@@ -21,7 +21,10 @@ export function RulesOverlay({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Rules"
-      className="fixed inset-0 z-40 flex flex-col bg-zinc-50 dark:bg-zinc-950"
+      // Story 5.7 — phone keeps the full-screen takeover; desktop pins
+      // the surface to the right column (~320px) just below the Shell
+      // header so the Sheet and Map columns stay visible behind it.
+      className="fixed inset-0 z-40 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:left-auto lg:right-0 lg:top-12 lg:w-80 lg:border-l lg:border-zinc-200 lg:shadow-xl dark:lg:border-zinc-800"
     >
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
