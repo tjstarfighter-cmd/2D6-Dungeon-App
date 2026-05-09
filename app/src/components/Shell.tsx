@@ -62,6 +62,7 @@ import { HpZeroWatcher } from "@/components/HpZeroWatcher";
 import { RunEndProvider } from "@/components/RunEnd";
 import { RunEndModal } from "@/components/RunEndModal";
 import { MidRunGuardProvider } from "@/components/MidRunGuard";
+import { StorageQuotaWatcher } from "@/components/StorageQuotaWatcher";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -704,6 +705,7 @@ export function Shell() {
       <LevelUpWatcher onResolveChoices={() => setModal("levelup")} />
       <EventDamageWatcher />
       <HpZeroWatcher />
+      <StorageQuotaWatcher onOpenBackup={() => setModal("backup")} />
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
         setPhoneTab={setPhoneTab}
