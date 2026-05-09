@@ -89,6 +89,11 @@ export interface Character {
   //   'lookup'      — sheet sidebar + nav between views (at-home physical-paper play)
   // Field is optional so existing saves don't need migration.
   currentRun?: { mapId?: string; mode?: RunMode };
+  /** Story 6.7 — queued level-up choices from XP-threshold crossings.
+   *  Each entry corresponds to one level the player still has to resolve
+   *  (stat bump + optional manoeuvre swap). HP and the level number
+   *  itself were applied silently when the threshold was crossed. */
+  pendingLevelUps?: { fromLevel: number; toLevel: number }[];
   createdAt: string;
   updatedAt: string;
 }

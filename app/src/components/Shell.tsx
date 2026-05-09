@@ -54,6 +54,8 @@ import {
 } from "@/components/OnboardingTour";
 import { RoomGenProvider, useRoomGen } from "@/components/RoomGen";
 import { RoomGenPreviewModal } from "@/components/RoomGenPreviewModal";
+import { LevelUpWatcher } from "@/components/LevelUpWatcher";
+import { LevelUpWizardModal } from "@/components/LevelUpWizardModal";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -84,10 +86,14 @@ interface ShellNavApi {
   // Story 6.2 — open the 5-step character-creation wizard. Used by
   // Welcome modal (6.1) and CharacterSwitcher's [+ New character].
   openWizard: () => void;
+  // Story 6.7 — re-summon the level-up wizard for any unresolved
+  // pending choices (badge tap on PinnedVitals).
+  openLevelUp: () => void;
 }
 const ShellNavContext = createContext<ShellNavApi>({
   openCombat: () => {},
   openWizard: () => {},
+  openLevelUp: () => {},
 });
 export function useShellNav(): ShellNavApi {
   return useContext(ShellNavContext);
@@ -346,7 +352,8 @@ type ModalKey =
   | "switcher"
   | "welcome"
   | "wizard"
-  | "tour";
+  | "tour"
+  | "levelup";
 
 // Global keyboard shortcuts (Story 1.12). Lives inside TablesSearchProvider
 // so it can resolve the focus handler registered by views/Tables.
@@ -645,6 +652,9 @@ export function Shell() {
       openWizard: () => {
         setModal("wizard");
       },
+      openLevelUp: () => {
+        setModal("levelup");
+      },
     }),
     [],
   );
@@ -662,6 +672,7 @@ export function Shell() {
       <TablesSearchProvider>
       <RulesSearchProvider>
       <RoomGenProvider>
+      <LevelUpWatcher onResolveChoices={() => setModal("levelup")} />
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
         setPhoneTab={setPhoneTab}
@@ -752,6 +763,9 @@ export function Shell() {
         />
       )}
       <RoomGenPreviewMount />
+      {modal === "levelup" && (
+        <LevelUpWizardModal onClose={closeModal} />
+      )}
       </RoomGenProvider>
       </RulesSearchProvider>
       </TablesSearchProvider>

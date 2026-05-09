@@ -126,6 +126,9 @@ function ActiveVitals({
         onLevel={(level) => onUpdate({ level })}
         onOpenSwitcher={onOpenSwitcher}
       />
+      {(character.pendingLevelUps?.length ?? 0) > 0 && (
+        <PendingLevelUpPip count={character.pendingLevelUps!.length} />
+      )}
       <HpRow
         current={character.hp.current}
         baseline={character.hp.baseline}
@@ -254,6 +257,24 @@ function InlineText({
       className={`text-left hover:underline ${className}`}
     >
       {value}
+    </button>
+  );
+}
+
+// Story 6.7 — pending level-up choices badge. Tap re-summons the
+// LevelUpWizard via ShellNavContext.
+function PendingLevelUpPip({ count }: { count: number }) {
+  const nav = useShellNav();
+  return (
+    <button
+      type="button"
+      onClick={() => nav.openLevelUp()}
+      className="flex w-full items-center justify-between gap-2 rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-xs text-amber-900 hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-950/60"
+    >
+      <span>
+        ✨ {count} level-up choice{count === 1 ? "" : "s"} pending
+      </span>
+      <span aria-hidden="true">→</span>
     </button>
   );
 }
