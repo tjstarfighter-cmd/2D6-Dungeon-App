@@ -33,6 +33,10 @@ import {
   TablesSearchProvider,
   useTablesSearch,
 } from "@/components/TablesSearch";
+import {
+  RulesSearchProvider,
+  useTryFocusRulesSearch,
+} from "@/components/RulesSearch";
 import { ToastProvider } from "@/components/Toast";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
@@ -311,10 +315,13 @@ function ShellHotkeys({
   setModal: Dispatch<SetStateAction<ModalKey | null>>;
 }) {
   const focusTablesSearch = useTablesSearch();
+  const tryFocusRulesSearch = useTryFocusRulesSearch();
   // Keep the latest callable in a ref so the [] effect doesn't go stale.
   const focusRef = useRef(focusTablesSearch);
+  const rulesFocusRef = useRef(tryFocusRulesSearch);
   useEffect(() => {
     focusRef.current = focusTablesSearch;
+    rulesFocusRef.current = tryFocusRulesSearch;
   });
 
   useEffect(() => {
@@ -359,6 +366,10 @@ function ShellHotkeys({
       }
       if (e.key === "/") {
         e.preventDefault();
+        // Story 5.8 — when the Rules overlay is open, "/" focuses the
+        // in-Rules search input (the active surface's primary search,
+        // per FR62). Otherwise fall through to Tables search.
+        if (rulesFocusRef.current()) return;
         setPhoneTab("tables");
         setRightTab("tables");
         focusRef.current();
@@ -383,6 +394,9 @@ export function Shell() {
   // URL → tab sync. Old bookmarks (/tables/T1, /map, /combat) and
   // cross-link navigations from Rules markdown still map to the right
   // panel on phone. Desktop ignores phoneTab so this is a phone affordance.
+  // Story 5.8 — depend on location.key (not just pathname) so two
+  // back-to-back /rules#anchor cross-links re-fire even though pathname
+  // doesn't change. /rules also opens the Rules overlay.
   useEffect(() => {
     const path = location.pathname;
     if (path === "/" || path.startsWith("/sheet")) {
@@ -398,8 +412,10 @@ export function Shell() {
       setMiddleTab("map");
     } else if (path.startsWith("/notes")) {
       setRightTab("log");
+    } else if (path.startsWith("/rules")) {
+      setModal("rules");
     }
-  }, [location.pathname]);
+  }, [location.key, location.pathname]);
 
   const shellNav = useMemo<ShellNavApi>(
     () => ({
@@ -422,6 +438,7 @@ export function Shell() {
         setMiddleTab={setMiddleTab}
       />
       <TablesSearchProvider>
+      <RulesSearchProvider>
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
         setPhoneTab={setPhoneTab}
@@ -491,6 +508,7 @@ export function Shell() {
       {modal === "about" && <AboutModal onClose={closeModal} />}
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
       {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
+      </RulesSearchProvider>
       </TablesSearchProvider>
       </ActivePinProvider>
      </ToastProvider>

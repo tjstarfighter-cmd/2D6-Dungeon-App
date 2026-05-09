@@ -72,7 +72,7 @@ export function excerpt(text: string, query: string, before = 40, after = 100): 
 
 // ---- Rules ---------------------------------------------------------------
 
-interface RuleSection {
+export interface RuleSection {
   /** The most-recent H2 / H3 / H4 chain at this paragraph. */
   heading: string;
   /** Slug of the leaf heading, for #anchor deep-linking. */
@@ -83,7 +83,7 @@ interface RuleSection {
 
 let ruleSectionsCache: { md: string; sections: RuleSection[] } | null = null;
 
-function getRuleSections(rulesMd: string): RuleSection[] {
+export function getRuleSections(rulesMd: string): RuleSection[] {
   if (ruleSectionsCache && ruleSectionsCache.md === rulesMd) {
     return ruleSectionsCache.sections;
   }
