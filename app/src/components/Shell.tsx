@@ -37,7 +37,12 @@ import {
   RulesSearchProvider,
   useTryFocusRulesSearch,
 } from "@/components/RulesSearch";
-import { ToastProvider } from "@/components/Toast";
+import { ToastProvider, useToast } from "@/components/Toast";
+import {
+  WelcomeModal,
+  ackFirstLaunch,
+  isFirstLaunchAcked,
+} from "@/components/WelcomeModal";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -299,7 +304,13 @@ function PhoneBottomTabs({
   );
 }
 
-type ModalKey = "rules" | "help" | "about" | "backup" | "switcher";
+type ModalKey =
+  | "rules"
+  | "help"
+  | "about"
+  | "backup"
+  | "switcher"
+  | "welcome";
 
 // Global keyboard shortcuts (Story 1.12). Lives inside TablesSearchProvider
 // so it can resolve the focus handler registered by views/Tables.
@@ -383,13 +394,44 @@ function ShellHotkeys({
   return null;
 }
 
+// Story 6.1 — adapter so WelcomeModal can fire a toast (it sits inside
+// ToastProvider; Shell itself can't call useToast). Story 6.2 will
+// replace the placeholder toast with the actual character-creation
+// wizard.
+function ConnectedWelcomeModal({ onDismiss }: { onDismiss: () => void }) {
+  const toast = useToast();
+  function handleCreate() {
+    ackFirstLaunch();
+    onDismiss();
+    toast.suggestion({
+      message:
+        "Character creation wizard arrives in Story 6.2 — the empty Sheet is your stand-in for now.",
+      primary: { label: "OK", onClick: () => {} },
+    });
+  }
+  function handleExplore() {
+    ackFirstLaunch();
+    onDismiss();
+  }
+  return (
+    <WelcomeModal onCreate={handleCreate} onExplore={handleExplore} />
+  );
+}
+
 export function Shell() {
   const location = useLocation();
   const [phoneTab, setPhoneTab] = useState<PhoneTab>("map");
   const [middleTab, setMiddleTab] = useState<MiddleTab>("map");
   const [rightTab, setRightTab] = useState<RightTab>("tables");
   const [sheetSubTab, setSheetSubTab] = useState<SheetSubTab>("loadout");
-  const [modal, setModal] = useState<ModalKey | null>(null);
+  // Story 6.1 — initial modal state covers first-launch detection so the
+  // Welcome modal appears synchronously before the empty-state UIs flash
+  // through. characters.length is read in initialiser only; subsequent
+  // character mutations don't re-fire the modal.
+  const initialChars = useCharacters().characters;
+  const [modal, setModal] = useState<ModalKey | null>(() =>
+    !isFirstLaunchAcked() && initialChars.length === 0 ? "welcome" : null,
+  );
 
   // URL → tab sync. Old bookmarks (/tables/T1, /map, /combat) and
   // cross-link navigations from Rules markdown still map to the right
@@ -508,6 +550,9 @@ export function Shell() {
       {modal === "about" && <AboutModal onClose={closeModal} />}
       {modal === "backup" && <BackupRestoreModal onClose={closeModal} />}
       {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
+      {modal === "welcome" && (
+        <ConnectedWelcomeModal onDismiss={closeModal} />
+      )}
       </RulesSearchProvider>
       </TablesSearchProvider>
       </ActivePinProvider>
