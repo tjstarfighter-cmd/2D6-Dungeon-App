@@ -10,6 +10,12 @@ import { useNotes } from "@/hooks/useNotes";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
 import { useRoomGen, useRoomGenPendingReader } from "@/components/RoomGen";
 import { parseContentsCellText } from "@/lib/contents-parser";
+import { useCharacters } from "@/hooks/useCharacters";
+import {
+  clearRfut1Pending,
+  isRfut1Pending,
+  parseRfut1Result,
+} from "@/lib/rfut1";
 import {
   categoryFor,
   extractReferencedTableIds,
@@ -41,6 +47,10 @@ export default function TablesView() {
   const roomGen = useRoomGen();
   const roomGenPendingReader = useRoomGenPendingReader();
   const creatures = useCreaturesData();
+  // Story 6.9 — RFUT1 outcome auto-applier (used when the HpZeroWatcher
+  // primed the player to roll on RFUT1).
+  const { active: activeChar, update: updateChar } = useCharacters();
+  const rfut1Toast = useToast();
   // Story 3.3 — inline expansion. Multiple tables can be open at once.
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const toggleExpand = (k: string) =>
@@ -61,6 +71,32 @@ export default function TablesView() {
       const refs = extractReferencedTableIds(matchedText, knownIds).filter(
         (refId) => refId !== sourceKey,
       );
+      // Story 6.9 — RFUT1 branch. If the player tapped Roll on the
+      // HP→0 toast, intercept the next RFUT1 resolution and apply the
+      // outcome (revival sets HP, death fires a placeholder run-end
+      // toast until Story 6.10 ships the modal).
+      if (sourceKey === "RFUT1" && isRfut1Pending() && activeChar) {
+        clearRfut1Pending();
+        const outcome = parseRfut1Result(matchedText);
+        if (outcome.kind === "revival") {
+          updateChar(activeChar.id, {
+            hp: { ...activeChar.hp, current: outcome.hp },
+          });
+          rfut1Toast.success({
+            message: `Recovery! ${activeChar.name} is back at ${outcome.hp} HP.`,
+          });
+        } else if (outcome.kind === "death") {
+          rfut1Toast.error({
+            message: `RFUT1 ${rollValue}: ${activeChar.name} has fallen. Story 6.10 will surface the run-end modal.`,
+          });
+        } else {
+          rfut1Toast.suggestion({
+            message: `RFUT1 ${rollValue}: outcome is conditional. Adjust HP manually.`,
+            primary: { label: "OK", onClick: () => {} },
+          });
+        }
+        return false;
+      }
       // Story 6.5 — if the room-gen flow tagged this exact table id as a
       // pending contents roll, intercept the resolution and fire the
       // preview-confirm dialog instead of silent NEXT/auto-resolve.
@@ -126,7 +162,16 @@ export default function TablesView() {
       }
       return resolved;
     },
-    [tables, resolvePendingForTable, creatures, roomGen, roomGenPendingReader],
+    [
+      tables,
+      resolvePendingForTable,
+      creatures,
+      roomGen,
+      roomGenPendingReader,
+      activeChar,
+      updateChar,
+      rfut1Toast,
+    ],
   );
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);

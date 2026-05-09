@@ -57,6 +57,7 @@ import { RoomGenPreviewModal } from "@/components/RoomGenPreviewModal";
 import { LevelUpWatcher } from "@/components/LevelUpWatcher";
 import { LevelUpWizardModal } from "@/components/LevelUpWizardModal";
 import { EventDamageWatcher } from "@/components/EventDamageWatcher";
+import { HpZeroWatcher } from "@/components/HpZeroWatcher";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -675,6 +676,7 @@ export function Shell() {
       <RoomGenProvider>
       <LevelUpWatcher onResolveChoices={() => setModal("levelup")} />
       <EventDamageWatcher />
+      <HpZeroWatcher />
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
         setPhoneTab={setPhoneTab}
