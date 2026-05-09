@@ -52,6 +52,8 @@ import {
   isOnboardingTourSeen,
   type TourStep,
 } from "@/components/OnboardingTour";
+import { RoomGenProvider, useRoomGen } from "@/components/RoomGen";
+import { RoomGenPreviewModal } from "@/components/RoomGenPreviewModal";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -659,6 +661,7 @@ export function Shell() {
       />
       <TablesSearchProvider>
       <RulesSearchProvider>
+      <RoomGenProvider>
       <ShellHotkeys
         setSheetSubTab={setSheetSubTab}
         setPhoneTab={setPhoneTab}
@@ -748,10 +751,21 @@ export function Shell() {
           onDismiss={closeModal}
         />
       )}
+      <RoomGenPreviewMount />
+      </RoomGenProvider>
       </RulesSearchProvider>
       </TablesSearchProvider>
       </ActivePinProvider>
      </ToastProvider>
     </ShellNavContext.Provider>
   );
+}
+
+// Story 6.5 — render the preview modal only when a preview is active.
+// Wrapper exists so the modal can `useState(() => preview…)` and reset
+// drafts each time a new preview opens (via the keyed remount below).
+function RoomGenPreviewMount() {
+  const { preview } = useRoomGen();
+  if (!preview) return null;
+  return <RoomGenPreviewModal key={preview.regionHash + preview.fromTableId} />;
 }

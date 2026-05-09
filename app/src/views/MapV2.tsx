@@ -15,6 +15,7 @@ import { useSetActivePin } from "@/components/ActivePin";
 import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useRegisterMapTools } from "@/components/MapTools";
+import { useRoomGen } from "@/components/RoomGen";
 import {
   deriveContentsTableId,
   levelAlternates,
@@ -342,6 +343,7 @@ function MapV2Editor({
   const { openCombat } = useShellNav();
   const navigate = useNavigate();
   const tables = useTablesData();
+  const roomGen = useRoomGen();
 
   const [tool, setTool] = useState<Tool>("pan");
   const [exitType, setExitType] = useState<ExitType>("door");
@@ -1282,6 +1284,20 @@ function MapV2Editor({
             )}
             tableTitle={(id) => tables[id]?.title}
             onRoll={(id) => {
+              // Story 6.5 — tag the navigation so Tables.handleResolveRoll
+              // knows the next roll on this table is the room-gen
+              // contents roll, and should fire the preview-confirm
+              // dialog instead of just resolving silently.
+              roomGen.startContentsRoll({
+                regionHash: contentsPrompt.hash,
+                mapId: map.id,
+                level: map.level,
+                ancestry: map.ancestry,
+                pinKind:
+                  map.regions.find((r) => r.tilesHash === contentsPrompt.hash)
+                    ?.kind ?? "room",
+                tableId: id,
+              });
               setContentsPrompt(null);
               setLastRoll(null);
               navigate(`/tables/${id}`);

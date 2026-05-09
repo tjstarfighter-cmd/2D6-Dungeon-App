@@ -107,6 +107,10 @@ export interface CreateNoteInput {
   target?: NoteTarget;
   entryType?: NoteEntryType;
   state?: NoteState;
+  /** Story 6.5 — optional ref so pending log entries created by the
+   *  room-gen flow's preview-confirm dialog can later auto-resolve via
+   *  resolvePendingForTable when the player rolls on that table. */
+  tableRef?: string;
 }
 
 export interface UseNotesResult {
@@ -179,6 +183,7 @@ export function useNotes(): UseNotesResult {
       target: input.target,
       entryType: input.entryType ?? "Note",
       state: input.state ?? "resolved",
+      tableRef: input.tableRef,
     };
     setStore({ ...store, [n.id]: n });
     return n;

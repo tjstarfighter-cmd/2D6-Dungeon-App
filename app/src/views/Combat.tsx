@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { preloadCreatures } from "@/data/lazy";
+import { preloadCreatures, useCardsData, useCreaturesData } from "@/data/lazy";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useEncounter } from "@/hooks/useEncounter";
 import { useMapsV2 } from "@/hooks/useMapsV2";
+import { useActivePin } from "@/components/ActivePin";
+import { enemyInitFromCard, findCreatureForCard } from "@/lib/creatures";
 import {
   Button,
   Card,
@@ -43,7 +45,7 @@ export default function CombatView() {
     addManualNote,
   } = useEncounter();
   const { active: activeMap, update: updateMap } = useMapsV2();
-  const { create: createNote } = useNotes();
+  const { create: createNote, notes: allNotes, update: updateNote } = useNotes();
   const [xpAtEnd, setXpAtEnd] = useState(0);
   const [turnTab, setTurnTab] = useState<TurnTab>("player");
   // Story 5.5 — when set, the combat-close summary modal is open.
@@ -233,6 +235,21 @@ export default function CombatView() {
                 ? { kind: "room", id: encounter.roomId }
                 : undefined,
             });
+            // Story 6.5 — promote any pending Combat entries for this
+            // room to resolved so the parser-proposed entries don't
+            // double up alongside this summary.
+            if (encounter.roomId) {
+              for (const n of allNotes) {
+                if (
+                  n.target?.kind === "room" &&
+                  n.target.id === encounter.roomId &&
+                  n.entryType === "Combat" &&
+                  n.state === "pending"
+                ) {
+                  updateNote(n.id, { state: "resolved" });
+                }
+              }
+            }
             if (xp > 0) {
               updateCharacter(active.id, { xp: active.xp + xp });
             }
@@ -283,6 +300,46 @@ function PreCombatPicker({
     () => new Set(roster.map((r) => r.card.filename)),
     [roster],
   );
+
+  // Story 6.5 — pre-populate the roster from any pending Combat entries
+  // attached to the active room. Only seeds once (the [] dep) so the
+  // player's manual edits from there on aren't blown away.
+  const activePin = useActivePin();
+  const { notes } = useNotes();
+  const cards = useCardsData();
+  const creatureStats = useCreaturesData();
+  useEffect(() => {
+    if (!activePin) return;
+    const pending = notes.filter(
+      (n) =>
+        n.target?.kind === "room" &&
+        n.target.id === activePin.tilesHash &&
+        n.entryType === "Combat" &&
+        n.state === "pending",
+    );
+    if (pending.length === 0) return;
+    const seeded: typeof roster = [];
+    pending.forEach((n, idx) => {
+      // The note's body is the creature name from the parser (e.g. "Stupid
+      // Rat"). Resolve to a card via name match — case-insensitive — since
+      // the parser stored the canonical creature name.
+      const card = cards.cards.find(
+        (c) =>
+          c.kind === "creature" &&
+          c.name.toLowerCase() === n.body.toLowerCase(),
+      );
+      if (!card) return;
+      const creature = findCreatureForCard(card, creatureStats);
+      seeded.push({
+        init: enemyInitFromCard(card, creature),
+        card,
+        key: `pending-${n.id}-${idx}`,
+      });
+    });
+    if (seeded.length > 0) setRoster(seeded);
+    // Intentionally only [] — first-mount seed only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <section className="mx-auto max-w-6xl space-y-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">

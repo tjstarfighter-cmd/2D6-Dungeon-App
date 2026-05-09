@@ -4,10 +4,12 @@ import { useMatch } from "react-router-dom";
 import { Button, Card } from "@/components/ui";
 import { useRegisterTablesSearch } from "@/components/TablesSearch";
 import { useToast } from "@/components/Toast";
-import { useTablesData } from "@/data/lazy";
+import { useTablesData, useCreaturesData } from "@/data/lazy";
 import { useCurrentRoll } from "@/hooks/useCurrentRoll";
 import { useNotes } from "@/hooks/useNotes";
 import { useTablesPrefs } from "@/hooks/useTablesPrefs";
+import { useRoomGen, useRoomGenPendingReader } from "@/components/RoomGen";
+import { parseContentsCellText } from "@/lib/contents-parser";
 import {
   categoryFor,
   extractReferencedTableIds,
@@ -34,6 +36,11 @@ export default function TablesView() {
   const { pinned, recent, togglePinned, pushRecent } = useTablesPrefs();
   // Story 4.6 — silent-resolve hook for pending log entries.
   const { resolvePendingForTable } = useNotes();
+  // Story 6.5 — fire the room-gen preview-confirm dialog when the
+  // resolveRoll source matches the room-gen's pending tableId.
+  const roomGen = useRoomGen();
+  const roomGenPendingReader = useRoomGenPendingReader();
+  const creatures = useCreaturesData();
   // Story 3.3 — inline expansion. Multiple tables can be open at once.
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const toggleExpand = (k: string) =>
@@ -54,6 +61,40 @@ export default function TablesView() {
       const refs = extractReferencedTableIds(matchedText, knownIds).filter(
         (refId) => refId !== sourceKey,
       );
+      // Story 6.5 — if the room-gen flow tagged this exact table id as a
+      // pending contents roll, intercept the resolution and fire the
+      // preview-confirm dialog instead of silent NEXT/auto-resolve.
+      const pending = roomGenPendingReader();
+      if (pending && pending.tableId === sourceKey) {
+        const parse = parseContentsCellText(matchedText, knownIds, creatures);
+        roomGen.openPreview({
+          regionHash: pending.regionHash,
+          mapId: pending.mapId,
+          parse,
+          fromTableId: sourceKey,
+          rolledValue: rollValue,
+        });
+        // Pre-populate NEXT with referenced tables — same behaviour as
+        // a regular resolve so the player sees follow-on rolls inline.
+        if (refs.length > 0) {
+          setNextEntries((prev) => {
+            const next = prev.slice();
+            for (const refId of refs) {
+              const idx = next.findIndex((e) => e.id === refId);
+              const entry = { id: refId, from: sourceKey, depth: 1 };
+              if (idx >= 0) next[idx] = entry;
+              else next.push(entry);
+            }
+            return next;
+          });
+          setExpanded((s) => {
+            const next = new Set(s);
+            for (const refId of refs) next.add(refId);
+            return next;
+          });
+        }
+        return false;
+      }
       if (refs.length > 0) {
         setNextEntries((prev) => {
           const sourceEntry = prev.find((e) => e.id === sourceKey);
@@ -85,7 +126,7 @@ export default function TablesView() {
       }
       return resolved;
     },
-    [tables, resolvePendingForTable],
+    [tables, resolvePendingForTable, creatures, roomGen, roomGenPendingReader],
   );
 
   const allKeys = useMemo(() => Object.keys(tables), [tables]);
