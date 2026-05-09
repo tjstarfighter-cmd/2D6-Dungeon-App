@@ -43,6 +43,10 @@ import {
   ackFirstLaunch,
   isFirstLaunchAcked,
 } from "@/components/WelcomeModal";
+import {
+  CharacterCreateWizard,
+  type CreatedCharacterInput,
+} from "@/components/CharacterCreateWizard";
 
 // Lazy-load each panel's view so first paint doesn't pay for everything.
 // Mirrors App.tsx's lazy imports — Vite dedupes the chunks.
@@ -70,8 +74,14 @@ type RightTab = "tables" | "log";
 // OverlayContext that bridged the legacy / v1.5 shells.
 interface ShellNavApi {
   openCombat: () => void;
+  // Story 6.2 — open the 5-step character-creation wizard. Used by
+  // Welcome modal (6.1) and CharacterSwitcher's [+ New character].
+  openWizard: () => void;
 }
-const ShellNavContext = createContext<ShellNavApi>({ openCombat: () => {} });
+const ShellNavContext = createContext<ShellNavApi>({
+  openCombat: () => {},
+  openWizard: () => {},
+});
 export function useShellNav(): ShellNavApi {
   return useContext(ShellNavContext);
 }
@@ -310,7 +320,8 @@ type ModalKey =
   | "about"
   | "backup"
   | "switcher"
-  | "welcome";
+  | "welcome"
+  | "wizard";
 
 // Global keyboard shortcuts (Story 1.12). Lives inside TablesSearchProvider
 // so it can resolve the focus handler registered by views/Tables.
@@ -394,20 +405,15 @@ function ShellHotkeys({
   return null;
 }
 
-// Story 6.1 — adapter so WelcomeModal can fire a toast (it sits inside
-// ToastProvider; Shell itself can't call useToast). Story 6.2 will
-// replace the placeholder toast with the actual character-creation
-// wizard.
+// Story 6.1 / 6.2 — adapter so WelcomeModal can dismiss + hand off to
+// the character-creation wizard via ShellNavContext. Lives inside the
+// providers so it can call useShellNav.
 function ConnectedWelcomeModal({ onDismiss }: { onDismiss: () => void }) {
-  const toast = useToast();
+  const nav = useShellNav();
   function handleCreate() {
     ackFirstLaunch();
     onDismiss();
-    toast.suggestion({
-      message:
-        "Character creation wizard arrives in Story 6.2 — the empty Sheet is your stand-in for now.",
-      primary: { label: "OK", onClick: () => {} },
-    });
+    nav.openWizard();
   }
   function handleExplore() {
     ackFirstLaunch();
@@ -415,6 +421,64 @@ function ConnectedWelcomeModal({ onDismiss }: { onDismiss: () => void }) {
   }
   return (
     <WelcomeModal onCreate={handleCreate} onExplore={handleExplore} />
+  );
+}
+
+// Story 6.2 — adapter that fills the new character with the wizard's
+// selections plus the auto-applied starting kit, sets it active, and
+// surfaces a placeholder toast for Story 6.3's onboarding tour.
+function ConnectedCreateWizard({
+  setPhoneTab,
+  setSheetSubTab,
+  onDismiss,
+}: {
+  setPhoneTab: Dispatch<SetStateAction<PhoneTab>>;
+  setSheetSubTab: Dispatch<SetStateAction<SheetSubTab>>;
+  onDismiss: () => void;
+}) {
+  const { create, update } = useCharacters();
+  const toast = useToast();
+
+  function handleCreate(input: CreatedCharacterInput) {
+    const c = create(input.name);
+    update(c.id, {
+      weapon: input.weapon,
+      manoeuvres: input.manoeuvres,
+      armour: [input.armour],
+      scrolls: [
+        {
+          name: input.scroll.name,
+          orbit: "",
+          dispelDoubles: "",
+          effectModifier: input.scroll.modifier,
+        },
+      ],
+      potions: [{ name: "Potion of Healing", effectModifier: "" }],
+      backpack: {
+        // The starting kit ("flint & steel, lantern, 3 rations, pouch,
+        // wax sealing kit, large backpack") is split between large /
+        // small / rations slots per the physical sheet's structure.
+        largeItems: ["lantern", "wax sealing kit", "", "", ""],
+        smallItems: "flint & steel, pouch",
+        rations: "3",
+        lootLockup: "",
+        additionalNotes: "",
+      },
+    });
+    onDismiss();
+    setPhoneTab("sheet");
+    setSheetSubTab("loadout");
+    toast.suggestion({
+      message:
+        "Welcome, " +
+        input.name +
+        "! The 6-step onboarding tour arrives in Story 6.3.",
+      primary: { label: "OK", onClick: () => {} },
+    });
+  }
+
+  return (
+    <CharacterCreateWizard onCreate={handleCreate} onCancel={onDismiss} />
   );
 }
 
@@ -464,6 +528,9 @@ export function Shell() {
       openCombat: () => {
         setPhoneTab("map");
         setMiddleTab("combat");
+      },
+      openWizard: () => {
+        setModal("wizard");
       },
     }),
     [],
@@ -552,6 +619,13 @@ export function Shell() {
       {modal === "switcher" && <CharacterSwitcherModal onClose={closeModal} />}
       {modal === "welcome" && (
         <ConnectedWelcomeModal onDismiss={closeModal} />
+      )}
+      {modal === "wizard" && (
+        <ConnectedCreateWizard
+          setPhoneTab={setPhoneTab}
+          setSheetSubTab={setSheetSubTab}
+          onDismiss={closeModal}
+        />
       )}
       </RulesSearchProvider>
       </TablesSearchProvider>

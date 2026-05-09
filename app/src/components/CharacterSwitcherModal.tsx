@@ -1,5 +1,6 @@
 import type { Character } from "@/types/character";
 import { Modal } from "@/components/Modal";
+import { useShellNav } from "@/components/Shell";
 import { Button } from "@/components/ui";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useMapsV2 } from "@/hooks/useMapsV2";
@@ -21,10 +22,11 @@ import {
 // adding a friend's character doesn't wipe your own.
 
 export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
-  const { characters, active, create, remove, setActive, replaceAll } =
+  const { characters, active, remove, setActive, replaceAll } =
     useCharacters();
   const { notes, replaceAll: replaceAllNotes } = useNotes();
   const { maps, replaceAll: replaceAllMaps } = useMapsV2();
+  const nav = useShellNav();
 
   function handleSwitch(id: string) {
     setActive(id);
@@ -32,10 +34,11 @@ export function CharacterSwitcherModal({ onClose }: { onClose: () => void }) {
   }
 
   function handleNew() {
-    // v1 creation path: spawn a default character. Epic 6 swaps in the
-    // 5-step wizard.
-    create();
+    // Story 6.2 — close the switcher and hand off to the wizard. The
+    // wizard lives in Shell so it can survive any other modal swap and
+    // route the new character to its post-creation Sheet view.
     onClose();
+    nav.openWizard();
   }
 
   function handleExport(c: Character) {

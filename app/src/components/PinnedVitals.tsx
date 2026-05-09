@@ -8,6 +8,7 @@ import {
 import type { Character, StatusConditions } from "@/types/character";
 import { useCharacters } from "@/hooks/useCharacters";
 import { STATUS_PIPS } from "@/lib/character";
+import { useShellNav } from "@/components/Shell";
 import { Pips, Stepper, Toggle } from "@/components/ui";
 
 // Story 1.4 — pinned-top of the Sheet column. Always visible while the
@@ -23,10 +24,11 @@ interface Props {
 }
 
 export function PinnedVitals({ onOpenSwitcher }: Props) {
-  const { characters, active, create, update } = useCharacters();
+  const { characters, active, update } = useCharacters();
+  const nav = useShellNav();
 
   if (characters.length === 0) {
-    // First launch — Epic 6 replaces this with the 5-step wizard.
+    // Story 6.2 — empty-state CTA hands off to the 5-step wizard.
     return (
       <Pinned>
         <div className="space-y-2 text-center">
@@ -37,7 +39,7 @@ export function PinnedVitals({ onOpenSwitcher }: Props) {
           </p>
           <button
             type="button"
-            onClick={() => create()}
+            onClick={() => nav.openWizard()}
             className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
             + Create your first adventurer
