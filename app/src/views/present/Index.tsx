@@ -103,6 +103,48 @@ export default function PresentIndex() {
           )}
         </Section>
 
+        <Section
+          title={`Per-pin logs (${maps.reduce(
+            (n, m) =>
+              n + m.regions.filter((r) => r.kind && typeof r.number === "number").length,
+            0,
+          )})`}
+        >
+          {(() => {
+            const rows: { mapId: string; mapName: string; pinId: string; label: string }[] = [];
+            for (const m of maps) {
+              for (const r of m.regions) {
+                if (!r.kind || typeof r.number !== "number") continue;
+                const kind = r.kind === "room" ? "Room" : "Hall";
+                const labelSuffix = r.label ? ` — ${r.label}` : "";
+                rows.push({
+                  mapId: m.id,
+                  mapName: m.name,
+                  pinId: r.tilesHash,
+                  label: `${kind} ${r.number}${labelSuffix}`,
+                });
+              }
+            }
+            if (rows.length === 0) {
+              return (
+                <Empty>No pins yet — pin a region in the Map view.</Empty>
+              );
+            }
+            return (
+              <ul className="space-y-2">
+                {rows.map((r) => (
+                  <PresenterRow
+                    key={`${r.mapId}-${r.pinId}`}
+                    to={`/present/log/${r.mapId}/${encodeURIComponent(r.pinId)}`}
+                    title={r.label}
+                    subtitle={r.mapName}
+                  />
+                ))}
+              </ul>
+            );
+          })()}
+        </Section>
+
         <Section title={`Maps (${maps.length})`}>
           {maps.length === 0 ? (
             <Empty>No maps yet — create one in the Map view.</Empty>
