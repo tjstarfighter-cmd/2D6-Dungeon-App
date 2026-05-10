@@ -320,7 +320,7 @@ function Column({
     side === "middle"
       ? "lg:flex-1"
       : side === "left"
-      ? "lg:w-80 lg:flex-none lg:border-r lg:border-zinc-200 dark:lg:border-zinc-800"
+      ? "lg:w-96 lg:flex-none lg:border-r lg:border-zinc-200 dark:lg:border-zinc-800"
       : "lg:w-80 lg:flex-none lg:border-l lg:border-zinc-200 dark:lg:border-zinc-800";
 
   const phoneVisibility = active ? "flex flex-1" : "hidden";

@@ -18,7 +18,7 @@ import {
   STATUS_PIPS,
   baselineHpForLevel,
 } from "@/lib/character";
-import { formatDiceSet, parseDiceSet } from "@/lib/combat";
+import { formatDiceSet, parseDiceList, parseDiceSet } from "@/lib/combat";
 import { DICE_FACES } from "@/lib/tables";
 import type { TableRow } from "@/types/tables";
 import { CharacterSwitcher } from "@/components/CharacterSwitcher";
@@ -54,9 +54,11 @@ function DiceSetField({
   onChange: (next: string) => void;
   ariaLabelPrefix?: string;
 }) {
-  const parsed = parseDiceSet(value);
-  // Hold partial picks locally — parseDiceSet returns null until both dice are
-  // present, so without this the first pick would visibly disappear.
+  const parsedDual = parseDiceSet(value);
+  // Some tables (e.g. AT1 armour) provide single-die values like "⚃".
+  // parseDiceSet returns null for those; fall back to parseDiceList so
+  // the existing die still renders in the primary slot.
+  const parsedList = parsedDual ? null : parseDiceList(value);
   const [pending, setPending] = useState<{
     primary: number | null;
     secondary: number | null;
@@ -68,16 +70,26 @@ function DiceSetField({
     setPending({ primary: null, secondary: null });
   }, [value]);
 
-  const primary = parsed?.[0] ?? pending.primary;
-  const secondary = parsed?.[1] ?? pending.secondary;
+  const primary = parsedDual?.[0] ?? parsedList?.[0] ?? pending.primary;
+  const secondary = parsedDual?.[1] ?? pending.secondary;
 
   function commit(p: number | null, s: number | null) {
-    if (p === null || s === null) {
-      setPending({ primary: p, secondary: s });
+    setPending({ primary: null, secondary: null });
+    if (p !== null && s !== null) {
+      onChange(formatDiceSet(p, s));
       return;
     }
-    setPending({ primary: null, secondary: null });
-    onChange(formatDiceSet(p, s));
+    // Single-die or empty — preserve table-imported single-die armour
+    // and let users save partial picks instead of dropping them.
+    if (p !== null) {
+      onChange(DICE_FACES[p - 1] ?? String(p));
+      return;
+    }
+    if (s !== null) {
+      onChange(DICE_FACES[s - 1] ?? String(s));
+      return;
+    }
+    onChange("");
   }
 
   return (
