@@ -11,6 +11,7 @@ import {
   pickJsonFile,
   serialiseBackup,
 } from "@/lib/io";
+import { exportRunAsPDF } from "@/lib/run-export";
 import type { Character, RunRecord } from "@/types/character";
 import type { MapDocV2 } from "@/types/mapv2";
 
@@ -77,13 +78,24 @@ export function BackupRestoreModal({ onClose }: { onClose: () => void }) {
 
   // Selective delete handlers ----------------------------------------------
 
-  function deleteRun(character: Character, run: RunRecord, exportFirst: boolean) {
+  async function deleteRun(
+    character: Character,
+    run: RunRecord,
+    exportFirst: boolean,
+  ) {
     if (exportFirst) {
-      const ok = exportJson(
-        `run-${safe(character.name)}-${run.endedAt.slice(0, 10)}.json`,
-        { kind: "run", character, run },
+      const charMaps = maps.filter(
+        (m) => !m.characterId || m.characterId === character.id,
       );
-      if (!ok) {
+      try {
+        await exportRunAsPDF({
+          scope: "run",
+          character,
+          run,
+          maps: charMaps,
+          notes,
+        });
+      } catch {
         alert("Export failed — delete aborted.");
         return;
       }
@@ -98,18 +110,16 @@ export function BackupRestoreModal({ onClose }: { onClose: () => void }) {
     updateChar(character.id, { runs: nextRuns });
   }
 
-  function deleteMap(map: MapDocV2, exportFirst: boolean) {
+  async function deleteMap(map: MapDocV2, exportFirst: boolean) {
     if (exportFirst) {
-      const ok = exportJson(`map-${safe(map.name)}-${dateStamp()}.json`, {
-        kind: "map",
-        map,
-        notes: notes.filter(
-          (n) =>
-            n.target?.kind === "room" &&
-            map.regions.some((r) => r.tilesHash === n.target?.id),
-        ),
-      });
-      if (!ok) {
+      try {
+        await exportRunAsPDF({
+          scope: "map",
+          character: active ?? chars[0]!,
+          map,
+          notes,
+        });
+      } catch {
         alert("Export failed — delete aborted.");
         return;
       }
@@ -118,7 +128,7 @@ export function BackupRestoreModal({ onClose }: { onClose: () => void }) {
     removeMap(map.id);
   }
 
-  function deleteCharacter(c: Character, exportFirst: boolean) {
+  async function deleteCharacter(c: Character, exportFirst: boolean) {
     if (active?.id === c.id && c.state !== "dead") {
       alert(
         "Cannot delete the active alive character. Switch to a different character first.",
@@ -126,12 +136,17 @@ export function BackupRestoreModal({ onClose }: { onClose: () => void }) {
       return;
     }
     if (exportFirst) {
-      const ok = exportJson(`character-${safe(c.name)}-${dateStamp()}.json`, {
-        kind: "character",
-        character: c,
-        runs: c.runs ?? [],
-      });
-      if (!ok) {
+      const charMaps = maps.filter(
+        (m) => !m.characterId || m.characterId === c.id,
+      );
+      try {
+        await exportRunAsPDF({
+          scope: "character",
+          character: c,
+          maps: charMaps,
+          notes,
+        });
+      } catch {
         alert("Export failed — delete aborted.");
         return;
       }
@@ -332,32 +347,3 @@ function Empty({ children }: { children: React.ReactNode }) {
   return <p className="text-sm text-zinc-500">{children}</p>;
 }
 
-// ---- Helpers --------------------------------------------------------------
-
-function safe(name: string): string {
-  return name.replace(/[^a-z0-9]+/gi, "_") || "untitled";
-}
-
-function dateStamp(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function exportJson(filename: string, payload: unknown): boolean {
-  try {
-    downloadText(
-      filename,
-      JSON.stringify(
-        {
-          notice:
-            "PDF export ships in Story 8.3. JSON snapshot for now (raw data preserved per NFR12).",
-          ...((payload as object) ?? {}),
-        },
-        null,
-        2,
-      ),
-    );
-    return true;
-  } catch {
-    return false;
-  }
-}

@@ -9,7 +9,7 @@ import { useToast } from "@/components/Toast";
 import { detectRegions, tilesHash } from "@/lib/mapv2";
 import { tierFor } from "@/lib/level-up";
 import { appendRunToCharacter, buildRunRecord } from "@/lib/run-archive";
-import { downloadText } from "@/lib/io";
+import { exportRunAsPDF } from "@/lib/run-export";
 import { wallSetFromList, type MapDocV2 } from "@/types/mapv2";
 import type { Character } from "@/types/character";
 import type { Note } from "@/types/notes";
@@ -60,29 +60,35 @@ export function RunEndModal() {
     nav.openSheet();
   }
 
-  function handleExportPdf(): void {
-    // Story 6.11 placeholder until Epic 8 ships PDF export. Surface a
-    // JSON download so the player can keep an offline copy and the
-    // action never silently fails.
-    const stamp = new Date().toISOString().slice(0, 10);
-    const safeName = active!.name.replace(/[^a-z0-9]+/gi, "_") || "run";
-    const payload = JSON.stringify(
-      {
-        notice: "PDF export ships in Epic 8. JSON snapshot for now.",
+  async function handleExportPdf(): Promise<void> {
+    if (!active || !cause) return;
+    // Synthesise a transient RunRecord for the in-progress run — this
+    // is the same shape that handleSameCharacter / handleNewCharacter
+    // archive, so the PDF reflects exactly what's about to land in
+    // character.runs.
+    const record = buildRunRecord({
+      character: active,
+      allMaps: maps,
+      allNotes: notes,
+      cause,
+    });
+    try {
+      const result = await exportRunAsPDF({
+        scope: "run",
         character: active,
+        run: record,
         maps,
-        notes: notes.filter(
-          (n) => n.target?.kind === "room" && stats!.maps.some((m) =>
-            m.regions.some((r) => r.tilesHash === n.target?.id),
-          ),
-        ),
-        cause,
-      },
-      null,
-      2,
-    );
-    downloadText(`${safeName}-lvl${active!.level}-${stamp}.json`, payload);
-    toast.success({ message: "Run exported as JSON (PDF coming in Epic 8)." });
+        notes,
+      });
+      toast.success({
+        message:
+          result.format === "pdf"
+            ? `Run exported (${result.filename}).`
+            : `PDF assembly hit a limit; exported as Markdown (${result.filename}).`,
+      });
+    } catch {
+      toast.error({ message: "Export failed. Try again." });
+    }
   }
 
   function handleSameCharacter(): void {

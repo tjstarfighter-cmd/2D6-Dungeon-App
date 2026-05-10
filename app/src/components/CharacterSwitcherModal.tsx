@@ -1,10 +1,11 @@
-import type { Character } from "@/types/character";
+import type { Character, RunRecord } from "@/types/character";
 import { Modal } from "@/components/Modal";
 import { useShellNav } from "@/components/Shell";
 import { useMidRunGuard } from "@/components/MidRunGuard";
 import { Button } from "@/components/ui";
 import { useCharacters } from "@/hooks/useCharacters";
 import { useReadOnly } from "@/hooks/useReadOnly";
+import { exportRunAsPDF } from "@/lib/run-export";
 import { useMapsV2 } from "@/hooks/useMapsV2";
 import { useNotes } from "@/hooks/useNotes";
 import {
@@ -206,14 +207,29 @@ function CharacterRow({
 // ---------------------------------------------------------------------------
 
 // Story 6.12 — Past Runs section. Renders one row per archived run
-// across all characters, newest first. View read-only / Export PDF
-// land in Story 6.13 / Epic 8 — placeholders for now.
+// across all characters, newest first. View read-only is a Story 6.13
+// placeholder; Export PDF is wired to the Story 8.3 PDF export module.
 function PastRunsList({ characters }: { characters: Character[] }) {
+  const { maps } = useMapsV2();
+  const { notes } = useNotes();
   const rows = characters
     .flatMap((c) =>
       (c.runs ?? []).map((r) => ({ character: c, run: r })),
     )
     .sort((a, b) => b.run.endedAt.localeCompare(a.run.endedAt));
+
+  function handleExport(character: Character, run: RunRecord) {
+    const charMaps = maps.filter(
+      (m) => !m.characterId || m.characterId === character.id,
+    );
+    void exportRunAsPDF({
+      scope: "run",
+      character,
+      run,
+      maps: charMaps,
+      notes,
+    });
+  }
 
   if (rows.length === 0) {
     return (
@@ -260,11 +276,7 @@ function PastRunsList({ characters }: { characters: Character[] }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    alert(
-                      "PDF export ships in Epic 8. For now this is a placeholder.",
-                    )
-                  }
+                  onClick={() => handleExport(character, run)}
                   className="rounded-md border border-zinc-300 bg-white px-2 py-0.5 text-xs text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
                 >
                   Export PDF
