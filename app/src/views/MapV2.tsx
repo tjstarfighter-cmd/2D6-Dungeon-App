@@ -487,6 +487,27 @@ function MapV2Editor({
   useEffect(() => {
     setTransitionFlags(getMapTransitionFlags(map.id));
   }, [map.id]);
+
+  // Auto-fit the dot grid to the column when a map first opens or the
+  // active map switches. Defers one frame so the container has its
+  // final laid-out width before measuring.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handle = requestAnimationFrame(() => {
+      const svgW = (map.gridW + 1) * CELL;
+      const svgH = (map.gridH + 1) * CELL;
+      const fitW = container.clientWidth / svgW;
+      const fitH = container.clientHeight / svgH;
+      const fit = Math.min(fitW, fitH);
+      if (Number.isFinite(fit) && fit > 0) {
+        setScale(clamp(fit, MIN_SCALE, MAX_SCALE));
+        container.scrollLeft = 0;
+        container.scrollTop = 0;
+      }
+    });
+    return () => cancelAnimationFrame(handle);
+  }, [map.id, map.gridW, map.gridH]);
   const showRestModal = map.level > 1 && !transitionFlags.restPromptResolved;
   const showEntranceBanner =
     map.level > 1 &&

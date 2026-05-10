@@ -327,7 +327,7 @@ function Column({
 
   return (
     <section
-      className={`min-h-0 min-w-0 flex-col bg-zinc-50 dark:bg-zinc-950 ${phoneVisibility} lg:flex ${desktopSize}`}
+      className={`min-h-0 min-w-0 flex-col bg-white dark:bg-zinc-900 ${phoneVisibility} lg:flex ${desktopSize}`}
     >
       {children}
     </section>
