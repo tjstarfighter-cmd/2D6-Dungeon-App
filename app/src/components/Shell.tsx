@@ -737,7 +737,7 @@ export function Shell() {
           <Column active={phoneTab === "map"} side="middle">
             <MapToolsProvider>
               <MapAreaTabStrip active={middleTab} onChange={setMiddleTab} />
-              <div className="relative flex-1 overflow-auto">
+              <div className="relative flex min-h-0 flex-1 flex-col overflow-auto">
                 <Suspense fallback={<Loader />}>
                   {middleTab === "combat" ? (
                     <CombatView />

@@ -30,9 +30,11 @@ export function PinnedVitals({ onOpenSwitcher }: Props) {
 
   if (characters.length === 0) {
     // Story 6.2 — empty-state CTA hands off to the 5-step wizard.
+    // Fill the whole sheet column so the column doesn't look like an
+    // empty box with a small card at the top.
     return (
-      <Pinned>
-        <div className="space-y-2 text-center">
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="space-y-3 text-center">
           <p className="text-sm font-semibold">Welcome</p>
           <p className="text-xs text-zinc-600 dark:text-zinc-400">
             Create a character to start tracking HP, XP, gear, and gold across
@@ -46,7 +48,7 @@ export function PinnedVitals({ onOpenSwitcher }: Props) {
             + Create your first adventurer
           </button>
         </div>
-      </Pinned>
+      </div>
     );
   }
 

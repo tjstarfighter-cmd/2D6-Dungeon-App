@@ -118,7 +118,7 @@ export default function MapV2View() {
     guard.requestSwitch(() => setActive(id));
 
   return (
-    <section className="mx-auto w-full min-w-0 max-w-7xl space-y-4 overflow-x-hidden">
+    <section className="mx-auto flex min-h-0 w-full min-w-0 max-w-7xl flex-1 flex-col gap-4 overflow-x-hidden">
       {!active ? (
         <>
           <Card>
@@ -488,25 +488,40 @@ function MapV2Editor({
     setTransitionFlags(getMapTransitionFlags(map.id));
   }, [map.id]);
 
-  // Auto-fit the dot grid to the column when a map first opens or the
-  // active map switches. Defers one frame so the container has its
-  // final laid-out width before measuring.
+  // Auto-fit the dot grid to the column when a map first opens, the
+  // active map switches, or the container resizes (e.g., window resize).
+  // Uses ResizeObserver so the first measurement waits for the container
+  // to actually have a non-zero size — rAF alone fired too early during
+  // lazy-load + layout settling on some renders.
+  const fittedMapIdRef = useRef<string | null>(null);
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const handle = requestAnimationFrame(() => {
+    // Reset when the active map changes so the new map gets a fresh fit.
+    if (fittedMapIdRef.current !== map.id) {
+      fittedMapIdRef.current = null;
+    }
+    function fit() {
+      if (!container) return;
+      const cw = container.clientWidth;
+      const ch = container.clientHeight;
+      if (cw <= 0 || ch <= 0) return;
       const svgW = (map.gridW + 1) * CELL;
       const svgH = (map.gridH + 1) * CELL;
-      const fitW = container.clientWidth / svgW;
-      const fitH = container.clientHeight / svgH;
-      const fit = Math.min(fitW, fitH);
-      if (Number.isFinite(fit) && fit > 0) {
-        setScale(clamp(fit, MIN_SCALE, MAX_SCALE));
-        container.scrollLeft = 0;
-        container.scrollTop = 0;
-      }
-    });
-    return () => cancelAnimationFrame(handle);
+      const f = Math.min(cw / svgW, ch / svgH);
+      if (!Number.isFinite(f) || f <= 0) return;
+      // Only auto-fit once per map id, so manual user zoom isn't
+      // overwritten on subsequent container resizes.
+      if (fittedMapIdRef.current === map.id) return;
+      fittedMapIdRef.current = map.id;
+      setScale(clamp(f, MIN_SCALE, MAX_SCALE));
+      container.scrollLeft = 0;
+      container.scrollTop = 0;
+    }
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(container);
+    return () => observer.disconnect();
   }, [map.id, map.gridW, map.gridH]);
   const showRestModal = map.level > 1 && !transitionFlags.restPromptResolved;
   const showEntranceBanner =
@@ -1253,8 +1268,8 @@ function MapV2Editor({
   const persistedWallKeys = wallSet;
 
   return (
-    <div className="w-full min-w-0 space-y-4 overflow-x-hidden">
-      <Card className="w-full min-w-0 overflow-x-hidden">
+    <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 overflow-x-hidden">
+      <Card className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-x-hidden">
         <div className="flex w-full min-w-0 flex-wrap items-center gap-2">
           <Button onClick={undo} disabled={undoCount === 0} title="Undo last stroke">
             ↶ Undo
@@ -1315,7 +1330,7 @@ function MapV2Editor({
             wrapper anchors the absolute toolbar so it stays put regardless
             of canvas scroll. Desktop: vertical stack at left edge. Phone:
             horizontal strip pinned to the bottom of the map area. */}
-        <div className="relative mt-3">
+        <div className="relative mt-3 flex min-h-0 flex-1 flex-col">
         <ToolPalette
           tool={tool}
           onTool={setTool}
@@ -1410,7 +1425,7 @@ function MapV2Editor({
         )}
         <div
           ref={containerRef}
-          className="w-full max-h-[70vh] overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
+          className="w-full min-h-0 flex-1 overflow-auto rounded-md border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <svg
             ref={svgRef}
