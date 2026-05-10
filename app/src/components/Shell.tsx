@@ -314,12 +314,14 @@ function Column({
   children: ReactNode;
 }) {
   // Desktop sizing: left + right are fixed-width, middle takes the rest.
+  // `lg:flex-none` is required because the phone-active state adds an
+  // unconditional `flex-1` which would otherwise let the side columns grow.
   const desktopSize =
     side === "middle"
       ? "lg:flex-1"
       : side === "left"
-      ? "lg:w-80 lg:shrink-0 lg:border-r lg:border-zinc-200 dark:lg:border-zinc-800"
-      : "lg:w-80 lg:shrink-0 lg:border-l lg:border-zinc-200 dark:lg:border-zinc-800";
+      ? "lg:w-80 lg:flex-none lg:border-r lg:border-zinc-200 dark:lg:border-zinc-800"
+      : "lg:w-80 lg:flex-none lg:border-l lg:border-zinc-200 dark:lg:border-zinc-800";
 
   const phoneVisibility = active ? "flex flex-1" : "hidden";
 
