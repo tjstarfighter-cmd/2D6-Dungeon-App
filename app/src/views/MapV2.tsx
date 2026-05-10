@@ -773,7 +773,10 @@ function MapV2Editor({
     const svgH = (map.gridH + 1) * CELL;
     const fitW = container.clientWidth / svgW;
     const fitH = container.clientHeight / svgH;
-    const fit = Math.min(fitW, fitH);
+    // Match the auto-fit behavior: stretch to the longer axis so the
+    // grid fills the column. Use the overflow-auto container's scroll
+    // for whichever axis ends up larger than the visible area.
+    const fit = Math.max(fitW, fitH);
     if (!Number.isFinite(fit) || fit <= 0) return;
     setScale(clamp(fit, MIN_SCALE, MAX_SCALE));
     requestAnimationFrame(() => {
