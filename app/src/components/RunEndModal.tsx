@@ -134,7 +134,7 @@ export function RunEndModal() {
       <div className="absolute inset-0 bg-zinc-900/70" aria-hidden="true" />
       <div className="absolute left-1/2 top-1/2 flex max-h-[90vh] w-[min(40rem,94vw)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
         <header className="shrink-0 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             {active.name}, Lvl {active.level} {tier.tier}
           </h2>
           <p className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">

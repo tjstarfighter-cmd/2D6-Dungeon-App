@@ -89,7 +89,7 @@ export function WizardChrome({
           <div className="text-xs font-medium uppercase tracking-wide text-zinc-500">
             Step {stepIndex + 1} of 5
           </div>
-          <h2 className="truncate text-base font-semibold">{stepLabel}</h2>
+          <h2 className="truncate text-base font-semibold text-zinc-900 dark:text-zinc-100">{stepLabel}</h2>
         </div>
         <button
           type="button"

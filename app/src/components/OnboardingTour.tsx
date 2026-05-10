@@ -152,7 +152,7 @@ export function OnboardingTour({
           <div className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
             Step {stepIndex + 1} of {steps.length}
           </div>
-          <h3 className="text-sm font-semibold">{step.title}</h3>
+          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{step.title}</h3>
           <p className="mt-1 text-xs text-zinc-700 dark:text-zinc-300">
             {step.body}
           </p>
@@ -181,7 +181,7 @@ export function OnboardingTour({
           <div className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
             Step {stepIndex + 1} of {steps.length}
           </div>
-          <h3 className="text-sm font-semibold">{step.title}</h3>
+          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{step.title}</h3>
           <p className="mt-1 text-xs text-zinc-500">
             (Couldn't anchor this step — skip to continue.)
           </p>
