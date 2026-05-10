@@ -8,6 +8,7 @@ export interface HeaderProps {
   onOpenHelp: () => void;
   onOpenAbout: () => void;
   onOpenBackup: () => void;
+  onOpenSwitcher: () => void;
 }
 
 export function Header(props: HeaderProps) {
@@ -115,6 +116,7 @@ function PhoneActions({
   onOpenHelp,
   onOpenAbout,
   onOpenBackup,
+  onOpenSwitcher,
 }: HeaderProps) {
   return (
     <div className="ml-auto flex items-center gap-2 lg:hidden">
@@ -124,6 +126,7 @@ function PhoneActions({
         onOpenHelp={onOpenHelp}
         onOpenAbout={onOpenAbout}
         onOpenBackup={onOpenBackup}
+        onOpenSwitcher={onOpenSwitcher}
       />
     </div>
   );
@@ -134,6 +137,7 @@ function OverflowMenu({
   onOpenHelp,
   onOpenAbout,
   onOpenBackup,
+  onOpenSwitcher,
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const ref = useDismiss<HTMLDivElement>(open, () => setOpen(false));
@@ -151,6 +155,14 @@ function OverflowMenu({
       </button>
       {open && (
         <MenuPanel className="right-0 w-56">
+          <MenuItem
+            onClick={() => {
+              setOpen(false);
+              onOpenSwitcher();
+            }}
+          >
+            Switch character
+          </MenuItem>
           <MenuItem
             onClick={() => {
               setOpen(false);

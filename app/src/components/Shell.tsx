@@ -718,6 +718,7 @@ export function Shell() {
           onOpenHelp={() => setModal("help")}
           onOpenAbout={() => setModal("about")}
           onOpenBackup={() => setModal("backup")}
+          onOpenSwitcher={() => setModal("switcher")}
         />
         <PhoneVitals onTap={() => setPhoneTab("sheet")} />
 

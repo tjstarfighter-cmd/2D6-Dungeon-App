@@ -52,7 +52,7 @@ export function CharacterCreateWizard({
       aria-label="Create character"
       className="fixed inset-0 z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:items-center lg:justify-center lg:bg-zinc-900/60 dark:lg:bg-zinc-950/70"
     >
-      <div className="flex h-full w-full flex-col bg-zinc-50 dark:bg-zinc-950 lg:h-auto lg:max-h-[85vh] lg:w-[min(36rem,92vw)] lg:rounded-lg lg:border lg:border-zinc-200 lg:bg-white lg:shadow-2xl dark:lg:border-zinc-700 dark:lg:bg-zinc-900">
+      <div className="flex h-full w-full flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 lg:h-auto lg:max-h-[85vh] lg:w-[min(36rem,92vw)] lg:rounded-lg lg:border lg:border-zinc-200 lg:bg-white lg:shadow-2xl dark:lg:border-zinc-700 dark:lg:bg-zinc-900">
         <Suspense
           fallback={
             <WizardChrome onCancel={confirmCancel} stepIndex={0} stepLabel="Loading…">

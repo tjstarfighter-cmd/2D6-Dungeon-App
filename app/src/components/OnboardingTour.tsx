@@ -146,7 +146,7 @@ export function OnboardingTour({
       )}
       {positioned && (
         <div
-          className="pointer-events-auto absolute w-72 max-w-[90vw] rounded-lg border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
+          className="pointer-events-auto absolute w-72 max-w-[90vw] rounded-lg border border-zinc-200 bg-white p-3 text-zinc-900 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
           style={positioned}
         >
           <div className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -177,7 +177,7 @@ export function OnboardingTour({
       {/* Anchor not found — render a centered fallback so the tour can
           still be skipped. */}
       {!rect && (
-        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-zinc-200 bg-white p-3 text-zinc-900 shadow-xl dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
           <div className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
             Step {stepIndex + 1} of {steps.length}
           </div>

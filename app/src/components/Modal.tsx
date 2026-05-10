@@ -31,7 +31,7 @@ export function Modal({
         onClick={onClose}
         className="absolute inset-0 bg-zinc-900/50"
       />
-      <div className="absolute left-1/2 top-1/2 flex max-h-[85vh] w-[min(32rem,92vw)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
+      <div className="absolute left-1/2 top-1/2 flex max-h-[85vh] w-[min(32rem,92vw)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-zinc-200 bg-white text-zinc-900 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
         <header className="flex shrink-0 items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
           <button
