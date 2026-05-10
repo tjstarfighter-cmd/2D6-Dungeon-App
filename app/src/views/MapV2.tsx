@@ -508,7 +508,10 @@ function MapV2Editor({
       if (cw <= 0 || ch <= 0) return;
       const svgW = (map.gridW + 1) * CELL;
       const svgH = (map.gridH + 1) * CELL;
-      const f = Math.min(cw / svgW, ch / svgH);
+      // Fill the column on the longer container axis instead of fitting
+      // entirely inside it — the user sees a grid that actually stretches
+      // to one edge; the shorter axis scrolls in the overflow-auto box.
+      const f = Math.max(cw / svgW, ch / svgH);
       if (!Number.isFinite(f) || f <= 0) return;
       // Only auto-fit once per map id, so manual user zoom isn't
       // overwritten on subsequent container resizes.
