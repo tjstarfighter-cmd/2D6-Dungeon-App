@@ -320,7 +320,7 @@ function PreCombatPicker({
           c.name.toLowerCase() === n.body.toLowerCase(),
       );
       if (!card) return;
-      const creature = findCreatureForCard(card, creatureStats);
+      const creature = findCreatureForCard(creatureStats, card);
       seeded.push({
         init: enemyInitFromCard(card, creature),
         card,

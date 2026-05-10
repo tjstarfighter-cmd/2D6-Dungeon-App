@@ -117,8 +117,11 @@ export default function RulesView({
   // overlay's container has been detached and scrollTop reads as 0 —
   // so we capture continuously instead.
   useEffect(() => {
-    const scroller = contentRef.current?.closest(".overflow-auto");
-    if (!(scroller instanceof HTMLElement)) return;
+    const found = contentRef.current?.closest(".overflow-auto");
+    if (!(found instanceof HTMLElement)) return;
+    // Capture into a const of the narrowed type so TS keeps the narrow
+    // inside the nested `onScroll` function declaration's closure.
+    const scroller: HTMLElement = found;
     scroller.scrollTop = readRulesSession().scrollTop;
 
     let raf = 0;
